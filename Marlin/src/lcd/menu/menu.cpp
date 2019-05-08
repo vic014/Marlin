@@ -66,11 +66,11 @@ uint8_t screen_history_depth = 0;
 bool screen_changed;
 
 // Value Editing
-PGM_P editLabel;
-void *editValue;
-int32_t minEditValue, maxEditValue;
-screenFunc_t callbackFunc;
-bool liveEdit;
+PGM_P MenuItemBase::editLabel;
+void* MenuItemBase::editValue;
+int16_t MenuItemBase::minEditValue, MenuItemBase::maxEditValue;
+screenFunc_t MenuItemBase::callbackFunc;
+bool MenuItemBase::liveEdit;
 
 // Prevent recursion into screen handlers
 bool no_reentry = false;
@@ -131,8 +131,8 @@ void MenuItem_gcode::action(PGM_P pgcode) { enqueue_and_echo_commands_P(pgcode);
  */
 void MenuItemBase::edit(strfunc_t strfunc, loadfunc_t loadfunc) {
   ui.encoder_direction_normal();
-  if ((int32_t)ui.encoderPosition < 0) ui.encoderPosition = 0;
-  if ((int32_t)ui.encoderPosition > maxEditValue) ui.encoderPosition = maxEditValue;
+  if (int16_t(ui.encoderPosition) < 0) ui.encoderPosition = 0;
+  if (int16_t(ui.encoderPosition) > maxEditValue) ui.encoderPosition = maxEditValue;
   if (ui.should_draw())
     draw_edit_screen(editLabel, strfunc(ui.encoderPosition + minEditValue));
   if (ui.lcd_clicked || (liveEdit && ui.should_draw())) {
@@ -142,7 +142,7 @@ void MenuItemBase::edit(strfunc_t strfunc, loadfunc_t loadfunc) {
   }
 }
 
-void MenuItemBase::init(PGM_P const el, void * const ev, const int32_t minv, const int32_t maxv, const uint32_t ep, const screenFunc_t cs, const screenFunc_t cb, const bool le) {
+void MenuItemBase::init(PGM_P const el, void * const ev, const int16_t minv, const int16_t maxv, const uint16_t ep, const screenFunc_t cs, const screenFunc_t cb, const bool le) {
   ui.save_previous_screen();
   ui.refresh();
   editLabel = el;
@@ -167,10 +167,12 @@ DEFINE_MENU_EDIT_ITEM(float3);      // 123        right-justified
 DEFINE_MENU_EDIT_ITEM(float52);     // 123.45
 DEFINE_MENU_EDIT_ITEM(float43);     // 1.234
 DEFINE_MENU_EDIT_ITEM(float5);      // 12345      right-justified
-DEFINE_MENU_EDIT_ITEM(float51);     // +1234.5
+DEFINE_MENU_EDIT_ITEM(float5_25);   // 12345      right-justified (25 increment)
+DEFINE_MENU_EDIT_ITEM(float51);     // 1234.5     right-justified
+DEFINE_MENU_EDIT_ITEM(float51sign); // +1234.5
 DEFINE_MENU_EDIT_ITEM(float52sign); // +123.45
-DEFINE_MENU_EDIT_ITEM(float62);     // 1234.56    right-justified
 DEFINE_MENU_EDIT_ITEM(long5);       // 12345      right-justified
+DEFINE_MENU_EDIT_ITEM(long5_25);    // 12345      right-justified (25 increment)
 
 void MenuItem_bool::action_edit(PGM_P pstr, bool *ptr, screenFunc_t callback) {
   UNUSED(pstr); *ptr ^= true; ui.refresh();
@@ -193,7 +195,7 @@ bool printer_busy() {
 /**
  * General function to go directly to a screen
  */
-void MarlinUI::goto_screen(screenFunc_t screen, const uint32_t encoder/*=0*/, const uint8_t top/*=0*/, const uint8_t items/*=0*/) {
+void MarlinUI::goto_screen(screenFunc_t screen, const uint16_t encoder/*=0*/, const uint8_t top/*=0*/, const uint8_t items/*=0*/) {
   if (currentScreen != screen) {
 
     #if ENABLED(ENABLE_LEVELING_FADE_HEIGHT)
@@ -268,6 +270,8 @@ void MarlinUI::goto_screen(screenFunc_t screen, const uint32_t encoder/*=0*/, co
     #if HAS_GRAPHICAL_LCD
       drawing_screen = false;
     #endif
+
+    set_ui_selection(false);
   }
 }
 
@@ -364,7 +368,7 @@ void MarlinUI::completion_feedback(const bool good/*=true*/) {
     #endif
     ui.encoder_direction_normal();
     if (ui.encoderPosition) {
-      const int16_t babystep_increment = (int32_t)ui.encoderPosition * (BABYSTEP_MULTIPLICATOR);
+      const int16_t babystep_increment = int16_t(ui.encoderPosition) * (BABYSTEP_MULTIPLICATOR);
       ui.encoderPosition = 0;
 
       const float diff = planner.steps_to_mm[Z_AXIS] * babystep_increment,
@@ -391,7 +395,7 @@ void MarlinUI::completion_feedback(const bool good/*=true*/) {
     if (ui.should_draw()) {
       #if ENABLED(BABYSTEP_HOTEND_Z_OFFSET)
         if (!do_probe)
-          draw_edit_screen(PSTR(MSG_IDEX_Z_OFFSET), ftostr43sign(hotend_offset[Z_AXIS][active_extruder]));
+          draw_edit_screen(PSTR(MSG_Z_OFFSET), ftostr43sign(hotend_offset[Z_AXIS][active_extruder]));
         else
       #endif
           draw_edit_screen(PSTR(MSG_ZPROBE_ZOFFSET), ftostr43sign(zprobe_zoffset));
@@ -435,5 +439,22 @@ void _lcd_draw_homing() {
   #include "../../feature/bedlevel/bedlevel.h"
   void _lcd_toggle_bed_leveling() { set_bed_leveling_enabled(!planner.leveling_active); }
 #endif
+
+//
+// Selection screen presents a prompt and two options
+//
+bool ui_selection; // = false
+void set_ui_selection(const bool sel) { ui_selection = sel; }
+void do_select_screen(PGM_P const yes, PGM_P const no, selectFunc_t yesFunc, selectFunc_t noFunc, PGM_P const pref, const char * const string/*=NULL*/, PGM_P const suff/*=NULL*/) {
+  if (ui.encoderPosition) {
+    ui_selection = int16_t(ui.encoderPosition) > 0;
+    ui.encoderPosition = 0;
+  }
+  const bool got_click = ui.use_click();
+  if (got_click || ui.should_draw()) {
+    draw_select_screen(yes, no, ui_selection, pref, string, suff);
+    if (got_click) { ui_selection ? yesFunc() : noFunc(); }
+  }
+}
 
 #endif // HAS_LCD_MENU
