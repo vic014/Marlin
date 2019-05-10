@@ -27,22 +27,31 @@
 // If you have a trex 3 that was upgraded from a 2+ with the kit, modifies home position and offsets.
 //#define TREX3_UPGRADE
 
+//Stock 2+ X is a 4988, all options off defaults to this
 //#define X_2208
 //#define X_Spreadcycle
 //#define X_S109
+
+// Y all options off defaults to 2+ 8825 / 3 2208
 //#define Y_2208 // Highly recommended as large prints with high mass can cause layer shifts with stealthchop at high speed
 //#define Y_Spreadcycle
 //#define Y_4988 // Some machines shipped with 4988 drivers across the board. Set this if you arent sure what you have and all the drivers look identical
 //#define Y_S109
+
+//Stock 2+ Z is a 8825, all options off defaults to this
 //#define Z_2208 // NOT Recommended! Dual stepper current draw is above the recommended limit for this driver
 //#define Z_4988 // Some machines shipped with 4988 drivers across the board. Set this if you arent sure what you have and all the drivers look identical
-//#define Y_Spreadcycle
+//#define Z_Spreadcycle
+//#define Z_S109
+
+//Stock 2+ Z is a 4988, all options off defaults to this
 //#define E_2208 // Not Recommended! Stealthchop mode faults with linear advance
 //#define E_Spreadcycle
+//#define E_S109
 
 #define BedAC
 
-//#define tallVersion
+#define tallVersion
 
 /*
  * Enables a filament sensor plugged into the laser pin. Disables the laser
@@ -310,13 +319,27 @@
  * the E3D Tool Changer. Toolheads are locked with a servo.
  */
 //#define SWITCHING_TOOLHEAD
-#if ENABLED(SWITCHING_TOOLHEAD)
-  #define SWITCHING_TOOLHEAD_SERVO_NR       2         // Index of the servo connector
-  #define SWITCHING_TOOLHEAD_SERVO_ANGLES { 0, 180 }  // (degrees) Angles for Lock, Unlock
-  #define SWITCHING_TOOLHEAD_Y_POS        235         // (mm) Y position of the toolhead dock
-  #define SWITCHING_TOOLHEAD_Y_SECURITY    10         // (mm) Security distance Y axis
-  #define SWITCHING_TOOLHEAD_Y_CLEAR       60         // (mm) Minimum distance from dock for unobstructed X axis
-  #define SWITCHING_TOOLHEAD_X_POS        { 215, 0 }  // (mm) X positions for parking the extruders
+
+/**
+ * Magnetic Switching Toolhead
+ *
+ * Support swappable and dockable toolheads with a magnetic
+ * docking mechanism using movement and no servo.
+ */
+//#define MAGNETIC_SWITCHING_TOOLHEAD
+
+#if EITHER(SWITCHING_TOOLHEAD, MAGNETIC_SWITCHING_TOOLHEAD)
+  #define SWITCHING_TOOLHEAD_Y_POS          235         // (mm) Y position of the toolhead dock
+  #define SWITCHING_TOOLHEAD_Y_SECURITY      10         // (mm) Security distance Y axis
+  #define SWITCHING_TOOLHEAD_Y_CLEAR         60         // (mm) Minimum distance from dock for unobstructed X axis
+  #define SWITCHING_TOOLHEAD_X_POS          { 215, 0 }  // (mm) X positions for parking the extruders
+  #if ENABLED(SWITCHING_TOOLHEAD)
+    #define SWITCHING_TOOLHEAD_SERVO_NR       2         // Index of the servo connector
+    #define SWITCHING_TOOLHEAD_SERVO_ANGLES { 0, 180 }  // (degrees) Angles for Lock, Unlock
+  #elif ENABLED(MAGNETIC_SWITCHING_TOOLHEAD)
+    #define SWITCHING_TOOLHEAD_Y_RELEASE      5         // (mm) Security distance Y axis
+    #define SWITCHING_TOOLHEAD_X_SECURITY   -35         // (mm) Security distance X axis
+  #endif
 #endif
 
 /**
@@ -373,6 +396,7 @@
     #define AUTO_POWER_FANS           // Turn on PSU if fans need power
     #define AUTO_POWER_E_FANS
     #define AUTO_POWER_CONTROLLERFAN
+    #define AUTO_POWER_CHAMBER_FAN
     #define POWER_TIMEOUT 30
   #endif
 
@@ -429,11 +453,13 @@
  *   147 : Pt100 with 4k7 pullup
  *   110 : Pt100 with 1k pullup (non standard)
  *
+ *  1000 : Custom - Specify parameters in Configuration_adv.h
+ *
  *         Use these for Testing or Development purposes. NEVER for production machine.
  *   998 : Dummy Table that ALWAYS reads 25°C or the temperature defined below.
  *   999 : Dummy Table that ALWAYS reads 100°C or the temperature defined below.
  *
- * :{ '0': "Not used", '1':"100k / 4.7k - EPCOS", '2':"200k / 4.7k - ATC Semitec 204GT-2", '3':"Mendel-parts / 4.7k", '4':"10k !! do not use for a hotend. Bad resolution at high temp. !!", '5':"100K / 4.7k - ATC Semitec 104GT-2 (Used in ParCan & J-Head)", '501':"100K Zonestar (Tronxy X3A)", '6':"100k / 4.7k EPCOS - Not as accurate as Table 1", '7':"100k / 4.7k Honeywell 135-104LAG-J01", '8':"100k / 4.7k 0603 SMD Vishay NTCS0603E3104FXT", '9':"100k / 4.7k GE Sensing AL03006-58.2K-97-G1", '10':"100k / 4.7k RS 198-961", '11':"100k / 4.7k beta 3950 1%", '12':"100k / 4.7k 0603 SMD Vishay NTCS0603E3104FXT (calibrated for Makibox hot bed)", '13':"100k Hisens 3950  1% up to 300°C for hotend 'Simple ONE ' & hotend 'All In ONE'", '20':"PT100 (Ultimainboard V2.x)", '51':"100k / 1k - EPCOS", '52':"200k / 1k - ATC Semitec 204GT-2", '55':"100k / 1k - ATC Semitec 104GT-2 (Used in ParCan & J-Head)", '60':"100k Maker's Tool Works Kapton Bed Thermistor beta=3950", '61':"100k Formbot / Vivedino 3950 350C thermistor 4.7k pullup", '66':"Dyze Design 4.7M High Temperature thermistor", '67':"Slice Engineering 450C High Temperature thermistor", '70':"the 100K thermistor found in the bq Hephestos 2", '71':"100k / 4.7k Honeywell 135-104LAF-J01", '147':"Pt100 / 4.7k", '1047':"Pt1000 / 4.7k", '110':"Pt100 / 1k (non-standard)", '1010':"Pt1000 / 1k (non standard)", '-4':"Thermocouple + AD8495", '-3':"Thermocouple + MAX31855 (only for sensor 0)", '-2':"Thermocouple + MAX6675 (only for sensor 0)", '-1':"Thermocouple + AD595",'998':"Dummy 1", '999':"Dummy 2" }
+ * :{ '0':"Not used", '1':"100k / 4.7k - EPCOS", '2':"200k / 4.7k - ATC Semitec 204GT-2", '3':"Mendel-parts / 4.7k", '4':"10k !! do not use for a hotend. Bad resolution at high temp. !!", '5':"100K / 4.7k - ATC Semitec 104GT-2 (Used in ParCan & J-Head)", '501':"100K Zonestar (Tronxy X3A)", '6':"100k / 4.7k EPCOS - Not as accurate as Table 1", '7':"100k / 4.7k Honeywell 135-104LAG-J01", '8':"100k / 4.7k 0603 SMD Vishay NTCS0603E3104FXT", '9':"100k / 4.7k GE Sensing AL03006-58.2K-97-G1", '10':"100k / 4.7k RS 198-961", '11':"100k / 4.7k beta 3950 1%", '12':"100k / 4.7k 0603 SMD Vishay NTCS0603E3104FXT (calibrated for Makibox hot bed)", '13':"100k Hisens 3950  1% up to 300°C for hotend 'Simple ONE ' & hotend 'All In ONE'", '20':"PT100 (Ultimainboard V2.x)", '51':"100k / 1k - EPCOS", '52':"200k / 1k - ATC Semitec 204GT-2", '55':"100k / 1k - ATC Semitec 104GT-2 (Used in ParCan & J-Head)", '60':"100k Maker's Tool Works Kapton Bed Thermistor beta=3950", '61':"100k Formbot / Vivedino 3950 350C thermistor 4.7k pullup", '66':"Dyze Design 4.7M High Temperature thermistor", '67':"Slice Engineering 450C High Temperature thermistor", '70':"the 100K thermistor found in the bq Hephestos 2", '71':"100k / 4.7k Honeywell 135-104LAF-J01", '147':"Pt100 / 4.7k", '1047':"Pt1000 / 4.7k", '110':"Pt100 / 1k (non-standard)", '1010':"Pt1000 / 1k (non standard)", '-4':"Thermocouple + AD8495", '-3':"Thermocouple + MAX31855 (only for sensor 0)", '-2':"Thermocouple + MAX6675 (only for sensor 0)", '-1':"Thermocouple + AD595", '998':"Dummy 1", '999':"Dummy 2", '1000':"Custom thermistor params" }
  */
 #if ENABLED(TREX3)
   #define TEMP_SENSOR_0 61
@@ -453,7 +479,6 @@
   #define TEMP_SENSOR_BED 0
 #endif
 #define TEMP_SENSOR_CHAMBER 0
-#define HEATER_CHAMBER_PIN -1  // On/off pin for enclosure heating system
 
 // Dummy thermistor constant temperature readings, for use with 998 and 999
 #define DUMMY_THERMISTOR_998_VALUE 25
@@ -472,8 +497,6 @@
 #define TEMP_BED_WINDOW          1  // (°C) Temperature proximity for the "temperature reached" timer
 #define TEMP_BED_HYSTERESIS      3  // (°C) Temperature proximity considered "close enough" to the target
 
-#define TEMP_CHAMBER_HYSTERESIS  3  // (°C) Temperature proximity considered "close enough" to the target
-
 // Below this temperature the heater will be switched off
 // because it probably indicates a broken thermistor wire.
 #define HEATER_0_MINTEMP   5
@@ -483,7 +506,6 @@
 #define HEATER_4_MINTEMP   5
 #define HEATER_5_MINTEMP   5
 #define BED_MINTEMP        5
-#define CHAMBER_MINTEMP    5
 
 // Above this temperature the heater will be switched off.
 // This can protect components from overheating, but NOT from shorts and failures.
@@ -500,7 +522,6 @@
 #define HEATER_4_MAXTEMP 275
 #define HEATER_5_MAXTEMP 275
 #define BED_MAXTEMP      150
-#define CHAMBER_MAXTEMP  100
 
 //===========================================================================
 //============================= PID Settings ================================
@@ -548,7 +569,7 @@
 #endif // PIDTEMP
 
 //===========================================================================
-//============================= PID > Bed Temperature Control ===============
+//====================== PID > Bed Temperature Control ======================
 //===========================================================================
 
 /**
@@ -943,18 +964,14 @@
  */
 #define BLTOUCH
 #if ENABLED(BLTOUCH)
-  //#define BLTOUCH_DELAY 375   // (ms) Enable and increase if needed
+  //#define BLTOUCH_DELAY 500   // Minimum Command delay (ms). Enable and increase if needed
 
   /**
    * BLTouch V3.0 and newer smart series
    * For genuine BLTouch 3.0 sensors. Clones may be confused by 3.0 command angles. YMMV.
    * If the pin trigger is not detected, first try swapping the black and white wires then toggle this.
    */
-  #define BLTOUCH_V3
-  #if ENABLED(BLTOUCH_V3)
-    #define BLTOUCH_FORCE_5V_MODE
-    //#define BLTOUCH_FORCE_OPEN_DRAIN_MODE
-  #endif
+  //#define BLTOUCH_FORCE_5V_MODE
 #endif
 
 // A probe that is deployed and stowed with a solenoid pin (SOL1_PIN)
@@ -1051,6 +1068,9 @@
 
 // Before deploy/stow pause for user confirmation
 //#define PAUSE_BEFORE_DEPLOY_STOW
+#if ENABLED(PAUSE_BEFORE_DEPLOY_STOW)
+  //#define PAUSE_PROBE_DEPLOY_WHEN_TRIGGERED // For Manual Deploy Allenkey Probe
+#endif
 
 /**
  * Enable one or more of the following if probing seems unreliable.
@@ -1127,7 +1147,7 @@
 
 //#define UNKNOWN_Z_NO_RAISE // Don't raise Z (lower the bed) if Z is "unknown." For beds that fall when Z is powered off.
 
-#define Z_HOMING_HEIGHT 4  // (in mm) Minimal z height before homing (G28) for Z clearance above the bed, clamps, ...
+#define Z_HOMING_HEIGHT 4  // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...
                              // Be sure you have this distance over your Z_MAX_POS in case.
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
@@ -1146,7 +1166,7 @@
 #if DISABLED(TREX3) || ENABLED(TREX3_UPGRADE)
     #define X_MIN_POS -42
     #define Y_MIN_POS 0
-    #define Z_MIN_POS 3
+    #define Z_MIN_POS -3
     #define X_MAX_POS 450
     #define Y_MAX_POS Y_BED_SIZE
 #else
@@ -1187,7 +1207,7 @@
   #define MAX_SOFTWARE_ENDSTOP_Z
 #endif
 
-#if ENABLED(MIN_SOFTWARE_ENDSTOPS) || ENABLED(MAX_SOFTWARE_ENDSTOPS)
+#if EITHER(MIN_SOFTWARE_ENDSTOPS, MAX_SOFTWARE_ENDSTOPS)
   #define SOFT_ENDSTOPS_MENU_ITEM  // Enable/Disable software endstops from the LCD
 #endif
 
@@ -1520,17 +1540,21 @@
 
 // @section extras
 
-//
-// EEPROM
-//
-// The microcontroller can store settings in the EEPROM, e.g. max velocity...
-// M500 - stores parameters in EEPROM
-// M501 - reads parameters from EEPROM (if you need reset them after you changed them temporarily).
-// M502 - reverts to the default "factory settings".  You still need to store them in EEPROM afterwards if you want to.
-//
-#define EEPROM_SETTINGS // Enable for M500 and M501 commands
-//#define DISABLE_M503    // Saves ~2700 bytes of PROGMEM. Disable for release!
-#define EEPROM_CHITCHAT   // Give feedback on EEPROM commands. Disable to save PROGMEM.
+/**
+ * EEPROM
+ *
+ * Persistent storage to preserve configurable settings across reboots.
+ *
+ *   M500 - Store settings to EEPROM.
+ *   M501 - Read settings from EEPROM. (i.e., Throw away unsaved changes)
+ *   M502 - Revert settings to "factory" defaults. (Follow with M500 to init the EEPROM.)
+ */
+#define EEPROM_SETTINGS     // Persistent storage with M500 and M501
+//#define DISABLE_M503        // Saves ~2700 bytes of PROGMEM. Disable for release!
+#define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
+#if ENABLED(EEPROM_SETTINGS)
+  #define EEPROM_AUTO_INIT  // Init EEPROM automatically on any errors.
+#endif
 
 //
 // Host Keepalive
@@ -2065,6 +2089,14 @@
 //#define MKS_MINI_12864
 
 //
+// FYSETC variant of the MINI12864 graphic controller with SD support
+// https://wiki.fysetc.com/Mini12864_Panel/?fbclid=IwAR1FyjuNdVOOy9_xzky3qqo_WeM5h-4gpRnnWhQr_O1Ef3h0AFnFXmCehK8
+//
+//#define FYSETC_MINI_12864_1_2  // Type C/D/E/F. Simple RGB Backlight (always on)
+//#define FYSETC_MINI_12864_2_0  // Type A/B. Discreet RGB Backlight
+//#define FYSETC_MINI_12864_2_1  // Type A/B. Neopixel RGB Backlight
+
+//
 // Factory display for Creality CR-10
 // https://www.aliexpress.com/item/Universal-LCD-12864-3D-Printer-Display-Screen-With-Encoder-For-CR-10-CR-7-Model/32833148327.html
 //
@@ -2167,6 +2199,7 @@
 // affecting heaters, and the fan if FAN_SOFT_PWM is enabled.
 // However, control resolution will be halved for each increment;
 // at zero value, there are 128 effective control positions.
+// :[0,1,2,3,4,5,6,7]
 #define SOFT_PWM_SCALE 0
 
 // If SOFT_PWM_SCALE is set to a value higher than 0, dithering can
@@ -2222,17 +2255,17 @@
 //#define RGBW_LED
 
 #if EITHER(RGB_LED, RGBW_LED)
-  #define RGB_LED_R_PIN 34
-  #define RGB_LED_G_PIN 43
-  #define RGB_LED_B_PIN 35
-  #define RGB_LED_W_PIN -1
+  //#define RGB_LED_R_PIN 34
+  //#define RGB_LED_G_PIN 43
+  //#define RGB_LED_B_PIN 35
+  //#define RGB_LED_W_PIN -1
 #endif
 
 // Support for Adafruit Neopixel LED driver
 //#define NEOPIXEL_LED
 #if ENABLED(NEOPIXEL_LED)
   #define NEOPIXEL_TYPE   NEO_GRBW // NEO_GRBW / NEO_GRB - four/three channel driver type (defined in Adafruit_NeoPixel.h)
-  #define NEOPIXEL_PIN    4        // LED driving pin on motherboard 4 => D4 (EXP2-5 on Printrboard) / 30 => PC7 (EXP3-13 on Rumba)
+  #define NEOPIXEL_PIN    4        // LED driving pin
   #define NEOPIXEL_PIXELS 30       // Number of LEDs in the strip
   #define NEOPIXEL_IS_SEQUENTIAL   // Sequential display for temperature change - LED by LED. Disable to change all LEDs at once.
   #define NEOPIXEL_BRIGHTNESS 127  // Initial brightness (0-255)
