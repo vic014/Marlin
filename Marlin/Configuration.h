@@ -34,6 +34,8 @@
 //#define AddonFilSensor //Adds a filamnt runout sensor to the CR20 or Ender 4
 //#define lerdgeFilSensor //Using lerdge filament sensor, which is opposite polarity to stock
 //#define DualFilSensors //Using dual filament sensors on XMax and YMAX
+//#define SKR13 // 32 bit board - assumes 2208 drivers
+//#define SKR13_UART // Configure SKR board with drivers in UART mode
 
 /*
    Hotend Type
@@ -234,7 +236,7 @@
   #define ABL_BI
 #endif
 
-#if ENABLED(MachineEnder2) || ENABLED(MachineEnder3) || ENABLED(MachineCR10)
+#if ENABLED(MachineEnder2, MachineEnder3, MachineCR10) && DISABLED(SKR13)
   #define MachineCR10Orig
 #endif
 
@@ -417,11 +419,13 @@
 // The following define selects which electronics board you have.
 // Please choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-#if(ENABLED(MachineCR10Orig))
-#define MOTHERBOARD BOARD_MELZI_CREALITY
-#else
-#define MOTHERBOARD BOARD_RAMPS_14_EFB
-#endif
+  #if ENABLED(SKR13)
+    #define MOTHERBOARD BOARD_BIGTREE_SKR_V1_3
+  #elif(ENABLED(MachineCR10Orig))
+    #define MOTHERBOARD BOARD_MELZI_CREALITY
+  #else
+    #define MOTHERBOARD BOARD_RAMPS_14_EFB
+  #endif
 #endif
 
 // Optional custom name for your RepStrap or other custom machine
@@ -998,15 +1002,31 @@
  *          TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
-#define X_DRIVER_TYPE  A4988
-#define Y_DRIVER_TYPE  A4988
-#define Z_DRIVER_TYPE  A4988
+
+#if ENABLED(SKR13) && DISABLED(SKR13_UART)
+  #define X_DRIVER_TYPE  TMC2208_STANDALONE
+  #define Y_DRIVER_TYPE  TMC2208_STANDALONE
+  #define Z_DRIVER_TYPE  TMC2208_STANDALONE
+  #define E0_DRIVER_TYPE TMC2208_STANDALONE
+  #define E1_DRIVER_TYPE TMC2208_STANDALONE
+#elif ENABLED(SKR13, SKR13_UART)
+  #define X_DRIVER_TYPE  TMC2208
+  #define Y_DRIVER_TYPE  TMC2208
+  #define Z_DRIVER_TYPE  TMC2208
+  #define E0_DRIVER_TYPE TMC2208
+  #define E1_DRIVER_TYPE TMC2208
+#else
+  #define X_DRIVER_TYPE  A4988
+  #define Y_DRIVER_TYPE  A4988
+  #define Z_DRIVER_TYPE  A4988
+  #define E0_DRIVER_TYPE A4988
+  #define E1_DRIVER_TYPE A4988
+#endif
+
 //#define X2_DRIVER_TYPE A4988
 //#define Y2_DRIVER_TYPE A4988
 //#define Z2_DRIVER_TYPE A4988
 //#define Z3_DRIVER_TYPE A4988
-#define E0_DRIVER_TYPE A4988
-#define E1_DRIVER_TYPE A4988
 //#define E2_DRIVER_TYPE A4988
 //#define E3_DRIVER_TYPE A4988
 //#define E4_DRIVER_TYPE A4988
@@ -1224,9 +1244,9 @@
  * Use G29 repeatedly, adjusting the Z height at each point with movement commands
  * or (with LCD_BED_LEVELING) the LCD controller.
  */
-#if (DISABLED(ABL_EZABL) &&DISABLED(ABL_NCSW) &&  DISABLED(ABL_BLTOUCH) )
-#define PROBE_MANUALLY
-#define MANUAL_PROBE_START_Z 0.2
+#if DISABLED(ABL_EZABL, ABL_NCSW, ABL_BLTOUCH)
+  #define PROBE_MANUALLY
+  #define MANUAL_PROBE_START_Z 0.2
 #endif
 
 /**
@@ -1262,15 +1282,11 @@
 
 // A probe that is deployed and stowed with a solenoid pin (SOL1_PIN)
 #if ENABLED(ABL_BLTOUCH)
-#define PROBING_FANS_OFF          // Turn fans off when probing
-#if(ENABLED(MachineCR10Orig))
-#define SOLENOID_PROBE PIN_27
-#define SERVO0_PIN 27
-#elif(ENABLED(MachineEnder4))
-#define SOLENOID_PROBE PIN_15
-#else
-#define SOLENOID_PROBE PIN_11
-#endif
+  #define PROBING_FANS_OFF          // Turn fans off when probing
+
+  #if ENABLED(MachineEnder4) && DISABLED(SKR13)
+    #define SOLENOID_PROBE PIN_15
+  #endif
 #endif
 
 // A sled-mounted probe like those designed by Charles Bell.
@@ -1668,7 +1684,7 @@
   #define FILAMENT_RUNOUT_SENSOR
 #endif
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
-  #if ENABLED(DualFilSensors)
+  #if ENABLED(DualFilSensors) && DISABLED(SKR13)
     #define NUM_RUNOUT_SENSORS   2     // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
     #define FIL_RUNOUT2_PIN 15
   #else
@@ -1685,7 +1701,7 @@
   // Set one or more commands to execute on filament runout.
   // (After 'M412 H' Marlin will ask the host to handle the process.)
   #define FILAMENT_RUNOUT_SCRIPT "M600 \n M117 \n"
-  #define FIL_RUNOUT_PIN 2
+
   // After a runout is detected, continue printing this length of filament
   // before executing the runout script. Useful for a sensor at the end of
   // a feed tube. Requires 4 bytes SRAM per sensor, plus 4 bytes overhead.
@@ -2528,16 +2544,15 @@
 //=====================   (I2C and Shift-Register LCDs)   =====================
 //=============================================================================
 #if(ENABLED(MachineEnder4) && DISABLED(GraphicLCD))
-#define REPRAP_DISCOUNT_SMART_CONTROLLER
+  #define REPRAP_DISCOUNT_SMART_CONTROLLER
 #elif(ENABLED(MachineEnder2) )
-#define MINIPANEL
+  #define MINIPANEL
 #elif ENABLED(MachineCR20)
   #define MKS_MINI_12864
 #elif(DISABLED(OrigLCD))
-#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
-#endif
-#if(ENABLED(OrigLCD))
-#define CR10_STOCKDISPLAY
+  #define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+#elif(ENABLED(OrigLCD))
+  #define CR10_STOCKDISPLAY
 #endif
 //
 // CONTROLLER TYPE: I2C

@@ -142,7 +142,7 @@
 
   #define ADAPTIVE_FAN_SLOWING              // Slow part cooling fan if temperature drops
   #if ENABLED(ADAPTIVE_FAN_SLOWING) && ENABLED(PIDTEMP)
-    //#define NO_FAN_SLOWING_IN_PID_TUNING    // Don't slow fan speed during M303
+    #define NO_FAN_SLOWING_IN_PID_TUNING    // Don't slow fan speed during M303
   #endif
 
   /**
@@ -713,8 +713,9 @@
  * vibration and surface artifacts. The algorithm adapts to provide the best possible step smoothing at the
  * lowest stepping frequencies.
  */
-//#define ADAPTIVE_STEP_SMOOTHING
-
+#if ENABLED(SKR13)
+  #define ADAPTIVE_STEP_SMOOTHING
+#endif
 /**
  * Custom Microstepping
  * Override as-needed for your setup. Up to 3 MS pins are supported.
@@ -932,7 +933,7 @@
   #endif
 
   // This allows hosts to request long names for files and folders with M33
-  //#define LONG_FILENAME_HOST_SUPPORT
+  #define LONG_FILENAME_HOST_SUPPORT
 
   // Enable this option to scroll long filenames in the SD card menu
   #if(DISABLED(MachineCR10Orig) && DISABLED(LowMemoryBoard))
@@ -955,7 +956,7 @@
   /**
    * Auto-report SdCard status with M27 S<seconds>
    */
-  //#define AUTO_REPORT_SD_STATUS
+  #define AUTO_REPORT_SD_STATUS
 
   /**
    * Support for USB thumb drives using an Arduino USB Host Shield or
@@ -1084,11 +1085,12 @@
   //#define STATUS_HEAT_PERCENT       // Show heating in a progress bar
   #define BOOT_MARLIN_LOGO_SMALL    // Show a smaller Marlin logo on the Boot Screen (saving 399 bytes of flash)
 
-  // Frivolous Game Options
-  //#define MARLIN_BRICKOUT
-  //#define MARLIN_INVADERS
-  //#define MARLIN_SNAKE
-
+  #if ENABLED(SKR13)
+    // Frivolous Game Options
+    #define MARLIN_BRICKOUT
+    #define MARLIN_INVADERS
+    #define MARLIN_SNAKE
+  #endif
 #endif // HAS_GRAPHICAL_LCD
 
 // @section safety
@@ -1135,12 +1137,12 @@
   #endif
 
 
-  #if ENABLED(ABL_EZABL) || ENABLED(ABL_BLTOUCH) || ENABLED(ABL_NCSW)
+  #if ANY(ABL_EZABL, ABL_BLTOUCH, ABL_NCSW)
     #define BABYSTEP_ZPROBE_OFFSET          // Combine M851 Z and Babystepping
   #endif
   #if ENABLED(BABYSTEP_ZPROBE_OFFSET)
     //#define BABYSTEP_HOTEND_Z_OFFSET      // For multiple hotends, babystep relative Z offsets
-    #if(DISABLED(MachineCR10Orig) && DISABLED(LowMemoryBoard))
+    #if DISABLED(MachineCR10Orig, LowMemoryBoard)
       #define BABYSTEP_ZPROBE_GFX_OVERLAY   // Enable graphical overlay on Z-offset editor
     #endif
   #endif
@@ -1164,7 +1166,7 @@
  * See http://marlinfw.org/docs/features/lin_advance.html for full instructions.
  * Mention @Sebastianv650 on GitHub to alert the author of any issues.
  */
-#if NONE(MachineCR10Orig, LowMemoryBoard, MachineCR10SPro) || ENABLED(OrigLA)
+#if NONE(MachineCR10Orig, LowMemoryBoard, MachineCR10SPro, SKR13) || ENABLED(OrigLA) || ENABLED(SKR13, SKR13_UART)
   #define LIN_ADVANCE
 #endif
 #if ENABLED(LIN_ADVANCE)
@@ -1415,8 +1417,8 @@
  * Note that M207 / M208 / M209 settings are saved to EEPROM.
  *
  */
- #if(DISABLED(MachineCR10Orig) && DISABLED(LowMemoryBoard))
-#define FWRETRACT  // ONLY PARTIALLY TESTED
+ #if ENABLED(SKR13)
+  #define FWRETRACT
 #endif
 #if ENABLED(FWRETRACT)
   #define FWRETRACT_AUTORETRACT           // costs ~500 bytes of PROGMEM
@@ -1757,8 +1759,8 @@
    * When disabled, Marlin will use spreadCycle stepping mode.
    */
   #define STEALTHCHOP_XY
-  #define STEALTHCHOP_Z
-  #define STEALTHCHOP_E
+  //#define STEALTHCHOP_Z
+  //#define STEALTHCHOP_E
 
   /**
    * Optimize spreadCycle chopper parameters by using predefined parameter sets
@@ -2515,7 +2517,7 @@
 /**
  * M43 - display pin status, watch pins for changes, watch endstops & toggle LED, Z servo probe test, toggle pins
  */
-#if(DISABLED(MachineCR10Orig) && DISABLED(LowMemoryBoard))
+#if NONE(MachineCR10Orig, LowMemoryBoard)
   #define PINS_DEBUGGING
 #endif
 // Enable Marlin dev mode which adds some special commands
