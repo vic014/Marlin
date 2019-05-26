@@ -53,6 +53,7 @@
 
 #define tallVersion
 
+#define ABL_Bilinear
 /*
  * Enables a filament sensor plugged into the laser pin. Disables the laser
  */
@@ -1283,8 +1284,11 @@
  */
 //#define AUTO_BED_LEVELING_3POINT
 //#define AUTO_BED_LEVELING_LINEAR
-//#define AUTO_BED_LEVELING_BILINEAR
-#define AUTO_BED_LEVELING_UBL
+#if ENABLED(ABL_Bilinear)
+  #define AUTO_BED_LEVELING_BILINEAR
+#else
+  #define AUTO_BED_LEVELING_UBL
+#endif
 //#define MESH_BED_LEVELING
 
 /**
@@ -1309,9 +1313,10 @@
   // For Cartesian machines, instead of dividing moves on mesh boundaries,
   // split up moves into short segments like a Delta. This follows the
   // contours of the bed more closely than edge-to-edge straight moves.
-  //#define SEGMENT_LEVELED_MOVES
-  //#define LEVELED_SEGMENT_LENGTH 5.0 // (mm) Length of all segments (except the last one)
-
+  #if ENABLED(ABL_Bilinear)
+    #define SEGMENT_LEVELED_MOVES
+    #define LEVELED_SEGMENT_LENGTH 5.0 // (mm) Length of all segments (except the last one)
+  #endif
   /**
    * Enable the G26 Mesh Validation Pattern tool.
    */
@@ -1329,7 +1334,7 @@
 #if EITHER(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
 
   // Set the number of grid points per dimension.
-  #define GRID_MAX_POINTS_X 3
+  #define GRID_MAX_POINTS_X 11
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   // Set the boundaries for probing (where the probe can reach).
