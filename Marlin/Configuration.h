@@ -236,11 +236,11 @@
   #define ABL_BI
 #endif
 
-#if ENABLED(MachineEnder2, MachineEnder3, MachineCR10) && DISABLED(SKR13)
+#if ANY(MachineEnder2, MachineEnder3, MachineCR10) && DISABLED(SKR13)
   #define MachineCR10Orig
 #endif
 
-#if ENABLED(MachineCR10) || ENABLED(MachineCR10S)
+#if ANY(MachineCR10, MachineCR10S)
   #define MachineCR10Std
 #endif
 
@@ -262,7 +262,7 @@
 
 #if ENABLED(MachineCR20Pro)
   #define MachineCR20
-  #if DISABLED(ABL_EZABL) && DISABLED(ABL_NCSW)
+  #if NONE(ABL_EZABL, ABL_NCSW)
     #define ABL_BLTOUCH
   #endif
   #define HotendAllMetal
