@@ -224,7 +224,7 @@
  */
 //#define MAGNETIC_PARKING_EXTRUDER
 
-#if ENABLED(PARKING_EXTRUDER) || ENABLED(MAGNETIC_PARKING_EXTRUDER)
+#if EITHER(PARKING_EXTRUDER, MAGNETIC_PARKING_EXTRUDER)
 
   #define PARKING_EXTRUDER_PARKING_X { -78, 184 }     // X positions for parking the extruders
   #define PARKING_EXTRUDER_GRAB_DISTANCE 1            // (mm) Distance to move beyond the parking point to grab the extruder
@@ -255,13 +255,27 @@
  * the E3D Tool Changer. Toolheads are locked with a servo.
  */
 //#define SWITCHING_TOOLHEAD
-#if ENABLED(SWITCHING_TOOLHEAD)
-  #define SWITCHING_TOOLHEAD_SERVO_NR       2         // Index of the servo connector
-  #define SWITCHING_TOOLHEAD_SERVO_ANGLES { 0, 180 }  // (degrees) Angles for Lock, Unlock
-  #define SWITCHING_TOOLHEAD_Y_POS        235         // (mm) Y position of the toolhead dock
-  #define SWITCHING_TOOLHEAD_Y_SECURITY    10         // (mm) Security distance Y axis
-  #define SWITCHING_TOOLHEAD_Y_CLEAR       60         // (mm) Minimum distance from dock for unobstructed X axis
-  #define SWITCHING_TOOLHEAD_X_POS        { 215, 0 }  // (mm) X positions for parking the extruders
+
+/**
+ * Magnetic Switching Toolhead
+ *
+ * Support swappable and dockable toolheads with a magnetic
+ * docking mechanism using movement and no servo.
+ */
+//#define MAGNETIC_SWITCHING_TOOLHEAD
+
+#if EITHER(SWITCHING_TOOLHEAD, MAGNETIC_SWITCHING_TOOLHEAD)
+  #define SWITCHING_TOOLHEAD_Y_POS          235         // (mm) Y position of the toolhead dock
+  #define SWITCHING_TOOLHEAD_Y_SECURITY      10         // (mm) Security distance Y axis
+  #define SWITCHING_TOOLHEAD_Y_CLEAR         60         // (mm) Minimum distance from dock for unobstructed X axis
+  #define SWITCHING_TOOLHEAD_X_POS          { 215, 0 }  // (mm) X positions for parking the extruders
+  #if ENABLED(SWITCHING_TOOLHEAD)
+    #define SWITCHING_TOOLHEAD_SERVO_NR       2         // Index of the servo connector
+    #define SWITCHING_TOOLHEAD_SERVO_ANGLES { 0, 180 }  // (degrees) Angles for Lock, Unlock
+  #elif ENABLED(MAGNETIC_SWITCHING_TOOLHEAD)
+    #define SWITCHING_TOOLHEAD_Y_RELEASE      5         // (mm) Security distance Y axis
+    #define SWITCHING_TOOLHEAD_X_SECURITY   -35         // (mm) Security distance X axis
+  #endif
 #endif
 
 /**
@@ -313,6 +327,7 @@
     #define AUTO_POWER_FANS           // Turn on PSU if fans need power
     #define AUTO_POWER_E_FANS
     #define AUTO_POWER_CONTROLLERFAN
+    #define AUTO_POWER_CHAMBER_FAN
     #define POWER_TIMEOUT 30
   #endif
 
@@ -354,6 +369,7 @@
  *    60 : 100k Maker's Tool Works Kapton Bed Thermistor beta=3950
  *    61 : 100k Formbot / Vivedino 3950 350C thermistor 4.7k pullup
  *    66 : 4.7M High Temperature thermistor from Dyze Design
+ *    67 : 450C thermistor from SliceEngineering
  *    70 : the 100K thermistor found in the bq Hephestos 2
  *    75 : 100k Generic Silicon Heat Pad with NTC 100K MGB18-104F39050L32 thermistor
  *
@@ -368,11 +384,13 @@
  *   147 : Pt100 with 4k7 pullup
  *   110 : Pt100 with 1k pullup (non standard)
  *
+ *  1000 : Custom - Specify parameters in Configuration_adv.h
+ *
  *         Use these for Testing or Development purposes. NEVER for production machine.
  *   998 : Dummy Table that ALWAYS reads 25°C or the temperature defined below.
  *   999 : Dummy Table that ALWAYS reads 100°C or the temperature defined below.
  *
- * :{ '0': "Not used", '1':"100k / 4.7k - EPCOS", '2':"200k / 4.7k - ATC Semitec 204GT-2", '3':"Mendel-parts / 4.7k", '4':"10k !! do not use for a hotend. Bad resolution at high temp. !!", '5':"100K / 4.7k - ATC Semitec 104GT-2 (Used in ParCan & J-Head)", '501':"100K Zonestar (Tronxy X3A)", '6':"100k / 4.7k EPCOS - Not as accurate as Table 1", '7':"100k / 4.7k Honeywell 135-104LAG-J01", '8':"100k / 4.7k 0603 SMD Vishay NTCS0603E3104FXT", '9':"100k / 4.7k GE Sensing AL03006-58.2K-97-G1", '10':"100k / 4.7k RS 198-961", '11':"100k / 4.7k beta 3950 1%", '12':"100k / 4.7k 0603 SMD Vishay NTCS0603E3104FXT (calibrated for Makibox hot bed)", '13':"100k Hisens 3950  1% up to 300°C for hotend 'Simple ONE ' & hotend 'All In ONE'", '20':"PT100 (Ultimainboard V2.x)", '51':"100k / 1k - EPCOS", '52':"200k / 1k - ATC Semitec 204GT-2", '55':"100k / 1k - ATC Semitec 104GT-2 (Used in ParCan & J-Head)", '60':"100k Maker's Tool Works Kapton Bed Thermistor beta=3950", '61':"100k Formbot / Vivedino 3950 350C thermistor 4.7k pullup", '66':"Dyze Design 4.7M High Temperature thermistor", '70':"the 100K thermistor found in the bq Hephestos 2", '71':"100k / 4.7k Honeywell 135-104LAF-J01", '147':"Pt100 / 4.7k", '1047':"Pt1000 / 4.7k", '110':"Pt100 / 1k (non-standard)", '1010':"Pt1000 / 1k (non standard)", '-4':"Thermocouple + AD8495", '-3':"Thermocouple + MAX31855 (only for sensor 0)", '-2':"Thermocouple + MAX6675 (only for sensor 0)", '-1':"Thermocouple + AD595",'998':"Dummy 1", '999':"Dummy 2" }
+ * :{ '0':"Not used", '1':"100k / 4.7k - EPCOS", '2':"200k / 4.7k - ATC Semitec 204GT-2", '3':"Mendel-parts / 4.7k", '4':"10k !! do not use for a hotend. Bad resolution at high temp. !!", '5':"100K / 4.7k - ATC Semitec 104GT-2 (Used in ParCan & J-Head)", '501':"100K Zonestar (Tronxy X3A)", '6':"100k / 4.7k EPCOS - Not as accurate as Table 1", '7':"100k / 4.7k Honeywell 135-104LAG-J01", '8':"100k / 4.7k 0603 SMD Vishay NTCS0603E3104FXT", '9':"100k / 4.7k GE Sensing AL03006-58.2K-97-G1", '10':"100k / 4.7k RS 198-961", '11':"100k / 4.7k beta 3950 1%", '12':"100k / 4.7k 0603 SMD Vishay NTCS0603E3104FXT (calibrated for Makibox hot bed)", '13':"100k Hisens 3950  1% up to 300°C for hotend 'Simple ONE ' & hotend 'All In ONE'", '20':"PT100 (Ultimainboard V2.x)", '51':"100k / 1k - EPCOS", '52':"200k / 1k - ATC Semitec 204GT-2", '55':"100k / 1k - ATC Semitec 104GT-2 (Used in ParCan & J-Head)", '60':"100k Maker's Tool Works Kapton Bed Thermistor beta=3950", '61':"100k Formbot / Vivedino 3950 350C thermistor 4.7k pullup", '66':"Dyze Design 4.7M High Temperature thermistor", '67':"Slice Engineering 450C High Temperature thermistor", '70':"the 100K thermistor found in the bq Hephestos 2", '71':"100k / 4.7k Honeywell 135-104LAF-J01", '147':"Pt100 / 4.7k", '1047':"Pt1000 / 4.7k", '110':"Pt100 / 1k (non-standard)", '1010':"Pt1000 / 1k (non standard)", '-4':"Thermocouple + AD8495", '-3':"Thermocouple + MAX31855 (only for sensor 0)", '-2':"Thermocouple + MAX6675 (only for sensor 0)", '-1':"Thermocouple + AD595", '998':"Dummy 1", '999':"Dummy 2", '1000':"Custom thermistor params" }
  */
 #if ENABLED(E3DV6)
   #define TEMP_SENSOR_0 5
@@ -396,30 +414,27 @@
 //#define TEMP_SENSOR_1_AS_REDUNDANT
 #define MAX_REDUNDANT_TEMP_SENSOR_DIFF 10
 
-// Extruder temperature must be close to target for this long before M109 returns success
-#define TEMP_RESIDENCY_TIME 9  // (seconds)
-#define TEMP_HYSTERESIS 3       // (degC) range of +/- temperatures considered "close" to the target one
-#define TEMP_WINDOW     1       // (degC) Window around target to start the residency timer x degC early.
+#define TEMP_RESIDENCY_TIME     10  // (seconds) Time to wait for hotend to "settle" in M109
+#define TEMP_WINDOW              1  // (°C) Temperature proximity for the "temperature reached" timer
+#define TEMP_HYSTERESIS          3  // (°C) Temperature proximity considered "close enough" to the target
 
-// Bed temperature must be close to target for this long before M190 returns success
-#define TEMP_BED_RESIDENCY_TIME 10  // (seconds)
-#define TEMP_BED_HYSTERESIS 3       // (degC) range of +/- temperatures considered "close" to the target one
-#define TEMP_BED_WINDOW     1       // (degC) Window around target to start the residency timer x degC early.
+#define TEMP_BED_RESIDENCY_TIME 10  // (seconds) Time to wait for bed to "settle" in M190
+#define TEMP_BED_WINDOW          1  // (°C) Temperature proximity for the "temperature reached" timer
+#define TEMP_BED_HYSTERESIS      3  // (°C) Temperature proximity considered "close enough" to the target
 
-// The minimal temperature defines the temperature below which the heater will not be enabled It is used
-// to check that the wiring to the thermistor is not broken.
-// Otherwise this would lead to the heater being powered on all the time.
-#define HEATER_0_MINTEMP 5
-#define HEATER_1_MINTEMP 5
-#define HEATER_2_MINTEMP 5
-#define HEATER_3_MINTEMP 5
-#define HEATER_4_MINTEMP 5
-#define HEATER_5_MINTEMP 5
-#define BED_MINTEMP 5
+// Below this temperature the heater will be switched off
+// because it probably indicates a broken thermistor wire.
+#define HEATER_0_MINTEMP   5
+#define HEATER_1_MINTEMP   5
+#define HEATER_2_MINTEMP   5
+#define HEATER_3_MINTEMP   5
+#define HEATER_4_MINTEMP   5
+#define HEATER_5_MINTEMP   5
+#define BED_MINTEMP        5
 
-// When temperature exceeds max temp, your heater will be switched off.
-// This feature exists to protect your hotend from overheating accidentally, but *NOT* from thermistor short/failure!
-// You should use MINTEMP for thermistor short/failure protection.
+// Above this temperature the heater will be switched off.
+// This can protect components from overheating, but NOT from shorts and failures.
+// (Use MINTEMP for thermistor short/failure protection.)
 #define HEATER_0_MAXTEMP 305
 #define HEATER_1_MAXTEMP 275
 #define HEATER_2_MAXTEMP 275
@@ -474,7 +489,7 @@
 #endif // PIDTEMP
 
 //===========================================================================
-//============================= PID > Bed Temperature Control ===============
+//====================== PID > Bed Temperature Control ======================
 //===========================================================================
 
 /**
@@ -559,6 +574,7 @@
 
 #define THERMAL_PROTECTION_HOTENDS // Enable thermal protection for all extruders
 #define THERMAL_PROTECTION_BED     // Enable thermal protection for the heated bed
+#define THERMAL_PROTECTION_CHAMBER // Enable thermal protection for the heated chamber
 
 //===========================================================================
 //============================= Mechanical Settings =========================
@@ -781,11 +797,11 @@
 #define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 
 /**
- * Z_MIN_PROBE_ENDSTOP
+ * Z_MIN_PROBE_PIN
  *
- * Enable this option for a probe connected to any pin except Z-Min.
- * (By default Marlin assumes the Z-Max endstop pin.)
- * To use a custom Z Probe pin, set Z_MIN_PROBE_PIN below.
+ * Define this pin if the probe is not connected to Z_MIN_PIN.
+ * If not defined the default pin for the selected MOTHERBOARD
+ * will be used. Most of the time the default is what you want.
  *
  *  - The simplest option is to use a free endstop connector.
  *  - Use 5V for powered (usually inductive) sensors.
@@ -795,11 +811,8 @@
  *      - normally-closed switches to GND and D32.
  *      - normally-open switches to 5V and D32.
  *
- * WARNING: Setting the wrong pin may have unexpected and potentially
- * disastrous consequences. Use with caution and do your homework.
- *
  */
-//#define Z_MIN_PROBE_ENDSTOP
+//#define Z_MIN_PROBE_PIN 32 // Pin 32 is the RAMPS default
 
 /**
  * Probe Type
@@ -833,8 +846,71 @@
  */
 #define BLTOUCH
 #if ENABLED(BLTOUCH)
-  //#define BLTOUCH_DELAY 375   // (ms) Enable and increase if needed
-#endif
+  /**
+   * Either: Use the defaults (recommended) or: For special purposes, use the following DEFINES
+   * Do not activate settings that the probe might not understand. Clones might misunderstand
+   * advanced commands.
+   *
+   * Note: If the probe is not deploying, check a "Cmd: Reset" and "Cmd: Self-Test" and then
+   *       check the wiring of the BROWN, RED and ORANGE wires.
+   *
+   * Note: If the trigger signal of your probe is not being recognized, it has been very often
+   *       because the BLACK and WHITE wires needed to be swapped. They are not "interchangeable"
+   *       like they would be with a real switch. So please check the wiring first.
+   *
+   * Settings for all BLTouch and clone probes:
+   */
+
+  // Safety: The probe needs time to recognize the command.
+  //         Minimum command delay (ms). Enable and increase if needed.
+  //#define BLTOUCH_DELAY 500
+
+  /**
+   * Settings for BLTOUCH Classic 1.2, 1.3 or BLTouch Smart 1.0, 2.0, 2.2, 3.0, 3.1, and most clones:
+   */
+
+  // Feature: Switch into SW mode after a deploy. It makes the output pulse longer. Can be useful
+  //          in special cases, like noisy or filtered input configurations.
+  //#define BLTOUCH_FORCE_SW_MODE
+
+  /**
+   * Settings for BLTouch Smart 3.0 and 3.1
+   * Summary:
+   *   - Voltage modes: 5V and OD (open drain - "logic voltage free") output modes
+   *   - High-Speed mode
+   *   - Disable LCD voltage options
+   */
+
+  /**
+   * Danger: Don't activate 5V mode unless attached to a 5V-tolerant controller!
+   * V3.0 or 3.1: Set default mode to 5V mode at Marlin startup.
+   * If disabled, OD mode is the hard-coded default on 3.0
+   * On startup, Marlin will compare its eeprom to this vale. If the selected mode
+   * differs, a mode set eeprom write will be completed at initialization.
+   * Use the option below to force an eeprom write to a V3.1 probe regardless.
+   */
+  //#define BLTOUCH_SET_5V_MODE
+
+  /**
+   * Safety: Activate if connecting a probe with an unknown voltage mode.
+   * V3.0: Set a probe into mode selected above at Marlin startup. Required for 5V mode on 3.0
+   * V3.1: Force a probe with unknown mode into selected mode at Marlin startup ( = Probe EEPROM write )
+   * To preserve the life of the probe, use this once then turn it off and re-flash.
+   */
+  //#define BLTOUCH_FORCE_MODE_SET
+
+  /**
+   * Use "HIGH SPEED" mode for probing.
+   * Danger: Disable if your probe sometimes fails. Only suitable for stable well-adjusted systems.
+   * This feature was designed for Delta's with very fast Z moves however higher speed cartesians may function
+   * If the machine cannot raise the probe fast enough after a trigger, it may enter a fault state.
+   */
+  //#define BLTOUCH_HS_MODE
+
+  // Safety: Enable voltage mode settings in the LCD menu.
+  //#define BLTOUCH_LCD_VOLTAGE_MENU
+
+#endif // BLTOUCH
 
 // A probe that is deployed and stowed with a solenoid pin (SOL1_PIN)
 //#define SOLENOID_PROBE
@@ -855,23 +931,23 @@
 //
 
 /**
- *   Z Probe to nozzle (X,Y) offset, relative to (0, 0).
- *   X and Y offsets must be integers.
+ * Z Probe to nozzle (X,Y) offset, relative to (0, 0).
+ * X and Y offsets must be integers.
  *
- *   In the following example the X and Y offsets are both positive:
- *   #define X_PROBE_OFFSET_FROM_EXTRUDER 10
- *   #define Y_PROBE_OFFSET_FROM_EXTRUDER 10
+ * In the following example the X and Y offsets are both positive:
+ * #define X_PROBE_OFFSET_FROM_EXTRUDER 10
+ * #define Y_PROBE_OFFSET_FROM_EXTRUDER 10
  *
- *      +-- BACK ---+
- *      |           |
- *    L |    (+) P  | R <-- probe (20,20)
- *    E |           | I
- *    F | (-) N (+) | G <-- nozzle (10,10)
- *    T |           | H
- *      |    (-)    | T
- *      |           |
- *      O-- FRONT --+
- *    (0,0)
+ *     +-- BACK ---+
+ *     |           |
+ *   L |    (+) P  | R <-- probe (20,20)
+ *   E |           | I
+ *   F | (-) N (+) | G <-- nozzle (10,10)
+ *   T |           | H
+ *     |    (-)    | T
+ *     |           |
+ *     O-- FRONT --+
+ *   (0,0)
  */
 #if ENABLED(PetsfangMicroswiss)
   #define X_PROBE_OFFSET_FROM_EXTRUDER -48  // X offset: -left  +right  [of the nozzle]
@@ -932,6 +1008,9 @@
 
 // Before deploy/stow pause for user confirmation
 //#define PAUSE_BEFORE_DEPLOY_STOW
+#if ENABLED(PAUSE_BEFORE_DEPLOY_STOW)
+  //#define PAUSE_PROBE_DEPLOY_WHEN_TRIGGERED // For Manual Deploy Allenkey Probe
+#endif
 
 /**
  * Enable one or more of the following if probing seems unreliable.
@@ -1045,7 +1124,7 @@
   #define MAX_SOFTWARE_ENDSTOP_Z
 #endif
 
-#if ENABLED(MIN_SOFTWARE_ENDSTOPS) || ENABLED(MAX_SOFTWARE_ENDSTOPS)
+#if EITHER(MIN_SOFTWARE_ENDSTOPS, MAX_SOFTWARE_ENDSTOPS)
   //#define SOFT_ENDSTOPS_MENU_ITEM  // Enable/Disable software endstops from the LCD
 #endif
 
@@ -1165,13 +1244,14 @@
   #if ENABLED(G26_MESH_VALIDATION)
     #define MESH_TEST_NOZZLE_SIZE    0.4  // (mm) Diameter of primary nozzle.
     #define MESH_TEST_LAYER_HEIGHT   0.2  // (mm) Default layer height for the G26 Mesh Validation Tool.
-    #define MESH_TEST_HOTEND_TEMP  205.0  // (°C) Default nozzle temperature for the G26 Mesh Validation Tool.
-    #define MESH_TEST_BED_TEMP      60.0  // (°C) Default bed temperature for the G26 Mesh Validation Tool.
+    #define MESH_TEST_HOTEND_TEMP  205    // (°C) Default nozzle temperature for the G26 Mesh Validation Tool.
+    #define MESH_TEST_BED_TEMP      60    // (°C) Default bed temperature for the G26 Mesh Validation Tool.
+    #define G26_XY_FEEDRATE         20    // (mm/s) Feedrate for XY Moves for the G26 Mesh Validation Tool.
   #endif
 
 #endif
 
-#if ENABLED(AUTO_BED_LEVELING_LINEAR) || ENABLED(AUTO_BED_LEVELING_BILINEAR)
+#if EITHER(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
 
   // Set the number of grid points per dimension.
   #define GRID_MAX_POINTS_X 4
@@ -1240,7 +1320,7 @@
  * Points to probe for all 3-point Leveling procedures.
  * Override if the automatically selected points are inadequate.
  */
-#if ENABLED(AUTO_BED_LEVELING_3POINT) || ENABLED(AUTO_BED_LEVELING_UBL)
+#if EITHER(AUTO_BED_LEVELING_3POINT, AUTO_BED_LEVELING_UBL)
   //#define PROBE_PT_1_X 15
   //#define PROBE_PT_1_Y 180
   //#define PROBE_PT_2_X 15
@@ -1267,6 +1347,7 @@
 #if ENABLED(LEVEL_BED_CORNERS)
   #define LEVEL_CORNERS_INSET 30    // (mm) An inset for corner leveling
   #define LEVEL_CORNERS_Z_HOP  4.0  // (mm) Move nozzle up before moving between corners
+  #define LEVEL_CORNERS_HEIGHT 0.0  // (mm) Z height of nozzle at leveling points
   //#define LEVEL_CENTER_TOO        // Move to the center after the last corner
 #endif
 
@@ -1374,17 +1455,21 @@
 
 // @section extras
 
-//
-// EEPROM
-//
-// The microcontroller can store settings in the EEPROM, e.g. max velocity...
-// M500 - stores parameters in EEPROM
-// M501 - reads parameters from EEPROM (if you need reset them after you changed them temporarily).
-// M502 - reverts to the default "factory settings".  You still need to store them in EEPROM afterwards if you want to.
-//
-#define EEPROM_SETTINGS // Enable for M500 and M501 commands
-//#define DISABLE_M503    // Saves ~2700 bytes of PROGMEM. Disable for release!
-#define EEPROM_CHITCHAT   // Give feedback on EEPROM commands. Disable to save PROGMEM.
+/**
+ * EEPROM
+ *
+ * Persistent storage to preserve configurable settings across reboots.
+ *
+ *   M500 - Store settings to EEPROM.
+ *   M501 - Read settings from EEPROM. (i.e., Throw away unsaved changes)
+ *   M502 - Revert settings to "factory" defaults. (Follow with M500 to init the EEPROM.)
+ */
+#define EEPROM_SETTINGS     // Persistent storage with M500 and M501
+//#define DISABLE_M503        // Saves ~2700 bytes of PROGMEM. Disable for release!
+#define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
+#if ENABLED(EEPROM_SETTINGS)
+  #define EEPROM_AUTO_INIT  // Init EEPROM automatically on any errors.
+#endif
 
 //
 // Host Keepalive
@@ -1919,6 +2004,14 @@
 //#define MKS_MINI_12864
 
 //
+// FYSETC variant of the MINI12864 graphic controller with SD support
+// https://wiki.fysetc.com/Mini12864_Panel/?fbclid=IwAR1FyjuNdVOOy9_xzky3qqo_WeM5h-4gpRnnWhQr_O1Ef3h0AFnFXmCehK8
+//
+//#define FYSETC_MINI_12864_1_2  // Type C/D/E/F. Simple RGB Backlight (always on)
+//#define FYSETC_MINI_12864_2_0  // Type A/B. Discreet RGB Backlight
+//#define FYSETC_MINI_12864_2_1  // Type A/B. Neopixel RGB Backlight
+
+//
 // Factory display for Creality CR-10
 // https://www.aliexpress.com/item/Universal-LCD-12864-3D-Printer-Display-Screen-With-Encoder-For-CR-10-CR-7-Model/32833148327.html
 //
@@ -2020,6 +2113,7 @@
 // affecting heaters, and the fan if FAN_SOFT_PWM is enabled.
 // However, control resolution will be halved for each increment;
 // at zero value, there are 128 effective control positions.
+// :[0,1,2,3,4,5,6,7]
 #define SOFT_PWM_SCALE 0
 
 // If SOFT_PWM_SCALE is set to a value higher than 0, dithering can
@@ -2074,22 +2168,26 @@
 //#define RGB_LED
 //#define RGBW_LED
 
-#if ENABLED(RGB_LED) || ENABLED(RGBW_LED)
-  #define RGB_LED_R_PIN 34
-  #define RGB_LED_G_PIN 43
-  #define RGB_LED_B_PIN 35
-  #define RGB_LED_W_PIN -1
+#if EITHER(RGB_LED, RGBW_LED)
+  //#define RGB_LED_R_PIN 34
+  //#define RGB_LED_G_PIN 43
+  //#define RGB_LED_B_PIN 35
+  //#define RGB_LED_W_PIN -1
 #endif
 
 // Support for Adafruit Neopixel LED driver
 //#define NEOPIXEL_LED
 #if ENABLED(NEOPIXEL_LED)
   #define NEOPIXEL_TYPE   NEO_GRBW // NEO_GRBW / NEO_GRB - four/three channel driver type (defined in Adafruit_NeoPixel.h)
-  #define NEOPIXEL_PIN    4        // LED driving pin on motherboard 4 => D4 (EXP2-5 on Printrboard) / 30 => PC7 (EXP3-13 on Rumba)
+  #define NEOPIXEL_PIN    4        // LED driving pin
   #define NEOPIXEL_PIXELS 30       // Number of LEDs in the strip
   #define NEOPIXEL_IS_SEQUENTIAL   // Sequential display for temperature change - LED by LED. Disable to change all LEDs at once.
   #define NEOPIXEL_BRIGHTNESS 127  // Initial brightness (0-255)
   //#define NEOPIXEL_STARTUP_TEST  // Cycle through colors at startup
+
+  // Use a single Neopixel LED for static (background) lighting
+  //#define NEOPIXEL_BKGD_LED_INDEX  0               // Index of the LED to use
+  //#define NEOPIXEL_BKGD_COLOR { 255, 255, 255, 0 } // R, G, B, W
 #endif
 
 /**
@@ -2103,7 +2201,7 @@
  *  - Change to green once print has finished
  *  - Turn off after the print has finished and the user has pushed a button
  */
-#if ENABLED(BLINKM) || ENABLED(RGB_LED) || ENABLED(RGBW_LED) || ENABLED(PCA9632) || ENABLED(PCA9533)|| ENABLED(NEOPIXEL_LED)
+#if ANY(BLINKM, RGB_LED, RGBW_LED, PCA9632, PCA9533, NEOPIXEL_LED)
   #define PRINTER_EVENT_LEDS
 #endif
 
