@@ -12,11 +12,11 @@
 //#define MachineCR20 //Buzzer doesnt work
 //#define MachineCR20Pro
 //#define MachineCR10
-#define MachineCR10S
+//#define MachineCR10S
 //#define MachineCR10SPro //Currently only supports GraphicLCD. Graphics LCD Requires soldering R64 and R66
 //#define MachineCRX //Currently only supports GraphicLCD
 //#define MachineS4
-//#define MachineS5
+#define MachineS5
 
 //#define MachineCR10Orig // Forces Melzi board
 
@@ -45,8 +45,8 @@
 
    Configured with 5015 left wing, right wing ABL sensor (BLTouch or M18) only
 */
-#define HotendStock
-//#define HotendE3D
+//#define HotendStock
+#define HotendE3D
 
 //Enable this if you have an all metal hotend capable of 300c
 #define HotendAllMetal
@@ -59,7 +59,7 @@
  */
 
  //#define EZRstruder
- //#define Bondtech
+ #define Bondtech
  //#define E3DTitan
 
  /*
@@ -76,8 +76,8 @@
    Choose bed type below. If you have an extenrally controlled
    ac bed, leave both disabled
 */
-//#define BedAC
-#define BedDC
+#define BedAC
+//#define BedDC
 
 //#define SolidBedMounts //Removed a few LCD options to save some memory since not needed with solid mounts
 
@@ -93,7 +93,7 @@
 */
 //#define ABL_EZABL // TH3D EZABL or Any NO Sensor
 //#define ABL_NCSW //Creality ABL or Any NC Sensor
-//#define ABL_BLTOUCH
+#define ABL_BLTOUCH
 
 //#define CREALITY_ABL_MOUNT //Using creality ABL mount
 //#define E3D_DUALFAN_MOUNT // Using HD Modular mount as above with 2 5015 blowers and sensor on the right
@@ -105,7 +105,7 @@
    Melzi board users may only select ABL_BI for bilinear leveling
 */
 //#define ABL_BI
-//#define ABL_UBL
+#define ABL_UBL
 
 //#define POWER_LOSS_RECOVERY //Large and does not fit with any other features on Melzi, or UBL on Atmega
 /*
@@ -116,9 +116,9 @@
    Standard is recommended in most other scenarios.
 */
 //#define MeshFast
-#define MeshStd
+//#define MeshStd
 //#define MeshFine
-//#define MeshExtreme
+#define MeshExtreme
 
 /*
    Disables SD Sort, Autotemp, Arc support, Linear Advance (Unless overridden with OrigLA above), Big edit fonts, and a few other little things
@@ -1094,67 +1094,47 @@
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4[, E5]]]]]
  */
 #if ENABLED(MachineCR20Pro)
-  #define DEFAULT_MAX_FEEDRATE          { 7500, 7500, 10, 50 }
-  #define DEFAULT_MAX_ACCELERATION      { 2000, 2000, 100, 25 }
+  #define DEFAULT_MAX_FEEDRATE          { 7500, 7500, 10, 75 }
+  #define DEFAULT_MAX_ACCELERATION      { 2000, 2000, 100, 75 }
   #define DEFAULT_ACCELERATION          300    // X, Y, Z and E acceleration for printing moves
   #define DEFAULT_RETRACT_ACCELERATION  1000    // E acceleration for retracts
   #define DEFAULT_TRAVEL_ACCELERATION   300    // X, Y, Z acceleration for travel (non printing) moves
-  #define DEFAULT_XJERK                 10.0
-  #define DEFAULT_YJERK                  8.0
-  #define DEFAULT_ZJERK                  0.4
-  #define DEFAULT_EJERK                  5.0
 #elif (ENABLED(MachineMini) || ENABLED(MachineCR20) || ENABLED(MachineEnder2) || ENABLED(MachineEnder3) || ENABLED(MachineEnder4))
-  #define DEFAULT_MAX_FEEDRATE          { 750, 750, 10, 50 }
-  #define DEFAULT_MAX_ACCELERATION      { 2000, 2000, 100, 25 }
+  #define DEFAULT_MAX_FEEDRATE          { 750, 750, 10, 75 }
+  #define DEFAULT_MAX_ACCELERATION      { 2000, 2000, 100, 75 }
   #define DEFAULT_ACCELERATION          300    // X, Y, Z and E acceleration for printing moves
   #define DEFAULT_RETRACT_ACCELERATION  1000    // E acceleration for retracts
   #define DEFAULT_TRAVEL_ACCELERATION   300    // X, Y, Z acceleration for travel (non printing) moves
-  #define DEFAULT_XJERK                 10.0
-  #define DEFAULT_YJERK                  8.0
-  #define DEFAULT_ZJERK                  0.4
-  #define DEFAULT_EJERK                  5.0
 #elif (ENABLED(MachineCR10SPro))
   #define DEFAULT_MAX_FEEDRATE          { 500, 500, 10, 70 }
   #define DEFAULT_MAX_ACCELERATION      { 750, 750, 100, 60 }
   #define DEFAULT_ACCELERATION          300    // X, Y, Z and E acceleration for printing moves
   #define DEFAULT_RETRACT_ACCELERATION  1000    // E acceleration for retracts
   #define DEFAULT_TRAVEL_ACCELERATION   300    // X, Y, Z acceleration for travel (non printing) moves
-  #define DEFAULT_XJERK                 8.0
-  #define DEFAULT_YJERK                 8.0
-  #define DEFAULT_ZJERK                 0.4
-  #define DEFAULT_EJERK                 5.0
 #elif (ENABLED(MachineCR10Std))
-  #define DEFAULT_MAX_FEEDRATE          { 500, 500, 10, 50 }
-  #define DEFAULT_MAX_ACCELERATION      { 1500, 1500, 100, 25 }
+  #define DEFAULT_MAX_FEEDRATE          { 500, 500, 10, 75 }
+  #define DEFAULT_MAX_ACCELERATION      { 1500, 1500, 100, 75 }
   #define DEFAULT_ACCELERATION          300    // X, Y, Z and E acceleration for printing moves
   #define DEFAULT_RETRACT_ACCELERATION  1000    // E acceleration for retracts
   #define DEFAULT_TRAVEL_ACCELERATION   300    // X, Y, Z acceleration for travel (non printing) moves
-  #define DEFAULT_XJERK                 10.0
-  #define DEFAULT_YJERK                  8.0
-  #define DEFAULT_ZJERK                  0.4
-  #define DEFAULT_EJERK                  5.0
 #elif ENABLED( MachineS4)
-  #define DEFAULT_MAX_FEEDRATE          { 500, 400, 10, 50 }
-  #define DEFAULT_MAX_ACCELERATION      { 1000, 750, 100, 25 }
+  #define DEFAULT_MAX_FEEDRATE          { 500, 400, 10, 75 }
+  #define DEFAULT_MAX_ACCELERATION      { 1000, 750, 100, 75 }
   #define DEFAULT_ACCELERATION          300    // X, Y, Z and E acceleration for printing moves
   #define DEFAULT_RETRACT_ACCELERATION  1000    // E acceleration for retracts
   #define DEFAULT_TRAVEL_ACCELERATION   300    // X, Y, Z acceleration for travel (non printing) moves
-  #define DEFAULT_XJERK                 10.0
-  #define DEFAULT_YJERK                  6.0
-  #define DEFAULT_ZJERK                  0.4
-  #define DEFAULT_EJERK                  5.0
 #elif ENABLED(MachineS5)
-  #define DEFAULT_MAX_FEEDRATE          { 300, 300, 10, 50 }
-  #define DEFAULT_MAX_ACCELERATION      { 1000, 500, 100, 25 }
-  #define DEFAULT_ACCELERATION          300    // X, Y, Z and E acceleration for printing moves
+  #define DEFAULT_MAX_FEEDRATE          { 500, 400, 15, 75 }
+  #define DEFAULT_MAX_ACCELERATION      { 1000, 700, 100, 75 }
+  #define DEFAULT_ACCELERATION          400    // X, Y, Z and E acceleration for printing moves
   #define DEFAULT_RETRACT_ACCELERATION  1000    // E acceleration for retracts
   #define DEFAULT_TRAVEL_ACCELERATION   300    // X, Y, Z acceleration for travel (non printing) moves
+#endif
+
   #define DEFAULT_XJERK                 10.0
   #define DEFAULT_YJERK                  5.0
   #define DEFAULT_ZJERK                  0.4
   #define DEFAULT_EJERK                  5.0
-#endif
-
 /**
  * Default Max Acceleration (change/s) change = mm/s
  * (Maximum start speed for accelerated moves)
