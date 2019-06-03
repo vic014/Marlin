@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
@@ -63,7 +63,7 @@ const unsigned char status_logo_bmp[] PROGMEM = {
   B11110000,B00000000,B00001111,
   B11111100,B00000000,B00111111,
   B11111110,B01101100,B01111111,
-  B11111111,B11111111,B11111111 
+  B11111111,B11111111,B11111111
 };
 
 //
