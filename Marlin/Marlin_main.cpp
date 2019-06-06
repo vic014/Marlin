@@ -2482,7 +2482,7 @@ void clean_up_after_endstop_or_probe_move() {
     #if ENABLED(DEBUG_LEVELING_FEATURE)
       if (DEBUGGING(LEVELING)) SERIAL_ECHOLNPGM("<<< probe_pt");
     #endif
-
+    STOW_PROBE();
     return measured_z;
   }
 
