@@ -2259,18 +2259,18 @@
   //#define USER_SCRIPT_DONE "M117 User Script Done"
   #define USER_SCRIPT_AUDIBLE_FEEDBACK
   #define USER_SCRIPT_RETURN  // Return to status screen after a script
-  #define CUSTOM_USER_MENU_TITLE "Commissioning"
+  #define CUSTOM_USER_MENU_TITLE "ABL Setup"
 
 #if ENABLED(BedDC)
   #define CommBedTmp "55"
 #else
   #define CommBedTmp "75"
 #endif
-  #define USER_DESC_1 "Mesh Commission"
+  #define USER_DESC_1 "Mesh Setup"
   #if (ENABLED(ABL_UBL))
-    #define USER_GCODE_1 "M502 \n M500 \n M501 \n M190 S" CommBedTmp" \n G28 \n G29 P1 \n G29 S1 \n G29 S0 \n G29 F 10.0 \n G29 A \n M500 \n G28 \n G29 L1 \n M109 S225 \n G1 X150 Y 150 \n G1 Z0 \n M77 \n M117 Set Z Offset"
+    #define USER_GCODE_1 "M190 S" CommBedTmp" \n G28 \n G29 P1 \n G29 S1 \n G29 S0 \n G29 F 10.0 \n G29 A \n M500 \n G28 \n G29 L1 \n M109 S225 \n G1 X150 Y 150 \n G1 Z0 \n M77 \n M117 Set Z Offset"
   #elif ENABLED(ABL_BI)
-    #define USER_GCODE_1 "M117 \n M502 \n M500 \n M501 \n M190 S" CommBedTmp" \n M117 Probing.... \n M104 S225 \n G28 \n G29 \n M500 \n G28 \n M420 S \n M109 S225 \n G1 X100 Y 100 \n G1 Z0 \n M77 \n M117 Set Z Offset"
+    #define USER_GCODE_1 "M190 S" CommBedTmp" \n M117 Probing.... \n M104 S225 \n G28 \n G29 \n M500 \n G28 \n M420 S \n M109 S225 \n G1 X100 Y 100 \n G1 Z0 \n M77 \n M117 Set Z Offset"
   #endif
   
   #define USER_DESC_2 "PID Tune"
