@@ -32,7 +32,7 @@
 
 // Power outputs EFBF or EFBE
 #define MOSFET_D_PIN 7
-
+#define FAN1_PIN -1
 #define FIL_RUNOUT_PIN 2
 
 #include "pins_RAMPS.h"

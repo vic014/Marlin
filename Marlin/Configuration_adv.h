@@ -1033,7 +1033,7 @@
   // A bigger font is available for edit items. Costs 3120 bytes of PROGMEM.
   // Western only. Not available for Cyrillic, Kana, Turkish, Greek, or Chinese.
 #if(DISABLED(MachineCR10Orig) && DISABLED(LowMemoryBoard))
-  #define USE_BIG_EDIT_FONT
+  //#define USE_BIG_EDIT_FONT
 #endif
   // A smaller font may be used on the Info Screen. Costs 2300 bytes of PROGMEM.
   // Western only. Not available for Cyrillic, Kana, Turkish, Greek, or Chinese.
@@ -2259,14 +2259,14 @@
   //#define USER_SCRIPT_DONE "M117 User Script Done"
   #define USER_SCRIPT_AUDIBLE_FEEDBACK
   #define USER_SCRIPT_RETURN  // Return to status screen after a script
-  #define CUSTOM_USER_MENU_TITLE "ABL Setup"
+  #define CUSTOM_USER_MENU_TITLE "Leveling Tools"
 
 #if ENABLED(BedDC)
   #define CommBedTmp "55"
 #else
   #define CommBedTmp "75"
 #endif
-  #define USER_DESC_1 "Mesh Setup"
+  #define USER_DESC_1 "Setup"
   #if (ENABLED(ABL_UBL))
     #define USER_GCODE_1 "M190 S" CommBedTmp" \n G28 \n G29 P1 \n G29 S1 \n G29 S0 \n G29 F 10.0 \n G29 A \n M500 \n G28 \n G29 L1 \n M109 S225 \n G1 X150 Y 150 \n G1 Z0 \n M77 \n M117 Set Z Offset"
   #elif ENABLED(ABL_BI)
