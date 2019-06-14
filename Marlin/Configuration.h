@@ -2391,7 +2391,7 @@
 // produce one step. Should be increased for high-resolution encoders.
 //
 #if ENABLED(MachineCR20)
-  #define ENCODER_PULSES_PER_STEP 2
+  #define ENCODER_PULSES_PER_STEP 4
 #endif
 //
 // Use this option to override the number of step signals required to
