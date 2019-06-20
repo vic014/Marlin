@@ -671,7 +671,7 @@
  *
  * :[2,3,4,5,6,7]
  */
-//#define ENDSTOP_NOISE_THRESHOLD 2
+#define ENDSTOP_NOISE_THRESHOLD 2
 
 //=============================================================================
 //============================== Movement Settings ============================
@@ -1305,7 +1305,7 @@
 #endif
 
 // Homing speeds (mm/m)
-#define HOMING_FEEDRATE_XY 6000
+#define HOMING_FEEDRATE_XY 4500
 #define HOMING_FEEDRATE_Z  360
 
 // Validate that endstops are triggered on homing moves
