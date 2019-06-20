@@ -12,10 +12,10 @@
 //#define MachineCR20 //Buzzer doesnt work
 //#define MachineCR20Pro
 //#define MachineCR10
-#define MachineCR10S
+//#define MachineCR10S
 //#define MachineCR10SPro //Currently only supports GraphicLCD. Graphics LCD Requires soldering R64 and R66
 //#define MachineCRX //Currently only supports GraphicLCD
-//#define MachineS4
+#define MachineS4
 //#define MachineS5
 
 //#define MachineCR10Orig // Forces Melzi board
@@ -35,6 +35,7 @@
 //#define lerdgeFilSensor //Using lerdge filament sensor, which is opposite polarity to stock
 //#define DualFilSensors //Using dual filament sensors on XMax and YMAX
 //#define SKR13 // 32 bit board - assumes 2208 drivers
+//#define SKR13_2209
 //#define SKR13_UART // Configure SKR board with drivers in UART mode
 
 /*
@@ -45,8 +46,8 @@
 
    Configured with 5015 left wing, right wing ABL sensor (BLTouch or M18) only
 */
-#define HotendStock
-//#define HotendE3D
+//#define HotendStock
+#define HotendE3D
 
 //Enable this if you have an all metal hotend capable of 300c
 #define HotendAllMetal
@@ -76,8 +77,8 @@
    Choose bed type below. If you have an extenrally controlled
    ac bed, leave both disabled
 */
-//#define BedAC
-#define BedDC
+#define BedAC
+//#define BedDC
 
 //#define SolidBedMounts //Removed a few LCD options to save some memory since not needed with solid mounts
 
@@ -93,7 +94,7 @@
 */
 //#define ABL_EZABL // TH3D EZABL or Any NO Sensor
 //#define ABL_NCSW //Creality ABL or Any NC Sensor
-//#define ABL_BLTOUCH
+#define ABL_BLTOUCH
 
 //#define CREALITY_ABL_MOUNT //Using creality ABL mount
 //#define E3D_DUALFAN_MOUNT // Using HD Modular mount as above with 2 5015 blowers and sensor on the right
@@ -105,7 +106,7 @@
    Melzi board users may only select ABL_BI for bilinear leveling
 */
 //#define ABL_BI
-//#define ABL_UBL
+#define ABL_UBL
 
 //#define POWER_LOSS_RECOVERY //Large and does not fit with any other features on Melzi, or UBL on Atmega
 /*
@@ -116,9 +117,9 @@
    Standard is recommended in most other scenarios.
 */
 //#define MeshFast
-#define MeshStd
+//#define MeshStd
 //#define MeshFine
-//#define MeshExtreme
+#define MeshExtreme
 
 /*
    Disables SD Sort, Autotemp, Arc support, Linear Advance (Unless overridden with OrigLA above), Big edit fonts, and a few other little things
@@ -1005,17 +1006,33 @@
  */
 
 #if ENABLED(SKR13) && DISABLED(SKR13_UART)
-  #define X_DRIVER_TYPE  TMC2208_STANDALONE
-  #define Y_DRIVER_TYPE  TMC2208_STANDALONE
-  #define Z_DRIVER_TYPE  TMC2208_STANDALONE
-  #define E0_DRIVER_TYPE TMC2208_STANDALONE
-  #define E1_DRIVER_TYPE TMC2208_STANDALONE
+  #if ENABLED(SKR13_2209)
+    #define X_DRIVER_TYPE  TMC2209_STANDALONE
+    #define Y_DRIVER_TYPE  TMC2209_STANDALONE
+    #define Z_DRIVER_TYPE  TMC2209_STANDALONE
+    #define E0_DRIVER_TYPE TMC2209_STANDALONE
+    #define E1_DRIVER_TYPE TMC2209_STANDALONE
+  #else
+    #define X_DRIVER_TYPE  TMC2208_STANDALONE
+    #define Y_DRIVER_TYPE  TMC2208_STANDALONE
+    #define Z_DRIVER_TYPE  TMC2208_STANDALONE
+    #define E0_DRIVER_TYPE TMC2208_STANDALONE
+    #define E1_DRIVER_TYPE TMC2208_STANDALONE
+  #endif
 #elif ENABLED(SKR13, SKR13_UART)
-  #define X_DRIVER_TYPE  TMC2208
-  #define Y_DRIVER_TYPE  TMC2208
-  #define Z_DRIVER_TYPE  TMC2208
-  #define E0_DRIVER_TYPE TMC2208
-  #define E1_DRIVER_TYPE TMC2208
+  #if ENABLED(SKR13_2209)
+    #define X_DRIVER_TYPE  TMC2209
+    #define Y_DRIVER_TYPE  TMC2209
+    #define Z_DRIVER_TYPE  TMC2209
+    #define E0_DRIVER_TYPE TMC2209
+    #define E1_DRIVER_TYPE TMC2209
+  #else
+    #define X_DRIVER_TYPE  TMC2208
+    #define Y_DRIVER_TYPE  TMC2208
+    #define Z_DRIVER_TYPE  TMC2208
+    #define E0_DRIVER_TYPE TMC2208
+    #define E1_DRIVER_TYPE TMC2208
+  #endif
 #else
   #define X_DRIVER_TYPE  A4988
   #define Y_DRIVER_TYPE  A4988
