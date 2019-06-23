@@ -121,14 +121,11 @@ void GcodeSuite::G34() {
         // Users of G34 might have a badly misaligned bed, so raise Z by the
         // length of the deployed pin (BLTOUCH stroke < 7mm)
       #define Z_BASIC_CLEARANCE Z_CLEARANCE_BETWEEN_PROBES + 7.0f
-    #else 
+    #else
       #define Z_BASIC_CLEARANCE Z_CLEARANCE_BETWEEN_PROBES
     #endif
 
-    // 0.05 is a 5% incline. On a 300mm bed that would be a misalignment of about 1.5cm.
-    // This angle is the maximum misalignment catered for
-    #define MAX_ANGLE 0.05f
-    float z_probe = Z_BASIC_CLEARANCE + MAX_ANGLE * (
+    float z_probe = Z_BASIC_CLEARANCE + (G34_MAX_GRADE) * 0.01f * (
       #if ENABLED(Z_TRIPLE_STEPPER_DRIVERS)
          SQRT(MAX(HYPOT2(z_auto_align_xpos[0] - z_auto_align_ypos[0], z_auto_align_xpos[1] - z_auto_align_ypos[1]),
                   HYPOT2(z_auto_align_xpos[1] - z_auto_align_ypos[1], z_auto_align_xpos[2] - z_auto_align_ypos[2]),
@@ -139,7 +136,7 @@ void GcodeSuite::G34() {
     );
 
     // Home before the alignment procedure
-    gcode.G28(false);
+    home_all_axes();
 
     // Move the Z coordinate realm towards the positive - dirty trick
     current_position[Z_AXIS] -= z_probe * 0.5;
@@ -154,14 +151,17 @@ void GcodeSuite::G34() {
     for (iteration = 0; iteration < z_auto_align_iterations; ++iteration) {
       if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("> probing all positions.");
 
-      SERIAL_ECHOLNPAIR(" \nITERATION: ", int(iteration + 1));
+      SERIAL_ECHOLNPAIR("\nITERATION: ", int(iteration + 1));
 
       // Initialize minimum value
       float z_measured_min = 100000.0f;
       // Probe all positions (one per Z-Stepper)
-      for (uint8_t zstepper = 0; zstepper < Z_STEPPER_COUNT; ++zstepper) {
+      for (uint8_t izstepper = 0; izstepper < Z_STEPPER_COUNT; ++izstepper) {
+        // iteration odd/even --> downward / upward stepper sequence
+        const uint8_t zstepper = (iteration & 1) ? Z_STEPPER_COUNT - 1 - izstepper : izstepper;
+
         // Safe clearance even on an incline
-        do_blocking_move_to_z(z_probe);
+        if (iteration == 0 || izstepper > 0) do_blocking_move_to_z(z_probe);
 
         // Probe a Z height for each stepper
         if (isnan(probe_pt(z_auto_align_xpos[zstepper], z_auto_align_ypos[zstepper], PROBE_PT_RAISE, 0, true))) {
@@ -171,8 +171,8 @@ void GcodeSuite::G34() {
         }
 
         // This is not the trigger Z value. It is the position of the probe after raising it.
-        // It is higher than the trigger value by a constant value (not known here). This value 
-        // is more useful for determining the desired next iteration Z position for probing. It is 
+        // It is higher than the trigger value by a constant value (not known here). This value
+        // is more useful for determining the desired next iteration Z position for probing. It is
         // equally well suited for determining the misalignment, just like the trigger position would be.
         z_measured[zstepper] = current_position[Z_AXIS];
         if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("> Z", int(zstepper + 1), " measured position is ", z_measured[zstepper]);
@@ -185,22 +185,23 @@ void GcodeSuite::G34() {
 
       // Adapt the next probe clearance height based on the new measurements.
       // Safe_height = lowest distance to bed (= highest measurement) plus highest measured misalignment.
-      SERIAL_EOL();
       #if ENABLED(Z_TRIPLE_STEPPER_DRIVERS)
-        z_maxdiff = MAX(ABS(z_measured[0] - z_measured[1]), ABS(z_measured[1] - z_measured[2]), ABS(z_measured[2] - z_measured[0])); 
+        z_maxdiff = MAX(ABS(z_measured[0] - z_measured[1]), ABS(z_measured[1] - z_measured[2]), ABS(z_measured[2] - z_measured[0]));
         z_probe = Z_BASIC_CLEARANCE + MAX(z_measured[0], z_measured[1], z_measured[2]) + z_maxdiff;
-        SERIAL_ECHOLNPAIR("DIFFERENCE Z1-Z2: ", ABS(z_measured[0] - z_measured[1]),
-                          "DIFFERENCE Z2-Z3: ", ABS(z_measured[1] - z_measured[2]),
-                          "DIFFERENCE Z3-Z1: ", ABS(z_measured[2] - z_measured[0]));
       #else
         z_maxdiff = ABS(z_measured[0] - z_measured[1]);
         z_probe = Z_BASIC_CLEARANCE + MAX(z_measured[0], z_measured[1]) + z_maxdiff;
-        SERIAL_ECHOLNPAIR("DIFFERENCE Z1-Z2: ", ABS(z_measured[0] - z_measured[1]));
       #endif
-      SERIAL_EOL();
 
-      // Raise to the new next probing height right away
-      do_blocking_move_to_z(z_probe);
+      SERIAL_ECHOPAIR("\n"
+        "DIFFERENCE Z1-Z2=", ABS(z_measured[0] - z_measured[1])
+        #if ENABLED(Z_TRIPLE_STEPPER_DRIVERS)
+          , " Z2-Z3=", ABS(z_measured[1] - z_measured[2])
+          , " Z3-Z1=", ABS(z_measured[2] - z_measured[0])
+        #endif
+      );
+      SERIAL_EOL();
+      SERIAL_EOL();
 
       // The following correction actions are to be enabled for select Z-steppers only
       stepper.set_separate_multi_axis(true);
@@ -221,7 +222,7 @@ void GcodeSuite::G34() {
           err_break = true;
           break;
         }
-        
+
         // Remember the alignment for the next iteration
         last_z_align_move[zstepper] = z_align_abs;
 
@@ -231,7 +232,7 @@ void GcodeSuite::G34() {
         if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("> Z", int(zstepper + 1), " corrected by ", z_align_move);
 
         // Lock all steppers except one
-        set_all_z_lock(true); 
+        set_all_z_lock(true);
         switch (zstepper) {
           case 0: stepper.set_z_lock(false); break;
           case 1: stepper.set_z2_lock(false); break;
@@ -245,7 +246,7 @@ void GcodeSuite::G34() {
       } // for (zstepper)
 
       // Back to normal stepper operations
-      set_all_z_lock(false); 
+      set_all_z_lock(false);
       stepper.set_separate_multi_axis(false);
 
       if (err_break) break;
@@ -254,10 +255,10 @@ void GcodeSuite::G34() {
 
     } // for (iteration)
 
-    if (err_break) { SERIAL_ECHOLNPGM("Aborted due to error."); break; }
+    if (err_break) { SERIAL_ECHOLNPGM("G34 aborted."); break; }
 
-    SERIAL_ECHOLNPAIR("Performed iterations: ", int(iteration + (iteration != z_auto_align_iterations)), " of ", int(z_auto_align_iterations));
-    SERIAL_ECHOLNPAIR_F("Achieved accuracy: ", z_maxdiff);
+    SERIAL_ECHOLNPAIR("Did ", int(iteration + (iteration != z_auto_align_iterations)), " iterations of ", int(z_auto_align_iterations));
+    SERIAL_ECHOLNPAIR_F("Accuracy: ", z_maxdiff);
     SERIAL_EOL();
 
     // Restore the active tool after homing
@@ -284,8 +285,8 @@ void GcodeSuite::G34() {
       bltouch._stow();
     #endif
 
-    // Home after the alignment procedure
-    gcode.G28(false);
+    // Home Z after the alignment procedure
+    process_subcommands_now_P(PSTR("G28 Z"));
 
   } while(0);
 

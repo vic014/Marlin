@@ -934,7 +934,7 @@
   #define MSG_BLTOUCH_MODE_ECHO               _UxGT("Report Drain")
 #endif
 #ifndef MSG_BLTOUCH_MODE_CHANGE
-  #define MSG_BLTOUCH_MODE_CHANGE             _UxGT("    ***WARNING***     Wrong Setting May    Damage Machine!       Proceed Anyway?")
+  #define MSG_BLTOUCH_MODE_CHANGE             _UxGT("DANGER: Bad settings can cause damage! Proceed anyway?")
 #endif
 #ifndef MSG_MANUAL_DEPLOY
   #define MSG_MANUAL_DEPLOY                   _UxGT("Deploy Z-Probe")
@@ -1196,6 +1196,9 @@
 #endif
 #ifndef MSG_RUNOUT_SENSOR
   #define MSG_RUNOUT_SENSOR                   _UxGT("Runout Sensor")
+#endif
+#ifndef MSG_RUNOUT_DISTANCE_MM
+  #define MSG_RUNOUT_DISTANCE_MM              _UxGT("Runout Dist mm")
 #endif
 #ifndef MSG_ERR_HOMING_FAILED
   #define MSG_ERR_HOMING_FAILED               _UxGT("Homing failed")

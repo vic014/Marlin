@@ -127,7 +127,7 @@ static void lcd_factory_settings() {
 
     auto _recalc_offsets = []{
       if (active_extruder && all_axes_known()) {  // For the 2nd extruder re-home so the next tool-change gets the new offsets.
-        enqueue_and_echo_commands_P(PSTR("G28")); // In future, we can babystep the 2nd extruder (if active), making homing unnecessary.
+        queue.inject_P(PSTR("G28")); // In future, we can babystep the 2nd extruder (if active), making homing unnecessary.
         active_extruder = 0;
       }
     };
@@ -135,7 +135,7 @@ static void lcd_factory_settings() {
     START_MENU();
     MENU_BACK(MSG_CONFIGURATION);
     #if ENABLED(DUAL_X_CARRIAGE)
-      MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float51, MSG_X_OFFSET, &hotend_offset[X_AXIS][1], (float)(X2_HOME_POS - 25), (float)(X2_HOME_POS + 25), _recalc_offsets);
+      MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float51, MSG_X_OFFSET, &hotend_offset[X_AXIS][1], float(X2_HOME_POS - 25), float(X2_HOME_POS + 25), _recalc_offsets);
     #else
       MENU_MULTIPLIER_ITEM_EDIT_CALLBACK(float52sign, MSG_X_OFFSET, &hotend_offset[X_AXIS][1], -10.0, 10.0, _recalc_offsets);
     #endif
@@ -184,7 +184,7 @@ static void lcd_factory_settings() {
       );
       char mess[21];
       strcpy_P(mess, PSTR("BLTouch Mode - "));
-      sprintf_P(&mess[15], bltouch.last_written_mode ? PSTR("5V") : PSTR("OD"));
+      strcpy_P(&mess[15], bltouch.last_written_mode ? PSTR("5V") : PSTR("OD"));
       ui.set_status(mess);
       ui.return_to_status();
     }
@@ -219,17 +219,21 @@ static void lcd_factory_settings() {
 
 #endif
 
-#if ENABLED(MENU_ITEM_CASE_LIGHT)
+#if ENABLED(CASE_LIGHT_MENU)
 
   #include "../../feature/caselight.h"
 
-  void menu_case_light() {
-    START_MENU();
-    MENU_BACK(MSG_CONFIGURATION);
-    MENU_ITEM_EDIT_CALLBACK(uint8, MSG_CASE_LIGHT_BRIGHTNESS, &case_light_brightness, 0, 255, update_case_light, true);
-    MENU_ITEM_EDIT_CALLBACK(bool, MSG_CASE_LIGHT, (bool*)&case_light_on, update_case_light);
-    END_MENU();
-  }
+  #if DISABLED(CASE_LIGHT_NO_BRIGHTNESS)
+
+    void menu_case_light() {
+      START_MENU();
+      MENU_BACK(MSG_CONFIGURATION);
+      MENU_ITEM_EDIT_CALLBACK(uint8, MSG_CASE_LIGHT_BRIGHTNESS, &case_light_brightness, 0, 255, update_case_light, true);
+      MENU_ITEM_EDIT_CALLBACK(bool, MSG_CASE_LIGHT, (bool*)&case_light_on, update_case_light);
+      END_MENU();
+    }
+
+  #endif
 
 #endif
 
@@ -355,11 +359,13 @@ void menu_configuration() {
   //
   // Set Case light on/off/brightness
   //
-  #if ENABLED(MENU_ITEM_CASE_LIGHT)
-    if (PWM_PIN(CASE_LIGHT_PIN))
-      MENU_ITEM(submenu, MSG_CASE_LIGHT, menu_case_light);
-    else
-      MENU_ITEM_EDIT_CALLBACK(bool, MSG_CASE_LIGHT, (bool*)&case_light_on, update_case_light);
+  #if ENABLED(CASE_LIGHT_MENU)
+    #if DISABLED(CASE_LIGHT_NO_BRIGHTNESS)
+      if (PWM_PIN(CASE_LIGHT_PIN))
+        MENU_ITEM(submenu, MSG_CASE_LIGHT, menu_case_light);
+      else
+    #endif
+        MENU_ITEM_EDIT_CALLBACK(bool, MSG_CASE_LIGHT, (bool*)&case_light_on, update_case_light);
   #endif
 
   #if HAS_LCD_CONTRAST
