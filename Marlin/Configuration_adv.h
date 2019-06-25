@@ -1767,7 +1767,7 @@
   #define E3_SLAVE_ADDRESS 0
   #define E4_SLAVE_ADDRESS 0
   #define E5_SLAVE_ADDRESS 0
-  
+
   /**
    * Software enable
    *
@@ -2295,7 +2295,7 @@
   #elif ENABLED(ABL_BI)
     #define USER_GCODE_1 "M190 S" CommBedTmp" \n M117 Probing.... \n M104 S225 \n G28 \n G29 \n M500 \n G28 \n M420 S \n M109 S225 \n G1 X100 Y 100 \n G1 Z0 \n M77 \n M117 Set Z Offset"
   #endif
-  
+
   #define USER_DESC_2 "PID Tune"
   #define USER_GCODE_2 "M106 S128 \n M303 C8 S225 E1 U \n M500 \n M117 PID Tune Done"
 
@@ -2303,7 +2303,7 @@
   #define USER_GCODE_3 "M190 S" CommBedTmp" \n M104 235 \n G28 \n G29 L1 \n G1 X100 Y 100 \n G1 Z0"
 
   #define USER_DESC_4 "Store Settings"
-  #define USER_GCODE_4 "M500"
+  #define USER_GCODE_4 "M500\nM117 Settings Stored"
 
   //#define USER_DESC_5 "Run Mesh Validation"
   //#define USER_GCODE_5 "G26"
