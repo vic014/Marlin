@@ -1228,7 +1228,7 @@
    * between attempts, and after the maximum number of retries have been tried.
    */
   #define G29_SUCCESS_COMMANDS "M117 Bed leveling done."
-  #define G29_RECOVER_COMMANDS "M117 Probe failed. Rewiping.\nG28\nG12 P0 S12 T0"
+  #define G29_RECOVER_COMMANDS "M117 Probe failed.\nG28\n"
   #define G29_FAILURE_COMMANDS "M117 Bed leveling failed.\nG0 Z10\nM300 P25 S880\nM300 P50 S0\nM300 P25 S880\nM300 P50 S0\nM300 P25 S880\nM300 P50 S0\nG4 S1"
 
 #endif
@@ -2291,9 +2291,9 @@
 #endif
   #define USER_DESC_1 "Setup"
   #if (ENABLED(ABL_UBL))
-    #define USER_GCODE_1 "M190 S" CommBedTmp" \n G28 \n G29 P1 \n G29 S1 \n G29 S0 \n G29 F 10.0 \n G29 A \n M500 \n G28 \n G29 L1 \n M109 S225 \n G1 X150 Y 150 \n G1 Z0 \n M77 \n M117 Set Z Offset"
+    #define USER_GCODE_1 "M190S" CommBedTmp"\nG28\nG29P1\nG29S1\nG29S0\n G29F0.0\nG29A\nG28\nM109S225\nG1X150Y150\nG1Z0\nM500\nM400\nM77\nM117 Set Z Offset"
   #elif ENABLED(ABL_BI)
-    #define USER_GCODE_1 "M190 S" CommBedTmp" \n M117 Probing.... \n M104 S225 \n G28 \n G29 \n M500 \n G28 \n M420 S \n M109 S225 \n G1 X100 Y 100 \n G1 Z0 \n M77 \n M117 Set Z Offset"
+    #define USER_GCODE_1 "M190S" CommBedTmp"\n M117 Probing....\nM104S225\nG28\nG29\nM400\nG28\nM420S1\nM109S225\nG1X100Y100\nG1Z0\nM500\nM400\nM77\nM117 Set Z Offset"
   #endif
 
   #define USER_DESC_2 "PID Tune"

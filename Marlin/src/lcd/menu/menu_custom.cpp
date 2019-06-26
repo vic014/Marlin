@@ -38,8 +38,8 @@
 #endif
 
 void _lcd_user_gcode(PGM_P const cmd) {
-  queue.inject_P(cmd);
-  #if ENABLED(USER_SCRIPT_AUDIBLE_FEEDBACK)
+    queue.enqueue_now_P(cmd);
+#if ENABLED(USER_SCRIPT_AUDIBLE_FEEDBACK)
     ui.completion_feedback();
   #endif
   #if ENABLED(USER_SCRIPT_RETURN)

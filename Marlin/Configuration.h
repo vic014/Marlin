@@ -12,10 +12,10 @@
 //#define MachineCR20 //Buzzer doesnt work
 //#define MachineCR20Pro
 //#define MachineCR10
-#define MachineCR10S
+//#define MachineCR10S
 //#define MachineCR10SPro //Currently only supports GraphicLCD. Graphics LCD Requires soldering R64 and R66
 //#define MachineCRX //Currently only supports GraphicLCD
-//#define MachineS4
+#define MachineS4
 //#define MachineS5
 
 //#define MachineCR10Orig // Forces Melzi board
@@ -46,8 +46,8 @@
 
    Configured with 5015 left wing, right wing ABL sensor (BLTouch or M18) only
 */
-#define HotendStock
-//#define HotendE3D
+//#define HotendStock
+#define HotendE3D
 
 //Enable this if you have an all metal hotend capable of 300c
 #define HotendAllMetal
@@ -77,8 +77,8 @@
    Choose bed type below. If you have an extenrally controlled
    ac bed, leave both disabled
 */
-//#define BedAC
-#define BedDC
+#define BedAC
+//#define BedDC
 
 //#define SolidBedMounts //Removed a few LCD options to save some memory since not needed with solid mounts
 
@@ -94,7 +94,7 @@
 */
 //#define ABL_EZABL // TH3D EZABL or Any NO Sensor
 //#define ABL_NCSW //Creality ABL or Any NC Sensor
-//#define ABL_BLTOUCH
+#define ABL_BLTOUCH
 
 //#define CREALITY_ABL_MOUNT //Using creality ABL mount
 //#define E3D_DUALFAN_MOUNT // Using HD Modular mount as above with 2 5015 blowers and sensor on the right
@@ -105,7 +105,7 @@
    Requires a sensor from above
    Melzi board users may only select ABL_BI for bilinear leveling
 */
-//#define ABL_BI
+#define ABL_BI
 //#define ABL_UBL
 
 //#define POWER_LOSS_RECOVERY //Large and does not fit with any other features on Melzi, or UBL on Atmega
@@ -116,8 +116,8 @@
    UBL and Extreme are recommended with solid bed mounts as it becomes a one time commissioning.
    Standard is recommended in most other scenarios.
 */
-//#define MeshFast
-#define MeshStd
+#define MeshFast
+//#define MeshStd
 //#define MeshFine
 //#define MeshExtreme
 
@@ -1363,7 +1363,7 @@
       #define Y_PROBE_OFFSET_FROM_EXTRUDER 5  // Y offset: -front +behind [the nozzle]
       #define Z_PROBE_OFFSET_FROM_EXTRUDER 0   // Z offset: -below +above  [the nozzle]
     #else
-      #define X_PROBE_OFFSET_FROM_EXTRUDER 33  // X offset: -left  +right  [of the nozzle]
+      #define X_PROBE_OFFSET_FROM_EXTRUDER 38  // X offset: -left  +right  [of the nozzle]
       #define Y_PROBE_OFFSET_FROM_EXTRUDER 5  // Y offset: -front +behind [the nozzle]
       #define Z_PROBE_OFFSET_FROM_EXTRUDER 0   // Z offset: -below +above  [the nozzle]
     #endif
@@ -2062,7 +2062,7 @@
   #elif ENABLED(MachineS5)
     #define Z_SAFE_HOMING_X_POINT 80 + HOMING_ADD    // X point for Z homing when homing all axis (G28).
     #define Z_SAFE_HOMING_Y_POINT 80 + HOMING_ADD    // Y point for Z homing when homing all axis (G28).
-  #elif ENABLED(MachineCRX) 
+  #elif ENABLED(MachineCRX)
     #define Z_SAFE_HOMING_X_POINT 50 + HOMING_ADD    // X point for Z homing when homing all axis (G28).
     #define Z_SAFE_HOMING_Y_POINT 70 + HOMING_ADD    // Y point for Z homing when homing all axis (G28).
   #else
