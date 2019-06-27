@@ -2300,7 +2300,7 @@
   #define USER_GCODE_2 "M106 S128 \n M303 C8 S225 E1 U \n M500 \n M117 PID Tune Done"
 
   #define USER_DESC_3 "Prep for Z Adjust"
-  #define USER_GCODE_3 "M190 S" CommBedTmp" \n M104 235 \n G28 \n G29 L1 \n G1 X100 Y 100 \n G1 Z0"
+  #define USER_GCODE_3 "M190 S" CommBedTmp" \n M104 S235 \n G28 \n G29 L1 \n G1 X100 Y 100 \n G1 Z0"
 
   #define USER_DESC_4 "Store Settings"
   #define USER_GCODE_4 "M500\nM117 Settings Stored"
