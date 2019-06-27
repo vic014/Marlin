@@ -2023,9 +2023,9 @@
  * Useful to retract or move the Z probe out of the way.
  */
 #if ENABLED(ABL_BLTOUCH)
-  #define Z_PROBE_END_SCRIPT "M280 P0 S90 \n G1 X0 Y0"
+  #define Z_PROBE_END_SCRIPT "M280 P0 S90"
 #else
-  #define Z_PROBE_END_SCRIPT "G1 X0 Y0"
+  #define Z_PROBE_END_SCRIPT ""
 #endif
 
 // @section homing
