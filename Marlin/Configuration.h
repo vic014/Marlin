@@ -10,9 +10,9 @@
 //#define MachineEnder4
 //#define MachineMini
 //#define MachineCR20 //Buzzer doesnt work
-#define MachineCR20Pro
+//#define MachineCR20Pro
 //#define MachineCR10
-//#define MachineCR10S
+#define MachineCR10S
 //#define MachineCR10SPro //Currently only supports GraphicLCD. Graphics LCD Requires soldering R64 and R66
 //#define MachineCRX //Currently only supports GraphicLCD
 //#define MachineS4
@@ -94,7 +94,7 @@
 */
 //#define ABL_EZABL // TH3D EZABL or Any NO Sensor
 //#define ABL_NCSW //Creality ABL or Any NC Sensor
-#define ABL_BLTOUCH
+//#define ABL_BLTOUCH
 
 //#define CREALITY_ABL_MOUNT //Using creality ABL mount
 //#define E3D_DUALFAN_MOUNT // Using HD Modular mount as above with 2 5015 blowers and sensor on the right
@@ -105,7 +105,7 @@
    Requires a sensor from above
    Melzi board users may only select ABL_BI for bilinear leveling
 */
-#define ABL_BI
+//#define ABL_BI
 //#define ABL_UBL
 
 //#define POWER_LOSS_RECOVERY //Large and does not fit with any other features on Melzi, or UBL on Atmega
@@ -116,8 +116,8 @@
    UBL and Extreme are recommended with solid bed mounts as it becomes a one time commissioning.
    Standard is recommended in most other scenarios.
 */
-#define MeshFast
-//#define MeshStd
+//#define MeshFast
+#define MeshStd
 //#define MeshFine
 //#define MeshExtreme
 
@@ -233,32 +233,12 @@
 
 // Enable to show the bitmap in Marlin/_Bootscreen.h on startup.
 
-#if ANY(ABL_BLTOUCH, ABL_NCSW, ABL_EZABL) && DISABLED(ABL_UBL)
-  #define ABL_BI
-#endif
-
-#if ANY(MachineEnder2, MachineEnder3, MachineCR10) && DISABLED(SKR13)
-  #define MachineCR10Orig
-#endif
-
-#if ANY(MachineCR10, MachineCR10S)
-  #define MachineCR10Std
-#endif
-
 #if ENABLED(PLUS)
   #define lerdgeFilSensor //Using lerdge filament sensor, which is opposite polarity to stock)
   #define HotendAllMetal
   #define EZRstruder
-  #if DISABLED(ABL_UBL)
-    #define ABL_BI
-  #endif
   #define ABL_BLTOUCH
   #define HotendAllMetal
-#endif
-
-#if(ENABLED(MachineCRX))
-  #define MachineCR10Std
-  #define Dual_BowdenSplitterY
 #endif
 
 #if ENABLED(MachineCR20Pro)
@@ -268,7 +248,6 @@
   #endif
   #define HotendAllMetal
   #if DISABLED(ABL_UBL)
-    #define ABL_BI
     #define POWER_LOSS_RECOVERY
   #endif
   #define SolidBedMounts
@@ -281,15 +260,31 @@
     #define FIL_RUNOUT_INVERTING false
     #define SD_DETECT_PIN 49
   #endif
-  #define MachineCR10Std
-  #if DISABLED(ABL_BLTOUCH)
+  #if NONE(ABL_BLTOUCH, ABL_EZABL)
     #define ABL_NCSW
   #endif
-  #if DISABLED(ABL_UBL)
-    #define ABL_BI
-  #endif
-  #define MeshStd
   #define BoardRev2
+#endif
+
+#if ANY(ABL_BLTOUCH, ABL_NCSW, ABL_EZABL) && DISABLED(ABL_UBL)
+  #define ABL_BI
+#endif
+
+#if ANY(MachineEnder2, MachineEnder3, MachineCR10) && DISABLED(SKR13)
+  #define MachineCR10Orig
+#endif
+
+#if ANY(MachineCR10, MachineCR10S, MachineCRX, MachineCR10SPro)
+  #define MachineCR10Std
+#endif
+
+
+#if(ENABLED(MachineCRX))
+  #define Dual_BowdenSplitterY
+#endif
+
+#if NONE(MeshFast, MeshStd, MeshFine, MeshExtreme)
+  #define MeshStd
 #endif
 
 #if(DISABLED(MachineEnder4) && DISABLED(MachineCR10Orig) && DISABLED(LowMemoryBoard))
