@@ -10,12 +10,12 @@
 //#define MachineEnder4
 //#define MachineMini
 //#define MachineCR20 //Buzzer doesnt work
-//#define MachineCR20Pro
+#define MachineCR20Pro
 //#define MachineCR10
 //#define MachineCR10S
 //#define MachineCR10SPro //Currently only supports GraphicLCD. Graphics LCD Requires soldering R64 and R66
 //#define MachineCRX //Currently only supports GraphicLCD
-#define MachineS4
+//#define MachineS4
 //#define MachineS5
 
 //#define MachineCR10Orig // Forces Melzi board
@@ -46,8 +46,8 @@
 
    Configured with 5015 left wing, right wing ABL sensor (BLTouch or M18) only
 */
-//#define HotendStock
-#define HotendE3D
+#define HotendStock
+//#define HotendE3D
 
 //Enable this if you have an all metal hotend capable of 300c
 #define HotendAllMetal
@@ -77,8 +77,8 @@
    Choose bed type below. If you have an extenrally controlled
    ac bed, leave both disabled
 */
-#define BedAC
-//#define BedDC
+//#define BedAC
+#define BedDC
 
 //#define SolidBedMounts //Removed a few LCD options to save some memory since not needed with solid mounts
 
@@ -1363,7 +1363,7 @@
       #define Y_PROBE_OFFSET_FROM_EXTRUDER 5  // Y offset: -front +behind [the nozzle]
       #define Z_PROBE_OFFSET_FROM_EXTRUDER 0   // Z offset: -below +above  [the nozzle]
     #else
-      #define X_PROBE_OFFSET_FROM_EXTRUDER 38  // X offset: -left  +right  [of the nozzle]
+      #define X_PROBE_OFFSET_FROM_EXTRUDER 32  // X offset: -left  +right  [of the nozzle]
       #define Y_PROBE_OFFSET_FROM_EXTRUDER 5  // Y offset: -front +behind [the nozzle]
       #define Z_PROBE_OFFSET_FROM_EXTRUDER 0   // Z offset: -below +above  [the nozzle]
     #endif
@@ -1823,10 +1823,10 @@
 
   // Set the number of grid points per dimension.
 
+#define MESH_INSET 15
+
 // Set the boundaries for probing (where the probe can reach).
 /*
-
-#define MESH_INSET MIN_PROBE_EDGE
 
 #if( (X_PROBE_OFFSET_FROM_EXTRUDER ) > MESH_INSET )
   #define LEFT_PROBE_BED_POSITION (X_PROBE_OFFSET_FROM_EXTRUDER + MESH_INSET + 1)
@@ -1853,10 +1853,10 @@
 #endif
 
 */
-  //#define LEFT_PROBE_BED_POSITION MIN_PROBE_EDGE
-  //#define RIGHT_PROBE_BED_POSITION (X_BED_SIZE - (MIN_PROBE_EDGE))
-  //#define FRONT_PROBE_BED_POSITION MIN_PROBE_EDGE
-  //#define BACK_PROBE_BED_POSITION (Y_BED_SIZE - (MIN_PROBE_EDGE))
+  #define LEFT_PROBE_BED_POSITION (MAX(X_MIN_BED + MIN_PROBE_EDGE, X_MIN_POS + X_PROBE_OFFSET_FROM_EXTRUDER)) + MESH_INSET
+  #define FRONT_PROBE_BED_POSITION (MAX(Y_MIN_BED + MIN_PROBE_EDGE, Y_MIN_POS + Y_PROBE_OFFSET_FROM_EXTRUDER)) + MESH_INSET
+  #define RIGHT_PROBE_BED_POSITION (MIN(X_MAX_BED - (MIN_PROBE_EDGE), X_MAX_POS + X_PROBE_OFFSET_FROM_EXTRUDER)) - MESH_INSET
+  #define BACK_PROBE_BED_POSITION (MIN(Y_MAX_BED - (MIN_PROBE_EDGE), Y_MAX_POS + Y_PROBE_OFFSET_FROM_EXTRUDER)) - MESH_INSET
 
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
@@ -1916,6 +1916,7 @@
  */
 #if ENABLED(AUTO_BED_LEVELING_3POINT) || ENABLED(AUTO_BED_LEVELING_UBL)
 
+#define MESH_INSET 15
 #if(DISABLED(MachineCR10Orig) && DISABLED(MachineEnder4))
 #define MESH_EDIT_GFX_OVERLAY   // Display a graphics overlay while editing the mesh
 #endif
@@ -1926,7 +1927,6 @@
 #define PROBE_PT_2_Y 180
 #define PROBE_PT_3_X 180
 #define PROBE_PT_3_Y 50
-#define MESH_INSET 15
 #endif
 #if ENABLED(MachineEnder2)
 #define PROBE_PT_1_X 50       // Probing points for 3-Point leveling of the mesh
@@ -1935,7 +1935,6 @@
 #define PROBE_PT_2_Y 130
 #define PROBE_PT_3_X 100
 #define PROBE_PT_3_Y 50
-#define MESH_INSET 15
 #endif
 #if ENABLED(MachineEnder3)
 #define PROBE_PT_1_X 50       // Probing points for 3-Point leveling of the mesh
@@ -1944,7 +1943,6 @@
 #define PROBE_PT_2_Y 180
 #define PROBE_PT_3_X 180
 #define PROBE_PT_3_Y 50
-#define MESH_INSET 15
 #endif
 #if ENABLED(MachineEnder4)
 #define PROBE_PT_1_X 50       // Probing points for 3-Point leveling of the mesh
@@ -1953,7 +1951,6 @@
 #define PROBE_PT_2_Y 180
 #define PROBE_PT_3_X 150
 #define PROBE_PT_3_Y 50
-#define MESH_INSET 15
 #endif
 
 #if ENABLED(MachineCR20)
@@ -1963,7 +1960,6 @@
 #define PROBE_PT_2_Y 180
 #define PROBE_PT_3_X 150
 #define PROBE_PT_3_Y 50
-#define MESH_INSET 15
 #endif
 
 #if (ENABLED(MachineCR10Std) )
@@ -1973,7 +1969,6 @@
 #define PROBE_PT_2_Y 270
 #define PROBE_PT_3_X 250
 #define PROBE_PT_3_Y 50
-#define MESH_INSET 25
 #endif
 
 #if ENABLED( MachineS4)
@@ -1983,7 +1978,6 @@
 #define PROBE_PT_2_Y 340
 #define PROBE_PT_3_X 340
 #define PROBE_PT_3_Y 60
-#define MESH_INSET 20
 #endif
 #if ENABLED(MachineS5)
 #define PROBE_PT_1_X 80       // Probing points for 3-Point leveling of the mesh
@@ -1992,7 +1986,6 @@
 #define PROBE_PT_2_Y 420
 #define PROBE_PT_3_X 420
 #define PROBE_PT_3_Y 80
-#define MESH_INSET 25
 #endif
 #endif
 
