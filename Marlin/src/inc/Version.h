@@ -39,7 +39,7 @@
   /**
    * Marlin release version identifier
    */
-  #define SHORT_BUILD_VERSION "2.0.x_SX4D"
+  #define SHORT_BUILD_VERSION "2.0.x_SX4E"
 
   /**
    * Verbose version identifier which should contain a reference to the location

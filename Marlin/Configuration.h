@@ -3,6 +3,9 @@
 #define E3DV6
 //#define FilamentSensorStd
 #define FilamentSensorLerdge
+#define SKR13 // 32 bit board - assumes 2208 drivers
+//#define SKR13_2209
+#define SKR13_UART // Configure SKR board with drivers in UART mode
 
 /**
  * Marlin 3D Printer Firmware
@@ -110,6 +113,7 @@
  *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
+
 #define SERIAL_PORT 0
 
 /**
@@ -119,8 +123,9 @@
  *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-//#define SERIAL_PORT_2 -1
-
+#if ENABLED(SKR13)
+  #define SERIAL_PORT_2 -1
+#endif
 /**
  * This setting determines the communication speed of the printer.
  *
@@ -138,7 +143,11 @@
 // The following define selects which electronics board you have.
 // Please choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-  #define MOTHERBOARD BOARD_RAMPS_14_EFB
+  #if ENABLED(SKR13)
+    #define MOTHERBOARD BOARD_BIGTREE_SKR_V1_3
+  #else
+    #define MOTHERBOARD BOARD_RAMPS_14_EFB
+  #endif
 #endif
 
 // Optional custom name for your RepStrap or other custom machine
@@ -657,15 +666,51 @@
  *          TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
-//#define X_DRIVER_TYPE  A4988
-//#define Y_DRIVER_TYPE  A4988
-//#define Z_DRIVER_TYPE  A4988
+
+#if ENABLED(SKR13) && DISABLED(SKR13_UART)
+  #if ENABLED(SKR13_2209)
+    #define X_DRIVER_TYPE  TMC2209_STANDALONE
+    #define Y_DRIVER_TYPE  TMC2209_STANDALONE
+    #define Z_DRIVER_TYPE  TMC2209_STANDALONE
+    #define Z2_DRIVER_TYPE TMC2209_STANDALONE
+    #define E0_DRIVER_TYPE TMC2209_STANDALONE
+    #define E1_DRIVER_TYPE TMC2209_STANDALONE
+  #else
+    #define X_DRIVER_TYPE  TMC2208_STANDALONE
+    #define Y_DRIVER_TYPE  TMC2208_STANDALONE
+    #define Z_DRIVER_TYPE  TMC2208_STANDALONE
+    #define Z2_DRIVER_TYPE TMC2208_STANDALONE
+    #define E0_DRIVER_TYPE TMC2208_STANDALONE
+    #define E1_DRIVER_TYPE TMC2208_STANDALONE
+  #endif
+#elif ENABLED(SKR13, SKR13_UART)
+  #if ENABLED(SKR13_2209)
+    #define X_DRIVER_TYPE  TMC2209
+    #define Y_DRIVER_TYPE  TMC2209
+    #define Z_DRIVER_TYPE  TMC2209
+    #define Z2_DRIVER_TYPE TMC2209
+    #define E0_DRIVER_TYPE TMC2209
+    #define E1_DRIVER_TYPE TMC2209
+  #else
+    #define X_DRIVER_TYPE  TMC2208
+    #define Y_DRIVER_TYPE  TMC2208
+    #define Z_DRIVER_TYPE  TMC2208
+    #define Z2_DRIVER_TYPE TMC2208
+    #define E0_DRIVER_TYPE TMC2208
+    #define E1_DRIVER_TYPE TMC2208
+  #endif
+#else
+  #define X_DRIVER_TYPE  A4988
+  #define Y_DRIVER_TYPE  A4988
+  #define Z_DRIVER_TYPE  A4988
+  #define Z2_DRIVER_TYPE A4988
+  #define E0_DRIVER_TYPE A4988
+  #define E1_DRIVER_TYPE A4988
+#endif
 //#define X2_DRIVER_TYPE A4988
 //#define Y2_DRIVER_TYPE A4988
 //#define Z2_DRIVER_TYPE A4988
 //#define Z3_DRIVER_TYPE A4988
-//#define E0_DRIVER_TYPE A4988
-//#define E1_DRIVER_TYPE A4988
 //#define E2_DRIVER_TYPE A4988
 //#define E3_DRIVER_TYPE A4988
 //#define E4_DRIVER_TYPE A4988
