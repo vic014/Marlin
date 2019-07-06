@@ -521,7 +521,7 @@
 //#define HOME_Y_BEFORE_X
 
 // Enable this if X or Y can't home without homing the other axis first.
-//#define CODEPENDENT_XY_HOMING
+#define CODEPENDENT_XY_HOMING
 
 /**
  * Z Steppers Auto-Alignment
