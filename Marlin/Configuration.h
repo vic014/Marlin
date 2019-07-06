@@ -1,11 +1,11 @@
 //#define PetsfangMicroswiss
-#define BondtechBMG
-#define E3DV6
+//#define BondtechBMG
+//#define E3DV6
 //#define FilamentSensorStd
-#define FilamentSensorLerdge
-#define SKR13 // 32 bit board - assumes 2208 drivers
+//#define FilamentSensorLerdge
+//#define SKR13 // 32 bit board - assumes 2208 drivers
 //#define SKR13_2209
-#define SKR13_UART // Configure SKR board with drivers in UART mode
+//#define SKR13_UART // Configure SKR board with drivers in UART mode
 
 /**
  * Marlin 3D Printer Firmware
