@@ -1154,7 +1154,9 @@
  * Repeatedly attempt G29 leveling until it succeeds.
  * Stop after G29_MAX_RETRIES attempts.
  */
-#define G29_RETRY_AND_RECOVER
+#if DISABLED(UBL)
+  #define G29_RETRY_AND_RECOVER
+#endif
 #if ENABLED(G29_RETRY_AND_RECOVER)
   #define G29_MAX_RETRIES 3
   #define G29_HALT_ON_FAILURE
@@ -2173,20 +2175,29 @@
   //#define USER_SCRIPT_DONE "M117 User Script Done"
   #define USER_SCRIPT_AUDIBLE_FEEDBACK
   #define USER_SCRIPT_RETURN  // Return to status screen after a script
-  #define CUSTOM_USER_MENU_TITLE "Commissioning"
+  #define CUSTOM_USER_MENU_TITLE "Leveling Tools"
 
-  #define USER_DESC_1 "Mesh Commission"
-
-  #define USER_GCODE_1 "M117 \n M502 \n M500 \n M501 \n M190 S65 \n M117 Probing.... \n M104 S225 \n G28 \n G29 \n M500 \n G28 \n M420 S \n M109 S225 \n G1 X100 Y 100 \n G1 Z0 \n M77 \n M117 Set Z Offset"
+  #define CommBedTmp "65"
+  #if ENABLED(DUAL_Z)
+    #define ALIGN_CMD "G34I3\n"
+  #else
+    #define ALIGN_CMD ""
+  #endif
+  #define USER_DESC_1 "Setup"
+  #if (ENABLED(UBL))
+    #define USER_GCODE_1 "M190S" CommBedTmp"\nG28\n" ALIGN_CMD "G29P1\nG29S1\nG29S0\n G29F0.0\nG29A\nG28\nM109S225\nG1X150Y150\nG1Z0\nM500\nM400\nM77\nM117 Set Z Offset"
+  #else
+    #define USER_GCODE_1 "M190S" CommBedTmp"\n M117 Probing....\nM104S225\nG28\n" ALIGN_CMD "G29\nM400\nG28\nM420S1\nM109S225\nG1X100Y100\nG1Z0\nM500\nM400\nM77\nM117 Set Z Offset"
+  #endif
 
   #define USER_DESC_2 "PID Tune"
   #define USER_GCODE_2 "M106 S128 \n M303 C8 S225 E1 U \n M500 \n M117 PID Tune Done"
 
   #define USER_DESC_3 "Prep for Z Adjust"
-  #define USER_GCODE_3 "M190 S65\n M104 235 \n G28 \n G29 L1 \n G1 X100 Y 100 \n G1 Z0"
+  #define USER_GCODE_3 "M190 S" CommBedTmp" \n M104 S235 \n G28 \n G29 L1 \n G1 X100 Y 100 \n G1 Z0"
 
   #define USER_DESC_4 "Store Settings"
-  #define USER_GCODE_4 "M500"
+  #define USER_GCODE_4 "M500\nM117 Settings Stored"
 
   //#define USER_DESC_5 "Run Mesh Validation"
   //#define USER_GCODE_5 "G26"
