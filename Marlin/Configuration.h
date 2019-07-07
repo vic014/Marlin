@@ -6,7 +6,8 @@
 //#define SKR13 // 32 bit board - assumes 2208 drivers
 //#define SKR13_2209
 //#define SKR13_UART // Configure SKR board with drivers in UART mode
-
+#define DUAL_Z
+#define GRAPHICSLCD
 /**
  * Marlin 3D Printer Firmware
  * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
@@ -1832,7 +1833,9 @@
 //
 // Note: Usually sold with a white PCB.
 //
-#define REPRAP_DISCOUNT_SMART_CONTROLLER
+#if DISABLED(GRAPHICSLCD)
+  #define REPRAP_DISCOUNT_SMART_CONTROLLER
+#endif
 
 //
 // Original RADDS LCD Display+Encoder+SDCardReader
@@ -1972,7 +1975,9 @@
 // RepRapDiscount FULL GRAPHIC Smart Controller
 // http://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller
 //
-//#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+#if ENABLED(GRAPHICSLCD)
+  #define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+#endif
 
 //
 // ReprapWorld Graphical LCD
