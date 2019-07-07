@@ -101,12 +101,13 @@
  * respectfully request that you retain the unmodified Marlin boot screen.
  */
 
-// Enable to show the bitmap in Marlin/_Bootscreen.h on startup.
-//#define SHOW_CUSTOM_BOOTSCREEN
+#if ENABLED(GRAPHICSLCD)
+  // Enable to show the bitmap in Marlin/_Bootscreen.h on startup.
+  #define SHOW_CUSTOM_BOOTSCREEN
 
-// Enable to show the bitmap in Marlin/_Statusscreen.h on the status screen.
-//#define CUSTOM_STATUS_SCREEN_IMAGE
-
+  // Enable to show the bitmap in Marlin/_Statusscreen.h on the status screen.
+  #define CUSTOM_STATUS_SCREEN_IMAGE
+#endif
 // @section machine
 
 /**
@@ -1115,7 +1116,7 @@
 #if (ENABLED(BondtechBMG) && DISABLED(SKR13)) || (DISABLED(BondtechBMG) && ENABLED(SKR13))
   #define INVERT_E0_DIR true
 #else
-  #define INVERT_E0_DIR true
+  #define INVERT_E0_DIR false
 #endif
 #define INVERT_E1_DIR false
 #define INVERT_E2_DIR false
