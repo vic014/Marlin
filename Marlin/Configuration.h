@@ -3,9 +3,11 @@
 //#define E3DV6
 //#define FilamentSensorStd
 //#define FilamentSensorLerdge
-//#define SKR13 // 32 bit board - assumes 2208 drivers
-//#define SKR13_2209
+#define SKR13 // 32 bit board - assumes 2208 drivers
+#define SKR13_2209
+#define SKR_E_8825
 //#define SKR13_UART // Configure SKR board with drivers in UART mode
+
 #define DUAL_Z
 #define GRAPHICSLCD
 #define UBL
@@ -671,21 +673,30 @@
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
 
+#if ENABLED(SKR13, SKR_E_8825)
+  #define E0_DRIVER_TYPE DRV8825
+  #define E1_DRIVER_TYPE DRV8825
+#endif
+
 #if ENABLED(SKR13) && DISABLED(SKR13_UART)
   #if ENABLED(SKR13_2209)
     #define X_DRIVER_TYPE  TMC2209_STANDALONE
     #define Y_DRIVER_TYPE  TMC2209_STANDALONE
     #define Z_DRIVER_TYPE  TMC2209_STANDALONE
     #define Z2_DRIVER_TYPE TMC2209_STANDALONE
-    #define E0_DRIVER_TYPE TMC2209_STANDALONE
-    #define E1_DRIVER_TYPE TMC2209_STANDALONE
+    #if DISABLED(SKR_E_8825)
+      #define E0_DRIVER_TYPE TMC2209_STANDALONE
+      #define E1_DRIVER_TYPE TMC2209_STANDALONE
+    #endif
   #else
     #define X_DRIVER_TYPE  TMC2208_STANDALONE
     #define Y_DRIVER_TYPE  TMC2208_STANDALONE
     #define Z_DRIVER_TYPE  TMC2208_STANDALONE
     #define Z2_DRIVER_TYPE TMC2208_STANDALONE
-    #define E0_DRIVER_TYPE TMC2208_STANDALONE
-    #define E1_DRIVER_TYPE TMC2208_STANDALONE
+    #if DISABLED(SKR_E_8825)
+      #define E0_DRIVER_TYPE TMC2208_STANDALONE
+      #define E1_DRIVER_TYPE TMC2208_STANDALONE
+    #endif
   #endif
 #elif ENABLED(SKR13, SKR13_UART)
   #if ENABLED(SKR13_2209)
@@ -693,15 +704,19 @@
     #define Y_DRIVER_TYPE  TMC2209
     #define Z_DRIVER_TYPE  TMC2209
     #define Z2_DRIVER_TYPE TMC2209
-    #define E0_DRIVER_TYPE TMC2209
-    #define E1_DRIVER_TYPE TMC2209
+    #if DISABLED(SKR_E_8825)
+      #define E0_DRIVER_TYPE TMC2209
+      #define E1_DRIVER_TYPE TMC2209
+    #endif
   #else
     #define X_DRIVER_TYPE  TMC2208
     #define Y_DRIVER_TYPE  TMC2208
     #define Z_DRIVER_TYPE  TMC2208
     #define Z2_DRIVER_TYPE TMC2208
-    #define E0_DRIVER_TYPE TMC2208
-    #define E1_DRIVER_TYPE TMC2208
+    #if DISABLED(SKR_E_8825)
+      #define E0_DRIVER_TYPE TMC2208
+      #define E1_DRIVER_TYPE TMC2208
+    #endif
   #endif
 #else
   #define X_DRIVER_TYPE  A4988
@@ -1113,7 +1128,7 @@
 // @section extruder
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
-#if (ENABLED(BondtechBMG) && DISABLED(SKR13)) || (DISABLED(BondtechBMG) && ENABLED(SKR13))
+#if (ENABLED(BondtechBMG) && DISABLED(SKR13)) || (DISABLED(BondtechBMG) && ENABLED(SKR13) || ENABLED(SKR_E_8825, BondtechBMG, SKR13))
   #define INVERT_E0_DIR true
 #else
   #define INVERT_E0_DIR false
