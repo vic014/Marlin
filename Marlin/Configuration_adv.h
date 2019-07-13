@@ -783,7 +783,7 @@
  * lowest stepping frequencies.
  */
 #if ENABLED(SKR13)
-  #define ADAPTIVE_STEP_SMOOTHING
+  //#define ADAPTIVE_STEP_SMOOTHING
 #endif
 /**
  * Custom Microstepping
