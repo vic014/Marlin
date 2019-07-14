@@ -2399,16 +2399,16 @@
 #endif
   #define USER_DESC_1 "Setup"
   #if (ENABLED(ABL_UBL))
-    #define USER_GCODE_1 "M190S" CommBedTmp"\nG28\nG29P1\nG29S1\nG29S0\n G29F0.0\nG29A\nG28\nM109S225\nG1X150Y150\nG1Z0\nM500\nM400\nM77\nM117 Set Z Offset"
+    #define USER_GCODE_1 "M190S" CommBedTmp"\nG28\nG29P1\nG29S1\nG29S0\n G29F0.0\nG29A\nG28\nM109S215\nG1X150Y150\nG1Z0\nM500\nM400\nM77\nM117 Set Z Offset"
   #elif ENABLED(ABL_BI)
-    #define USER_GCODE_1 "M190S" CommBedTmp"\n M117 Probing....\nM104S225\nG28\nG29\nM400\nG28\nM420S1\nM109S225\nG1X100Y100\nG1Z0\nM500\nM400\nM77\nM117 Set Z Offset"
+    #define USER_GCODE_1 "M190S" CommBedTmp"\n M117 Probing....\nM104S215\nG28\nG29\nM400\nG28\nM420S1\nM109S215\nG1X100Y100\nG1Z0\nM500\nM400\nM77\nM117 Set Z Offset"
   #endif
 
   #define USER_DESC_2 "PID Tune"
-  #define USER_GCODE_2 "M106 S128 \n M303 C8 S225 E1 U \n M500 \n M117 PID Tune Done"
+  #define USER_GCODE_2 "M106 S128 \n M303 C8 S215 E1 U \n M500 \n M117 PID Tune Done"
 
   #define USER_DESC_3 "Prep for Z Adjust"
-  #define USER_GCODE_3 "M190 S" CommBedTmp" \n M104 S235 \n G28 \n G29 L1 \n G1 X100 Y 100 \n G1 Z0"
+  #define USER_GCODE_3 "M190 S" CommBedTmp" \n M104 S215 \n G28 \n G29 L1 \n G1 X100 Y 100 \n G1 Z0"
 
   #define USER_DESC_4 "Store Settings"
   #define USER_GCODE_4 "M500\nM117 Settings Stored"
