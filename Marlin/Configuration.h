@@ -6,13 +6,13 @@
 */
 
 //#define MachineEnder2
-//#define MachineEnder3
+#define MachineEnder3
 //#define MachineEnder4
 //#define MachineMini
 //#define MachineCR20 //Buzzer doesnt work
 //#define MachineCR20Pro
 //#define MachineCR10
-#define MachineCR10S
+//#define MachineCR10S
 //#define MachineCR10SPro //Currently only supports GraphicLCD. Graphics LCD Requires soldering R64 and R66
 //#define MachineCRX //Currently only supports GraphicLCD
 //#define MachineS4
@@ -36,7 +36,8 @@
 //#define DualFilSensors //Using dual filament sensors on XMax and YMAX
 #define SKR13 // 32 bit board - assumes 2208 drivers
 //#define SKR13_2209
-//#define SKR13_UART // Configure SKR board with drivers in UART mode
+#define SKR13_UART // Configure SKR board with drivers in UART mode
+#define SKR13_ReverseSteppers // Some users reported directions backwards than others on SKR with various drivers.
 
 /*
    Hotend Type
@@ -86,7 +87,7 @@
    If you have upgraded to an S board but kept the original display
    then enable this line
 */
-//#define OrigLCD
+#define OrigLCD
 
 /*
    Choose ABL sensor type below
@@ -94,7 +95,7 @@
 */
 //#define ABL_EZABL // TH3D EZABL or Any NO Sensor
 //#define ABL_NCSW //Creality ABL or Any NC Sensor
-//#define ABL_BLTOUCH
+#define ABL_BLTOUCH
 
 //#define CREALITY_ABL_MOUNT //Using creality ABL mount
 //#define E3D_DUALFAN_MOUNT // Using HD Modular mount as above with 2 5015 blowers and sensor on the right
@@ -106,7 +107,7 @@
    Melzi board users may only select ABL_BI for bilinear leveling
 */
 //#define ABL_BI
-//#define ABL_UBL
+#define ABL_UBL
 
 //#define POWER_LOSS_RECOVERY //Large and does not fit with any other features on Melzi, or UBL on Atmega
 /*
@@ -1504,7 +1505,7 @@
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
 
-#if(ENABLED(MachineCR10Orig))
+#if ANY(MachineCR10Orig, SKR13_ReverseSteppers)
   #define INVERT_X_DIR true
   #define INVERT_Y_DIR true
   #define INVERT_Z_DIR false
