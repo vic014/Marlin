@@ -942,13 +942,13 @@ void tool_change(const uint8_t tmp_extruder, bool no_move/*=false*/) {
 
         #if ENABLED(SINGLENOZZLE)
           #if FAN_COUNT > 0
-            singlenozzle_fan_speed[active_extruder] = thermalManager.fan_speed[0];
-            thermalManager.fan_speed[0] = singlenozzle_fan_speed[tmp_extruder];
+            singlenozzle_fan_speed[!active_extruder] = thermalManager.fan_speed[0];
+            thermalManager.fan_speed[0] = singlenozzle_fan_speed[active_extruder];
           #endif
 
-          singlenozzle_temp[active_extruder] = thermalManager.temp_hotend[0].target;
-          if (singlenozzle_temp[tmp_extruder] && singlenozzle_temp[tmp_extruder] != singlenozzle_temp[active_extruder]) {
-            thermalManager.setTargetHotend(singlenozzle_temp[tmp_extruder], 0);
+          singlenozzle_temp[!active_extruder] = thermalManager.temp_hotend[0].target;
+          if (singlenozzle_temp[active_extruder] && singlenozzle_temp[active_extruder] != singlenozzle_temp[!active_extruder]) {
+            thermalManager.setTargetHotend(singlenozzle_temp[active_extruder], 0);
             #if HAS_DISPLAY
               thermalManager.set_heating_message(0);
             #endif
