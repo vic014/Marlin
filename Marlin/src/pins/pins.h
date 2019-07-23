@@ -178,6 +178,8 @@
   #include "ramps/pins_Z_BOLT_X_SERIES.h"       // ATmega2560                             env:megaatmega2560
 #elif MB(TT_OSCAR)
   #include "ramps/pins_TT_OSCAR.h"              // ATmega2560                             env:megaatmega2560
+#elif MB(SIDEWINDER_X1)
+  #include "ramps/pins_SIDEWINDER_X1.h"              // ATmega2560                             env:megaatmega2560
 
 //
 // RAMBo and derivatives

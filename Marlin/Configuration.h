@@ -1,8 +1,8 @@
 #define ABL_BLTOUCH // Replaces RGB LED
-#define GraphicalLCD // Will work next to MKS TFT
-#define TMC_2208 // Defaults to TMC2100
+//#define GraphicalLCD // Will work next to MKS TFT
+//#define TMC_2208 // Defaults to TMC2100
 #define ABL_UBL // Defaults to Bilinear
-#define RunoutSensor // Tinymachines Lerdge Sensor
+//#define RunoutSensor // Tinymachines Lerdge Sensor
 #define RELOCATE_LED // Since the bltouch by default removed the LED, set this if you simply moved them off the hotend
 
 /**
@@ -138,7 +138,7 @@
 
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-  #define MOTHERBOARD BOARD_MKS_GEN_L
+  #define MOTHERBOARD BOARD_SIDEWINDER_X1
 #endif
 
 // Name displayed in the LCD "Ready" message and Info menu
