@@ -3,6 +3,7 @@
 #define TMC_2208 // Defaults to TMC2100
 #define ABL_UBL // Defaults to Bilinear
 #define RunoutSensor // Tinymachines Lerdge Sensor
+#define RELOCATE_LED // Since the bltouch by default removed the LED, set this if you simply moved them off the hotend
 
 /**
  * Marlin 3D Printer Firmware
@@ -649,7 +650,11 @@
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
 #define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
 #define Y_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
-#define Z_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#if ENABLED(ABL_BLTOUCH)
+  #define Z_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+#else
+  #define Z_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
+#endif
 #define X_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define Y_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
 #define Z_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -2165,7 +2170,7 @@
  * LED Type. Enable only one of the following two options.
  *
  */
-#if DISABLED(ABL_BLTOUCH)
+#if DISABLED(ABL_BLTOUCH, RELOCATE_LED)
   #define RGB_LED
 #endif
 //#define RGBW_LED
