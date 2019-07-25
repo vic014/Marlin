@@ -333,8 +333,8 @@
 
   #define Z_SERIAL_TX_PIN    42
   #define Z_SERIAL_RX_PIN    65
-  #define Z2_SERIAL_TX_PIN   -1
-  #define Z2_SERIAL_RX_PIN   -1
+  #define Z2_SERIAL_TX_PIN   2
+  #define Z2_SERIAL_RX_PIN   15
 
   #define E0_SERIAL_TX_PIN   44
   #define E0_SERIAL_RX_PIN   66
