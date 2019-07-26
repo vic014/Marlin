@@ -142,7 +142,7 @@
 
   #define ADAPTIVE_FAN_SLOWING              // Slow part cooling fan if temperature drops
   #if BOTH(ADAPTIVE_FAN_SLOWING, PIDTEMP)
-    //#define NO_FAN_SLOWING_IN_PID_TUNING    // Don't slow fan speed during M303
+    #define NO_FAN_SLOWING_IN_PID_TUNING    // Don't slow fan speed during M303
   #endif
 
   /**
@@ -881,7 +881,10 @@
  * LED Control Menu
  * Enable this feature to add LED Control to the LCD menu
  */
-//#define LED_CONTROL_MENU
+#if DISABLED(ABL_BLTOUCH) || ENABLED(RELOCATE_LED)
+  #define LED_CONTROL_MENU
+#endif
+
 #if ENABLED(LED_CONTROL_MENU)
   #define LED_COLOR_PRESETS                 // Enable the Preset Color menu option
   #if ENABLED(LED_COLOR_PRESETS)
@@ -890,7 +893,7 @@
     #define LED_USER_PRESET_BLUE         0  // User defined BLUE value
     #define LED_USER_PRESET_WHITE      255  // User defined WHITE value
     #define LED_USER_PRESET_BRIGHTNESS 255  // User defined intensity
-    //#define LED_USER_PRESET_STARTUP       // Have the printer display the user preset color on startup
+    #define LED_USER_PRESET_STARTUP       // Have the printer display the user preset color on startup
   #endif
 #endif // LED_CONTROL_MENU
 
@@ -1000,7 +1003,7 @@
   /**
    * Auto-report SdCard status with M27 S<seconds>
    */
-  //#define AUTO_REPORT_SD_STATUS
+  #define AUTO_REPORT_SD_STATUS
 
   /**
    * Support for USB thumb drives using an Arduino USB Host Shield or
@@ -1765,7 +1768,7 @@
   #define  Z_SLAVE_ADDRESS 0
   #define X2_SLAVE_ADDRESS 0
   #define Y2_SLAVE_ADDRESS 0
-  #define Z2_SLAVE_ADDRESS 0
+  #define Z2_SLAVE_ADDRESS 3
   #define Z3_SLAVE_ADDRESS 0
   #define E0_SLAVE_ADDRESS 0
   #define E1_SLAVE_ADDRESS 0
@@ -2300,27 +2303,36 @@
 /**
  * User-defined menu items that execute custom GCode
  */
-//#define CUSTOM_USER_MENUS
+#if(ENABLED(ABL_UBL) || ENABLED(ABL_BLTOUCH))
+  #define CUSTOM_USER_MENUS
+#endif
+
 #if ENABLED(CUSTOM_USER_MENUS)
-  //#define CUSTOM_USER_MENU_TITLE "Custom Commands"
-  #define USER_SCRIPT_DONE "M117 User Script Done"
+  //#define USER_SCRIPT_DONE "M117 User Script Done"
   #define USER_SCRIPT_AUDIBLE_FEEDBACK
-  //#define USER_SCRIPT_RETURN  // Return to status screen after a script
+  #define USER_SCRIPT_RETURN  // Return to status screen after a script
+  #define CUSTOM_USER_MENU_TITLE "Leveling Tools"
 
-  #define USER_DESC_1 "Home & UBL Info"
-  #define USER_GCODE_1 "G28\nG29 W"
+  #define CommBedTmp "75"
 
-  #define USER_DESC_2 "Preheat for " PREHEAT_1_LABEL
-  #define USER_GCODE_2 "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
+  #define USER_DESC_1 "Setup"
+  #if (ENABLED(ABL_UBL))
+    #define USER_GCODE_1 "M190S" CommBedTmp"\nG28\nG34I3\nG29P1\nG29S1\nG29S0\n G29F0.0\nG29A\nG28\nM109S215\nG1X150Y150\nG1Z0\nM500\nM400\nM77\nM117 Set Z Offset"
+  #elif ENABLED(ABL_BI)
+    #define USER_GCODE_1 "M190S" CommBedTmp"\nM104S215\nG34I3\nG28\nG29\nM400\nG28\nM420S1\nM109S215\nG1X100Y100\nG1Z0\nM500\nM400\nM77\nM117 Set Z Offset"
+  #endif
 
-  #define USER_DESC_3 "Preheat for " PREHEAT_2_LABEL
-  #define USER_GCODE_3 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)
+  #define USER_DESC_2 "PID Tune"
+  #define USER_GCODE_2 "M106 S128 \n M303 C8 S215 E1 U \n M500 \n M117 PID Tune Done"
 
-  #define USER_DESC_4 "Heat Bed/Home/Level"
-  #define USER_GCODE_4 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nG28\nG29"
+  #define USER_DESC_3 "Prep for Z Adjust"
+  #define USER_GCODE_3 "M190 S" CommBedTmp" \n M104 S215 \n G28 \n G29 L1 \n G1 X100 Y 100 \n G1 Z0"
 
-  #define USER_DESC_5 "Home & Info"
-  #define USER_GCODE_5 "G28\nM503"
+  #define USER_DESC_4 "Store Settings"
+  #define USER_GCODE_4 "M500\nM117 Settings Stored"
+
+  //#define USER_DESC_5 "Run Mesh Validation"
+  //#define USER_GCODE_5 "G26"
 #endif
 
 /**
@@ -2554,7 +2566,7 @@
 /**
  * M43 - display pin status, watch pins for changes, watch endstops & toggle LED, Z servo probe test, toggle pins
  */
-#define PINS_DEBUGGING
+//#define PINS_DEBUGGING
 
 // Enable Marlin dev mode which adds some special commands
 //#define MARLIN_DEV_MODE
