@@ -331,13 +331,13 @@
   #define Y2_SERIAL_TX_PIN   -1
   #define Y2_SERIAL_RX_PIN   -1
 
-  #define Z_SERIAL_TX_PIN    42
-  #define Z_SERIAL_RX_PIN    65
+  #define Z_SERIAL_TX_PIN    59
+  #define Z_SERIAL_RX_PIN    64
   #define Z2_SERIAL_TX_PIN   59
   #define Z2_SERIAL_RX_PIN   64
 
-  #define E0_SERIAL_TX_PIN   44
-  #define E0_SERIAL_RX_PIN   66
+  #define E0_SERIAL_TX_PIN   59
+  #define E0_SERIAL_RX_PIN   64
   #define E1_SERIAL_TX_PIN   -1
   #define E1_SERIAL_RX_PIN   -1
   #define E2_SERIAL_TX_PIN   -1

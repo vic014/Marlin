@@ -1765,12 +1765,12 @@
    */
   #define  X_SLAVE_ADDRESS 0
   #define  Y_SLAVE_ADDRESS 0
-  #define  Z_SLAVE_ADDRESS 0
+  #define  Z_SLAVE_ADDRESS 1
   #define X2_SLAVE_ADDRESS 0
   #define Y2_SLAVE_ADDRESS 0
   #define Z2_SLAVE_ADDRESS 3
   #define Z3_SLAVE_ADDRESS 0
-  #define E0_SLAVE_ADDRESS 0
+  #define E0_SLAVE_ADDRESS 2
   #define E1_SLAVE_ADDRESS 0
   #define E2_SLAVE_ADDRESS 0
   #define E3_SLAVE_ADDRESS 0
