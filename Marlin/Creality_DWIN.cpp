@@ -130,7 +130,6 @@ void RTSSHOW::RTS_SDCardInit(void)
 
 			delay(3);
 			strncpy(CardRecbuf.Cardshowfilename[num], card.longFilename,j);
-
 			strcpy(CardRecbuf.Cardfilename[num],card.filename);
 			CardRecbuf.addr[num] = SDFILE_ADDR +num*10;
 			RTS_SndData(CardRecbuf.Cardshowfilename[num],CardRecbuf.addr[num]);
@@ -160,7 +159,7 @@ void RTSSHOW::RTS_SDCardInit(void)
 void RTSSHOW::RTS_SDCardUpate(void)
 {
 	//SERIAL_ECHO("\n SDUpdate ");
-	const bool sd_status = IS_SD_INSERTED;
+	const bool sd_status = card.cardOK;
     	if (sd_status != lcd_sd_status)
 	{
 		//SERIAL_PROTOCOLLN("  ***test6*** ");

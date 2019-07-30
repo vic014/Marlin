@@ -22,8 +22,8 @@
 //#define MachineMini
 //#define MachineCR20 //Buzzer doesnt work, need to map pin
 //#define MachineCR10Std
-//#define MachineCR10SPro
-#define MachineCR10Max
+#define MachineCR10SPro
+//#define MachineCR10Max
 //#define MachineCRX
 //#define MachineS4
 //#define MachineS5
