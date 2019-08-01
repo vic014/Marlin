@@ -613,7 +613,7 @@
   #define RESTORE_LEVELING_AFTER_G34
 
   // On a 300mm bed a 5% grade would give a misalignment of ~1.5cm
-  #define G34_MAX_GRADE  5  // (%) Maximum incline G34 will handle
+  #define G34_MAX_GRADE  15  // (%) Maximum incline G34 will handle
 
   // Use the amplification factor to de-/increase correction step.
   // In case the stepper (spindle) position is further out than the test point
