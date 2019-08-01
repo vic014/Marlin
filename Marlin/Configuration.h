@@ -1190,7 +1190,7 @@
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
 
 #define NUM_RUNOUT_SENSORS   1     // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
- #if ENABLED(lerdgeFilSensor)
+ #if ENABLED(FilamentSensorLerdge)
    #define FIL_RUNOUT_INVERTING false // set to true to invert the logic of the sensor.
  #else
    #define FIL_RUNOUT_INVERTING true // set to true to invert the logic of the sensor.
