@@ -100,11 +100,13 @@
  * respectfully request that you retain the unmodified Marlin boot screen.
  */
 
+#if ENABLED(GRAPHICSLCD)
 // Enable to show the bitmap in Marlin/_Bootscreen.h on startup.
-//#define SHOW_CUSTOM_BOOTSCREEN
+  #define SHOW_CUSTOM_BOOTSCREEN
 
 // Enable to show the bitmap in Marlin/_Statusscreen.h on the status screen.
-//#define CUSTOM_STATUS_SCREEN_IMAGE
+  #define CUSTOM_STATUS_SCREEN_IMAGE
+#endif
 
 // @section machine
 

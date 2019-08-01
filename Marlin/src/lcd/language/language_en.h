@@ -265,6 +265,12 @@
 #ifndef MSG_LCD_TILTING_MESH
   #define MSG_LCD_TILTING_MESH                _UxGT("Tilting point")
 #endif
+#ifndef MSG_M48_TEST
+  #define MSG_M48_TEST                        _UxGT("M48 Probe Test")
+#endif
+#ifndef MSG_M48_DEVIATION
+  #define MSG_M48_DEVIATION                   _UxGT("Deviation")
+#endif
 #ifndef MSG_IDEX_MENU
   #define MSG_IDEX_MENU                       _UxGT("IDEX Mode")
 #endif
@@ -543,8 +549,8 @@
 #ifndef MSG_HOTEND_TOO_COLD
   #define MSG_HOTEND_TOO_COLD                 _UxGT("Hotend too cold")
 #endif
-#ifndef MSG_MOVE_0025MM
-  #define MSG_MOVE_0025MM                     _UxGT("Move 0.025mm")
+#ifndef MSG_MOVE_Z_DIST
+  #define MSG_MOVE_Z_DIST                     _UxGT("Move %smm")
 #endif
 #ifndef MSG_MOVE_01MM
   #define MSG_MOVE_01MM                       _UxGT("Move 0.1mm")
@@ -868,13 +874,16 @@
   #define MSG_AUTORETRACT                     _UxGT("AutoRetr.")
 #endif
 #ifndef MSG_FILAMENT_SWAP_LENGTH
-  #define MSG_FILAMENT_SWAP_LENGTH            _UxGT("Retract Distance")
+  #define MSG_FILAMENT_SWAP_LENGTH            _UxGT("Swap Length")
+#endif
+#ifndef MSG_FILAMENT_PURGE_LENGTH
+  #define MSG_FILAMENT_PURGE_LENGTH           _UxGT("Purge Length")
 #endif
 #ifndef MSG_TOOL_CHANGE
-  #define MSG_TOOL_CHANGE                      _UxGT("Tool Change")
+  #define MSG_TOOL_CHANGE                     _UxGT("Tool Change")
 #endif
 #ifndef MSG_TOOL_CHANGE_ZLIFT
-  #define MSG_TOOL_CHANGE_ZLIFT                _UxGT("Z Raise")
+  #define MSG_TOOL_CHANGE_ZLIFT               _UxGT("Z Raise")
 #endif
 #ifndef MSG_SINGLENOZZLE_PRIME_SPD
   #define MSG_SINGLENOZZLE_PRIME_SPD          _UxGT("Prime Speed")
@@ -1381,6 +1390,10 @@
 #endif
 #ifndef MSG_END_Z
   #define MSG_END_Z                           _UxGT("  End Z")
+#endif
+
+#ifndef MSG_GAMES
+  #define MSG_GAMES                           _UxGT("Games")
 #endif
 #ifndef MSG_BRICKOUT
   #define MSG_BRICKOUT                        _UxGT("Brickout")
