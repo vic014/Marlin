@@ -5,11 +5,11 @@
 //#define FilamentSensorLerdge
 //#define SKR13 // 32 bit board - assumes 2208 drivers
 //#define SKR13_2209
-#define SKR_E_8825
+//#define SKR_E_8825
 //#define SKR13_UART // Configure SKR board with drivers in UART mode
 //#define DUAL_Z
 //#define GRAPHICSLCD
-#define UBL
+//#define UBL
 
 /**
  * Marlin 3D Printer Firmware
