@@ -32,7 +32,10 @@
  *
  */
 #pragma once
-#define Y_STOP_PIN 14
+
+#if DISABLED(SKR13)
+  #define Y_STOP_PIN 14
+#endif
 /**
  * Configuration.h
  *
