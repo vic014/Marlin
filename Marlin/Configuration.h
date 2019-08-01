@@ -5,10 +5,11 @@
 //#define FilamentSensorLerdge
 //#define SKR13 // 32 bit board - assumes 2208 drivers
 //#define SKR13_2209
+#define SKR_E_8825
 //#define SKR13_UART // Configure SKR board with drivers in UART mode
 //#define DUAL_Z
 //#define GRAPHICSLCD
-
+#define UBL
 
 /**
  * Marlin 3D Printer Firmware
@@ -687,21 +688,30 @@
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
 
+#if ENABLED(SKR13, SKR_E_8825)
+  #define E0_DRIVER_TYPE DRV8825
+  #define E1_DRIVER_TYPE DRV8825
+#endif
+
 #if ENABLED(SKR13) && DISABLED(SKR13_UART)
   #if ENABLED(SKR13_2209)
     #define X_DRIVER_TYPE  TMC2209_STANDALONE
     #define Y_DRIVER_TYPE  TMC2209_STANDALONE
     #define Z_DRIVER_TYPE  TMC2209_STANDALONE
     #define Z2_DRIVER_TYPE TMC2209_STANDALONE
-    #define E0_DRIVER_TYPE TMC2209_STANDALONE
-    #define E1_DRIVER_TYPE TMC2209_STANDALONE
+    #if DISABLED(SKR_E_8825)
+      #define E0_DRIVER_TYPE TMC2209_STANDALONE
+      #define E1_DRIVER_TYPE TMC2209_STANDALONE
+    #endif
   #else
     #define X_DRIVER_TYPE  TMC2208_STANDALONE
     #define Y_DRIVER_TYPE  TMC2208_STANDALONE
     #define Z_DRIVER_TYPE  TMC2208_STANDALONE
     #define Z2_DRIVER_TYPE TMC2208_STANDALONE
-    #define E0_DRIVER_TYPE TMC2208_STANDALONE
-    #define E1_DRIVER_TYPE TMC2208_STANDALONE
+    #if DISABLED(SKR_E_8825)
+      #define E0_DRIVER_TYPE TMC2208_STANDALONE
+      #define E1_DRIVER_TYPE TMC2208_STANDALONE
+    #endif
   #endif
 #elif ENABLED(SKR13, SKR13_UART)
   #if ENABLED(SKR13_2209)
@@ -709,15 +719,19 @@
     #define Y_DRIVER_TYPE  TMC2209
     #define Z_DRIVER_TYPE  TMC2209
     #define Z2_DRIVER_TYPE TMC2209
-    #define E0_DRIVER_TYPE TMC2209
-    #define E1_DRIVER_TYPE TMC2209
+    #if DISABLED(SKR_E_8825)
+      #define E0_DRIVER_TYPE TMC2209
+      #define E1_DRIVER_TYPE TMC2209
+    #endif
   #else
     #define X_DRIVER_TYPE  TMC2208
     #define Y_DRIVER_TYPE  TMC2208
     #define Z_DRIVER_TYPE  TMC2208
     #define Z2_DRIVER_TYPE TMC2208
-    #define E0_DRIVER_TYPE TMC2208
-    #define E1_DRIVER_TYPE TMC2208
+    #if DISABLED(SKR_E_8825)
+      #define E0_DRIVER_TYPE TMC2208
+      #define E1_DRIVER_TYPE TMC2208
+    #endif
   #endif
 #else
   #define X_DRIVER_TYPE  A4988
@@ -983,7 +997,7 @@
 #define Z_PROBE_OFFSET_FROM_EXTRUDER 0   // Z offset: -below +above  [the nozzle]
 
 // Certain types of probes need to stay away from edges
-#define MIN_PROBE_EDGE 10
+#define MIN_PROBE_EDGE 5
 
 // X and Y axis travel speed (mm/m) between probes
 #define XY_PROBE_SPEED 3000
@@ -1025,7 +1039,7 @@
 #define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
 //#define Z_AFTER_PROBING           5 // Z position after probing is done
 
-#define Z_PROBE_LOW_POINT          -2 // Farthest distance below the trigger-point to go before stopping
+#define Z_PROBE_LOW_POINT          -3 // Farthest distance below the trigger-point to go before stopping
 
 // For M851 give a range for adjusting the Z probe offset
 #define Z_PROBE_OFFSET_RANGE_MIN -20
@@ -1242,8 +1256,11 @@
  */
 //#define AUTO_BED_LEVELING_3POINT
 //#define AUTO_BED_LEVELING_LINEAR
-#define AUTO_BED_LEVELING_BILINEAR
-//#define AUTO_BED_LEVELING_UBL
+#if DISABLED(UBL)
+  #define AUTO_BED_LEVELING_BILINEAR
+#else
+  #define AUTO_BED_LEVELING_UBL
+#endif
 //#define MESH_BED_LEVELING
 
 /**
@@ -1288,7 +1305,7 @@
 #if EITHER(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
 
   // Set the number of grid points per dimension.
-  #define GRID_MAX_POINTS_X 4
+  #define GRID_MAX_POINTS_X 10
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   // Set the boundaries for probing (where the probe can reach).
@@ -1355,24 +1372,24 @@
  * Override if the automatically selected points are inadequate.
  */
 #if EITHER(AUTO_BED_LEVELING_3POINT, AUTO_BED_LEVELING_UBL)
-  //#define PROBE_PT_1_X 15
-  //#define PROBE_PT_1_Y 180
-  //#define PROBE_PT_2_X 15
-  //#define PROBE_PT_2_Y 20
-  //#define PROBE_PT_3_X 170
-  //#define PROBE_PT_3_Y 20
+  #define PROBE_PT_1_X 50
+  #define PROBE_PT_1_Y 350
+  #define PROBE_PT_2_X 350
+  #define PROBE_PT_2_Y 350
+  #define PROBE_PT_3_X 350
+  #define PROBE_PT_3_Y 50
 #endif
 
 /**
  * Add a bed leveling sub-menu for ABL or MBL.
  * Include a guided procedure if manual probing is enabled.
  */
-//#define LCD_BED_LEVELING
+#define LCD_BED_LEVELING
 
 #if ENABLED(LCD_BED_LEVELING)
   #define MESH_EDIT_Z_STEP  0.025 // (mm) Step size while manually probing Z axis.
   #define LCD_PROBE_Z_RANGE 4     // (mm) Z Range centered on Z_MIN_POS for LCD Z adjustment
-  //#define MESH_EDIT_MENU        // Add a menu to edit mesh points
+  #define MESH_EDIT_MENU        // Add a menu to edit mesh points
 #endif
 
 // Add a menu item to move between bed corners for manual bed adjustment
