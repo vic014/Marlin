@@ -1241,7 +1241,9 @@
  * Repeatedly attempt G29 leveling until it succeeds.
  * Stop after G29_MAX_RETRIES attempts.
  */
-#define G29_RETRY_AND_RECOVER
+#if DISABLED(UBL)
+  #define G29_RETRY_AND_RECOVER
+#endif
 #if ENABLED(G29_RETRY_AND_RECOVER)
   #define G29_MAX_RETRIES 3
   #define G29_HALT_ON_FAILURE
