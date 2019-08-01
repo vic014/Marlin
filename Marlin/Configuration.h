@@ -6,8 +6,9 @@
 //#define SKR13 // 32 bit board - assumes 2208 drivers
 //#define SKR13_2209
 //#define SKR13_UART // Configure SKR board with drivers in UART mode
-#define DUAL_Z
-#define GRAPHICSLCD
+//#define DUAL_Z
+//#define GRAPHICSLCD
+
 
 /**
  * Marlin 3D Printer Firmware
@@ -31,7 +32,7 @@
  *
  */
 #pragma once
-
+#define Y_STOP_PIN 14
 /**
  * Configuration.h
  *
