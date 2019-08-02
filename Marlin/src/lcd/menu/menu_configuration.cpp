@@ -50,11 +50,15 @@
 #define HAS_DEBUG_MENU ENABLED(LCD_PROGRESS_BAR_TEST)
 
 void menu_advanced_settings();
-void menu_delta_calibrate();
+#if EITHER(DELTA_CALIBRATION_MENU, DELTA_AUTO_CALIBRATION)
+  void menu_delta_calibrate();
+#endif
 
 static void lcd_factory_settings() {
   settings.reset();
-  ui.completion_feedback();
+  #if HAS_BUZZER
+    ui.completion_feedback();
+  #endif
 }
 
 #if ENABLED(LCD_PROGRESS_BAR_TEST)

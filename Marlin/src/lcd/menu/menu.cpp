@@ -31,7 +31,9 @@
 #include "../../module/printcounter.h"
 #include "../../gcode/queue.h"
 #include "../../sd/cardreader.h"
-#include "../../libs/buzzer.h"
+#if HAS_BUZZER
+  #include "../../libs/buzzer.h"
+#endif
 
 #if ENABLED(EEPROM_SETTINGS)
   #include "../../module/configuration_store.h"
@@ -156,15 +158,16 @@ void MenuItemBase::init(PGM_P const el, void * const ev, const int32_t minv, con
 
 #define DEFINE_MENU_EDIT_ITEM(NAME) template class TMenuItem<MenuItemInfo_##NAME>
 
+DEFINE_MENU_EDIT_ITEM(percent);     // 100%       right-justified
 DEFINE_MENU_EDIT_ITEM(int3);        // 123, -12   right-justified
 DEFINE_MENU_EDIT_ITEM(int4);        // 1234, -123 right-justified
 DEFINE_MENU_EDIT_ITEM(int8);        // 123, -12   right-justified
 DEFINE_MENU_EDIT_ITEM(uint8);       // 123        right-justified
-DEFINE_MENU_EDIT_ITEM(uint16_3);    // 123, -12   right-justified
+DEFINE_MENU_EDIT_ITEM(uint16_3);    // 123        right-justified
 DEFINE_MENU_EDIT_ITEM(uint16_4);    // 1234       right-justified
 DEFINE_MENU_EDIT_ITEM(uint16_5);    // 12345      right-justified
 DEFINE_MENU_EDIT_ITEM(float3);      // 123        right-justified
-DEFINE_MENU_EDIT_ITEM(float52);     // 123.45
+DEFINE_MENU_EDIT_ITEM(float52);     // _2.34, 12.34, -2.34 or 123.45, -23.45
 DEFINE_MENU_EDIT_ITEM(float43);     // 1.234
 DEFINE_MENU_EDIT_ITEM(float5);      // 12345      right-justified
 DEFINE_MENU_EDIT_ITEM(float5_25);   // 12345      right-justified (25 increment)
@@ -345,13 +348,15 @@ void scroll_screen(const uint8_t limit, const bool is_menu) {
     encoderTopLine = encoderLine;
 }
 
-void MarlinUI::completion_feedback(const bool good/*=true*/) {
-  if (good) {
-    BUZZ(100, 659);
-    BUZZ(100, 698);
+#if HAS_BUZZER
+  void MarlinUI::completion_feedback(const bool good/*=true*/) {
+    if (good) {
+      BUZZ(100, 659);
+      BUZZ(100, 698);
+    }
+    else BUZZ(20, 440);
   }
-  else BUZZ(20, 440);
-}
+#endif
 
 #if HAS_LINE_TO_Z
 
@@ -432,8 +437,18 @@ void MarlinUI::completion_feedback(const bool good/*=true*/) {
 #endif
 
 #if ENABLED(EEPROM_SETTINGS)
-  void lcd_store_settings()   { ui.completion_feedback(settings.save()); }
-  void lcd_load_settings()    { ui.completion_feedback(settings.load()); }
+  void lcd_store_settings() {
+    const bool saved = settings.save();
+    #if HAS_BUZZER
+      ui.completion_feedback(saved);
+    #endif
+  }
+  void lcd_load_settings() {
+    const bool loaded = settings.load();
+    #if HAS_BUZZER
+      ui.completion_feedback(loaded);
+    #endif
+  }
 #endif
 
 void _lcd_draw_homing() {
@@ -452,6 +467,7 @@ void _lcd_draw_homing() {
 //
 bool MarlinUI::selection; // = false
 bool MarlinUI::update_selection() {
+  encoder_direction_select();
   if (encoderPosition) {
     selection = int16_t(encoderPosition) > 0;
     encoderPosition = 0;
