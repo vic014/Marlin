@@ -877,7 +877,7 @@
 // Leave out seldom-used LCD menu items to recover some Program Memory
 #if(ENABLED(MachineCR10Orig) || ENABLED(LowMemoryBoard))
   #define SLIM_LCD_MENUS
-
+#endif
 
 // Scroll a longer status message into view
 #if(DISABLED(MachineCR10Orig) && DISABLED(LowMemoryBoard))
