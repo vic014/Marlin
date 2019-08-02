@@ -598,7 +598,9 @@
  * Z Steppers Auto-Alignment
  * Add the G34 command to align multiple Z steppers using a bed probe.
  */
-#define Z_STEPPER_AUTO_ALIGN
+#if ENABLED(ABL_BLTOUCH)
+  #define Z_STEPPER_AUTO_ALIGN
+#endif
 #if ENABLED(Z_STEPPER_AUTO_ALIGN)
   // Define probe X and Y positions for Z1, Z2 [, Z3]
   #define Z_STEPPER_ALIGN_X { 30, 270 }
@@ -1190,7 +1192,9 @@
 
   //#define BABYSTEP_DISPLAY_TOTAL          // Display total babysteps since last G28
 
-  #define BABYSTEP_ZPROBE_OFFSET          // Combine M851 Z and Babystepping
+  #if ENABLED(ABL_BLTOUCH)
+    #define BABYSTEP_ZPROBE_OFFSET          // Combine M851 Z and Babystepping
+  #endif
   #if ENABLED(BABYSTEP_ZPROBE_OFFSET)
     //#define BABYSTEP_HOTEND_Z_OFFSET      // For multiple hotends, babystep relative Z offsets
     #if ENABLED(GraphicalLCD)

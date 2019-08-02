@@ -1,9 +1,9 @@
-#define ABL_BLTOUCH // Replaces RGB LED
+//#define ABL_BLTOUCH // Replaces RGB LED
 #define GraphicalLCD // Will work next to MKS TFT
-#define TMC_2209 // Defaults to TMC2100
-#define ABL_UBL // Defaults to Bilinear
+//#define TMC_2209 // Defaults to TMC2100
+//#define ABL_UBL // Defaults to Bilinear
 //#define RunoutSensor // Tinymachines Lerdge Sensor
-#define RELOCATE_LED // Since the bltouch by default removed the LED, set this if you simply moved them off the hotend
+//#define RELOCATE_LED // Since the bltouch by default removed the LED, set this if you simply moved them off the hotend
 
 /**
  * Marlin 3D Printer Firmware
@@ -989,7 +989,9 @@
 #define Z_PROBE_OFFSET_RANGE_MAX 20
 
 // Enable the M48 repeatability test to test probe accuracy
-#define Z_MIN_PROBE_REPEATABILITY_TEST
+#if ENABLED(ABL_BLTOUCH)
+  #define Z_MIN_PROBE_REPEATABILITY_TEST
+#endif
 
 // Before deploy/stow pause for user confirmation
 //#define PAUSE_BEFORE_DEPLOY_STOW
