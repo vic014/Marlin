@@ -1,9 +1,9 @@
-//#define ABL_BLTOUCH // Replaces RGB LED
+#define ABL_BLTOUCH // Replaces RGB LED
 #define GraphicalLCD // Will work next to MKS TFT
-//#define TMC_2209 // Defaults to TMC2100
-//#define ABL_UBL // Defaults to Bilinear
+#define TMC_2209 // Defaults to TMC2100
+#define ABL_UBL // Defaults to Bilinear
 //#define RunoutSensor // Tinymachines Lerdge Sensor
-//#define RELOCATE_LED // Since the bltouch by default removed the LED, set this if you simply moved them off the hotend
+#define RELOCATE_LED // Since the bltouch by default removed the LED, set this if you simply moved them off the hotend
 
 /**
  * Marlin 3D Printer Firmware
@@ -1619,7 +1619,7 @@
  *
  * View the current statistics with M78.
  */
-#define PRINTCOUNTER
+//#define PRINTCOUNTER
 
 //=============================================================================
 //============================= LCD and SD support ============================
@@ -1751,7 +1751,7 @@
 //
 // Add individual axis homing items (Home X, Home Y, and Home Z) to the LCD menu.
 //
-#define INDIVIDUAL_AXIS_HOMING_MENU
+//#define INDIVIDUAL_AXIS_HOMING_MENU
 
 //
 // SPEAKER/BUZZER

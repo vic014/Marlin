@@ -1434,7 +1434,9 @@
  * Note that M207 / M208 / M209 settings are saved to EEPROM.
  *
  */
-#define FWRETRACT
+#if !ENABLED(ABL_UBL, GraphicalLCD, TMC_2209)
+  #define FWRETRACT
+#endif
 #if ENABLED(FWRETRACT)
   #define FWRETRACT_AUTORETRACT           // costs ~500 bytes of PROGMEM
   #if ENABLED(FWRETRACT_AUTORETRACT)
@@ -2570,7 +2572,7 @@
 /**
  * M43 - display pin status, watch pins for changes, watch endstops & toggle LED, Z servo probe test, toggle pins
  */
-//#define PINS_DEBUGGING
+#define PINS_DEBUGGING
 
 // Enable Marlin dev mode which adds some special commands
 //#define MARLIN_DEV_MODE
