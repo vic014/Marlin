@@ -752,17 +752,19 @@
       save_ubl_active_state_and_disable();  // No bed level correction so only raw data is obtained
       DEPLOY_PROBE();
 
-      uint16_t count = GRID_MAX_POINTS, current = 1;
+      uint8_t count = GRID_MAX_POINTS, current = 1;
 
       do {
         current = (GRID_MAX_POINTS) - count + 1;
 
         if (do_ubl_mesh_map) display_map(g29_map_type);
 
-        SERIAL_ECHOLNPAIR("\nProbing mesh point ", current, "/", GRID_MAX_POINTS, ".\n");
-        #if HAS_LCD_MENU
-          ui.status_printf_P(0, PSTR(MSG_LCD_PROBING_MESH " %i/%i"), current, int(GRID_MAX_POINTS));
+        SERIAL_ECHOLNPAIR("\nProbing mesh point ", int(current), "/", int(GRID_MAX_POINTS), ".\n");
+        #if HAS_DISPLAY
+          ui.status_printf_P(0, PSTR(MSG_PROBING_MESH " %i/%i"), int(current), int(GRID_MAX_POINTS));
+        #endif
 
+        #if HAS_LCD_MENU
           if (ui.button_pressed()) {
             ui.quick_feedback(false); // Preserve button state for click-and-hold
             SERIAL_ECHOLNPGM("\nMesh only partially populated.\n");
@@ -855,7 +857,7 @@
       save_ubl_active_state_and_disable();   // Disable bed level correction for probing
 
       do_blocking_move_to(0.5f * (MESH_MAX_X - (MESH_MIN_X)), 0.5f * (MESH_MAX_Y - (MESH_MIN_Y)), in_height);
-        //, MIN(planner.settings.max_feedrate_mm_s[X_AXIS], planner.settings.max_feedrate_mm_s[Y_AXIS]) * 0.5f);
+        //, _MIN(planner.settings.max_feedrate_mm_s[X_AXIS], planner.settings.max_feedrate_mm_s[Y_AXIS]) * 0.5f);
       planner.synchronize();
 
       SERIAL_ECHOPGM("Place shim under nozzle");
@@ -1385,10 +1387,10 @@
     #include "../../../libs/vector_3.h"
 
     void unified_bed_leveling::tilt_mesh_based_on_probed_grid(const bool do_3_pt_leveling) {
-      constexpr int16_t x_min = MAX(MIN_PROBE_X, MESH_MIN_X),
-                        x_max = MIN(MAX_PROBE_X, MESH_MAX_X),
-                        y_min = MAX(MIN_PROBE_Y, MESH_MIN_Y),
-                        y_max = MIN(MAX_PROBE_Y, MESH_MAX_Y);
+      constexpr int16_t x_min = _MAX(MIN_PROBE_X, MESH_MIN_X),
+                        x_max = _MIN(MAX_PROBE_X, MESH_MAX_X),
+                        y_min = _MAX(MIN_PROBE_Y, MESH_MIN_Y),
+                        y_max = _MIN(MAX_PROBE_Y, MESH_MAX_Y);
 
       bool abort_flag = false;
 
@@ -1405,7 +1407,7 @@
 
       if (do_3_pt_leveling) {
         SERIAL_ECHOLNPGM("Tilting mesh (1/3)");
-        #if HAS_LCD_MENU
+        #if HAS_DISPLAY
           ui.status_printf_P(0, PSTR(MSG_LCD_TILTING_MESH " 1/3"));
         #endif
 
@@ -1424,7 +1426,7 @@
 
         if (!abort_flag) {
           SERIAL_ECHOLNPGM("Tilting mesh (2/3)");
-          #if HAS_LCD_MENU
+          #if HAS_DISPLAY
             ui.status_printf_P(0, PSTR(MSG_LCD_TILTING_MESH " 2/3"));
           #endif
 
@@ -1444,7 +1446,7 @@
 
         if (!abort_flag) {
           SERIAL_ECHOLNPGM("Tilting mesh (3/3)");
-          #if HAS_LCD_MENU
+          #if HAS_DISPLAY
             ui.status_printf_P(0, PSTR(MSG_LCD_TILTING_MESH " 3/3"));
           #endif
 
@@ -1485,7 +1487,7 @@
 
             if (!abort_flag) {
               SERIAL_ECHOLNPAIR("Tilting mesh point ", current, "/", total_points, "\n");
-              #if HAS_LCD_MENU
+              #if HAS_DISPLAY
                 ui.status_printf_P(0, PSTR(MSG_LCD_TILTING_MESH " %i/%i"), current, total_points);
               #endif
 
@@ -1654,7 +1656,7 @@
 
       SERIAL_ECHOPGM("Extrapolating mesh...");
 
-      const float weight_scaled = weight_factor * MAX(MESH_X_DIST, MESH_Y_DIST);
+      const float weight_scaled = weight_factor * _MAX(MESH_X_DIST, MESH_Y_DIST);
 
       for (uint8_t jx = 0; jx < GRID_MAX_POINTS_X; jx++)
         for (uint8_t jy = 0; jy < GRID_MAX_POINTS_Y; jy++)
