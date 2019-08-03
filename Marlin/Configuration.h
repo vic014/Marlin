@@ -6,7 +6,7 @@
 */
 
 //#define MachineEnder2
-#define MachineEnder3
+//#define MachineEnder3
 //#define MachineEnder4
 //#define MachineMini
 //#define MachineCR20 //Buzzer doesnt work
@@ -16,7 +16,7 @@
 //#define MachineCR10SPro //Currently only supports GraphicLCD. Graphics LCD Requires soldering R64 and R66
 //#define MachineCRX //Currently only supports GraphicLCD
 //#define MachineS4
-//#define MachineS5
+#define MachineS5
 
 //#define MachineCR10Orig // Forces Melzi board
 
@@ -34,10 +34,10 @@
 //#define AddonFilSensor //Adds a filamnt runout sensor to the CR20 or Ender 4
 //#define lerdgeFilSensor //Using lerdge filament sensor, which is opposite polarity to stock
 //#define DualFilSensors //Using dual filament sensors on XMax and YMAX
-#define SKR13 // 32 bit board - assumes 2208 drivers
+//#define SKR13 // 32 bit board - assumes 2208 drivers
 //#define SKR13_2209
-#define SKR13_UART // Configure SKR board with drivers in UART mode
-#define SKR13_ReverseSteppers // Some users reported directions backwards than others on SKR with various drivers.
+//#define SKR13_UART // Configure SKR board with drivers in UART mode
+//#define SKR13_ReverseSteppers // Some users reported directions backwards than others on SKR with various drivers.
 
 /*
    Hotend Type
@@ -47,8 +47,8 @@
 
    Configured with 5015 left wing, right wing ABL sensor (BLTouch or M18) only
 */
-#define HotendStock
-//#define HotendE3D
+//#define HotendStock
+#define HotendE3D
 
 //Enable this if you have an all metal hotend capable of 300c
 #define HotendAllMetal
@@ -61,7 +61,7 @@
  */
 
  //#define EZRstruder
- //#define Bondtech
+ #define Bondtech
  //#define E3DTitan
 
  /*
@@ -78,8 +78,8 @@
    Choose bed type below. If you have an extenrally controlled
    ac bed, leave both disabled
 */
-//#define BedAC
-#define BedDC
+#define BedAC
+//#define BedDC
 
 //#define SolidBedMounts //Removed a few LCD options to save some memory since not needed with solid mounts
 
@@ -87,7 +87,7 @@
    If you have upgraded to an S board but kept the original display
    then enable this line
 */
-#define OrigLCD
+//#define OrigLCD
 
 /*
    Choose ABL sensor type below
@@ -118,9 +118,9 @@
    Standard is recommended in most other scenarios.
 */
 //#define MeshFast
-#define MeshStd
+//#define MeshStd
 //#define MeshFine
-//#define MeshExtreme
+#define MeshExtreme
 
 /*
    Disables SD Sort, Autotemp, Arc support, Linear Advance (Unless overridden with OrigLA above), Big edit fonts, and a few other little things
