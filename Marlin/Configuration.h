@@ -8,6 +8,7 @@
 //#define MachineEnder2
 //#define MachineEnder3
 //#define MachineEnder4
+//#define MachineEnder5
 //#define MachineMini
 //#define MachineCR20 //Buzzer doesnt work
 //#define MachineCR20Pro
@@ -270,7 +271,7 @@
   #define ABL_BI
 #endif
 
-#if ANY(MachineEnder2, MachineEnder3, MachineCR10) && DISABLED(SKR13)
+#if ANY(MachineEnder2, MachineEnder3, MachineCR10, MachineEnder5) && DISABLED(SKR13)
   #define MachineCR10Orig
 #endif
 
@@ -933,9 +934,15 @@
 // Specify here all the endstop connectors that are connected to any endstop or probe.
 // Almost all printers will be using one per axis. Probes will use one or more of the
 // extra connectors. Leave undefined any used for non-endstop and non-probe purposes.
-#define USE_XMIN_PLUG
-#define USE_YMIN_PLUG
-#define USE_ZMIN_PLUG
+#if ENABLED(MachineEnder5)
+  #define USE_ZMIN_PLUG
+  #define USE_XMAX_PLUG
+  #define USE_YMAX_PLUG
+#else
+  #define USE_XMIN_PLUG
+  #define USE_YMIN_PLUG
+  #define USE_ZMIN_PLUG
+#endif
 //#define USE_XMAX_PLUG
 //#define USE_YMAX_PLUG
 //#define USE_ZMAX_PLUG
@@ -1112,7 +1119,7 @@
   #define DEFAULT_ACCELERATION          300    // X, Y, Z and E acceleration for printing moves
   #define DEFAULT_RETRACT_ACCELERATION  1000    // E acceleration for retracts
   #define DEFAULT_TRAVEL_ACCELERATION   300    // X, Y, Z acceleration for travel (non printing) moves
-#elif (ENABLED(MachineMini) || ENABLED(MachineCR20) || ENABLED(MachineEnder2) || ENABLED(MachineEnder3) || ENABLED(MachineEnder4))
+#elif (ENABLED(MachineMini) || ENABLED(MachineCR20) || ENABLED(MachineEnder2) || ENABLED(MachineEnder3) || ENABLED(MachineEnder4) || ENABLED(MachineEnder5))
   #define DEFAULT_MAX_FEEDRATE          { 750, 750, 10, 75 }
   #define DEFAULT_MAX_ACCELERATION      { 2000, 2000, 100, 75 }
   #define DEFAULT_ACCELERATION          300    // X, Y, Z and E acceleration for printing moves
@@ -1474,21 +1481,21 @@
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
 
-#if(ENABLED(MachineCR10Orig))
+#if(ENABLED(MachineEnder4) || ENABLED(MachineEnder5)
   #define INVERT_X_DIR true
   #define INVERT_Y_DIR true
-  #define INVERT_Z_DIR false
+  #define INVERT_Z_DIR true
   #if(ENABLED(E3DTitan))
     #define INVERT_E0_DIR false
     #define INVERT_E1_DIR true
   #else
-  #define INVERT_E0_DIR true
-  #define INVERT_E1_DIR false
-#endif
-#elif(ENABLED(MachineEnder4))
+    #define INVERT_E0_DIR true
+    #define INVERT_E1_DIR false
+  #endif
+#elif(ENABLED(MachineCR10Orig))
   #define INVERT_X_DIR true
   #define INVERT_Y_DIR true
-  #define INVERT_Z_DIR true
+  #define INVERT_Z_DIR false
   #if(ENABLED(E3DTitan))
     #define INVERT_E0_DIR false
     #define INVERT_E1_DIR true
@@ -1532,9 +1539,15 @@
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
-#define X_HOME_DIR -1
-#define Y_HOME_DIR -1
-#define Z_HOME_DIR -1
+#if ENABLED(MachineEnder5)
+  #define X_HOME_DIR 1
+  #define Y_HOME_DIR 1
+  #define Z_HOME_DIR -1
+#else
+  #define X_HOME_DIR -1
+  #define Y_HOME_DIR -1
+  #define Z_HOME_DIR -1
+#endif
 
 // @section machine
 
@@ -1557,7 +1570,7 @@
 #define Y_BED_SIZE 230
 #define Z_MAX_POS 250
 #endif
-#if(ENABLED(MachineEnder4))
+#if(ENABLED(MachineEnder4) || ENABLED(MachineEnder5))
 #define X_BED_SIZE 220
 #define Y_BED_SIZE 220
 #define Z_MAX_POS 300
@@ -1601,7 +1614,7 @@
 #define X_BED_SIZE 230
 #define Y_BED_SIZE 230
 #define Z_MAX_POS 250
-#elif(ENABLED(MachineEnder4))
+#elif(ENABLED(MachineEnder4) || ENABLED(MachineEnder5))
 #define X_BED_SIZE 220
 #define Y_BED_SIZE 220
 #define Z_MAX_POS 300
@@ -1673,7 +1686,7 @@
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  * By default the firmware assumes HIGH=FILAMENT PRESENT.
  */
-#if(DISABLED(MachineCR10Orig) &&(DISABLED(MachineCR20)|| ENABLED(AddonFilSensor)) && (DISABLED(MachineEnder4) || ENABLED(AddonFilSensor)) && (DISABLED(MachineCRX)|| ENABLED(AddonFilSensor) || ENABLED(DualFilSensors)))
+#if (DISABLED(MachineCR10Orig) && DISABLED(MachineCR20) && DISABLED(MachineEnder5) && DISABLED(MachineEnder4) && DISABLED(MachineCRX) ) || ENABLED(AddonFilSensor) || ENABLED(DualFilSensors)
   #define FILAMENT_RUNOUT_SENSOR
 #endif
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
@@ -1939,7 +1952,7 @@
 #define PROBE_PT_3_X 180
 #define PROBE_PT_3_Y 50
 #endif
-#if ENABLED(MachineEnder4)
+#if ENABLED(MachineEnder4) || ENABLED(MachineEnder5)
 #define PROBE_PT_1_X 50       // Probing points for 3-Point leveling of the mesh
 #define PROBE_PT_1_Y 180
 #define PROBE_PT_2_X 150
