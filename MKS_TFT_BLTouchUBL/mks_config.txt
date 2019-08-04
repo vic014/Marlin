@@ -136,10 +136,8 @@ It will auto heat up if the current temp doesn't reach the target.
 
 #user-defined function1 and 2.(display this button .  disable: 0; enable: 1)
 >cfg_function_btn1_display:1
->cfg_function_btn2_display:1
 #command of user-defined function
 >function_btn1_cmd:M84;
->function_btn2_cmd:M84;
 #set number of  "More" button 
 >moreitem_pic_cnt:7
 
@@ -168,21 +166,19 @@ It will auto heat up if the current temp doesn't reach the target.
 
 
 #how many "More" button display on screen interface
->morefunc_cnt:6
+>morefunc_cnt:2
 
-#command setting on button1~6
-#LED Blue
->morefunc1_cmd:M150B255;
-#LED Red
->morefunc2_cmd:M150R255;
-#LED Green
->morefunc3_cmd:M150U255;
-#LED Off
->morefunc4_cmd:M150B0R0U0;
-#PID Tune Hotend
->morefunc5_cmd:M106S128;M303C8S215E0U;M500;M117 PID Tune Done;
-#PID Bed
->morefunc6_cmd:M303C8S75E-1U;M500;M117 PID Tune Done;
+#command setting on button1~5
+
+>morefunc1_cmd:M290 Z0.025; M500;
+
+>morefunc2_cmd:M290 Z-0.025; M500;
+
+>morefunc3_cmd:M290 Z0.01; M500;
+
+>morefunc4_cmd:M290 Z-0.01; M500;
+
+>morefunc5_cmd:M290 Z0.025; M500;
 
 #---------------------------------------------------------------------------------
 ##### Display Customization(button and logo customized see User's Manual) #######
