@@ -304,6 +304,8 @@
 #define CUSTOM_MACHINE_NAME "TM3D Ender3"
 #elif(ENABLED(MachineEnder4))
 #define CUSTOM_MACHINE_NAME "TM3D Ender4"
+#elif(ENABLED(MachineEnder5))
+#define CUSTOM_MACHINE_NAME "TM3D Ender5"
 #elif(ENABLED(MachineCR20))
 #define CUSTOM_MACHINE_NAME "SuPeR CR-20"
 #elif(ENABLED(MachineCR10Orig))
