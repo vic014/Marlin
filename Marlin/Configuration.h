@@ -1518,21 +1518,22 @@
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
 
-#if ANY(MachineCR10Orig, SKR13_ReverseSteppers)
+
+#if(ANY(MachineEnder4, MachineEnder5))
   #define INVERT_X_DIR true
   #define INVERT_Y_DIR true
-  #define INVERT_Z_DIR false
+  #define INVERT_Z_DIR true
   #if(ENABLED(E3DTitan))
     #define INVERT_E0_DIR false
     #define INVERT_E1_DIR true
   #else
-  #define INVERT_E0_DIR true
-  #define INVERT_E1_DIR false
-#endif
-#elif(ANY(MachineEnder4, MachineEnder5))
+    #define INVERT_E0_DIR true
+    #define INVERT_E1_DIR false
+  #endif
+#elif ANY(MachineCR10Orig, SKR13_ReverseSteppers)
   #define INVERT_X_DIR true
   #define INVERT_Y_DIR true
-  #define INVERT_Z_DIR true
+  #define INVERT_Z_DIR false
   #if(ENABLED(E3DTitan))
     #define INVERT_E0_DIR false
     #define INVERT_E1_DIR true
