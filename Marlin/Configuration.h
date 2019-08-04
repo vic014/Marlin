@@ -8,6 +8,7 @@
 //#define MachineEnder2
 //#define MachineEnder3
 //#define MachineEnder4
+#define MachineEnder5
 //#define MachineMini
 //#define MachineCR20 //Buzzer doesnt work
 //#define MachineCR20Pro
@@ -16,7 +17,7 @@
 //#define MachineCR10SPro //Currently only supports GraphicLCD. Graphics LCD Requires soldering R64 and R66
 //#define MachineCRX //Currently only supports GraphicLCD
 //#define MachineS4
-#define MachineS5
+//#define MachineS5
 
 //#define MachineCR10Orig // Forces Melzi board
 
@@ -29,7 +30,6 @@
 
 //#define Big_UI // Lightweight status screen
 
-#define BoardRev2 //Enable for SD detect function on Rev 2.1 boards or Ender 4
 //#define GraphicLCD //Full graphics LCD for Ender 4, CR-X or CR10SPro
 //#define AddonFilSensor //Adds a filamnt runout sensor to the CR20 or Ender 4
 //#define lerdgeFilSensor //Using lerdge filament sensor, which is opposite polarity to stock
@@ -47,8 +47,8 @@
 
    Configured with 5015 left wing, right wing ABL sensor (BLTouch or M18) only
 */
-//#define HotendStock
-#define HotendE3D
+#define HotendStock
+//#define HotendE3D
 
 //Enable this if you have an all metal hotend capable of 300c
 #define HotendAllMetal
@@ -61,7 +61,7 @@
  */
 
  //#define EZRstruder
- #define Bondtech
+ //#define Bondtech
  //#define E3DTitan
 
  /*
@@ -78,8 +78,8 @@
    Choose bed type below. If you have an extenrally controlled
    ac bed, leave both disabled
 */
-#define BedAC
-//#define BedDC
+//#define BedAC
+#define BedDC
 
 //#define SolidBedMounts //Removed a few LCD options to save some memory since not needed with solid mounts
 
@@ -95,7 +95,7 @@
 */
 //#define ABL_EZABL // TH3D EZABL or Any NO Sensor
 //#define ABL_NCSW //Creality ABL or Any NC Sensor
-#define ABL_BLTOUCH
+//#define ABL_BLTOUCH
 
 //#define CREALITY_ABL_MOUNT //Using creality ABL mount
 //#define E3D_DUALFAN_MOUNT // Using HD Modular mount as above with 2 5015 blowers and sensor on the right
@@ -107,7 +107,7 @@
    Melzi board users may only select ABL_BI for bilinear leveling
 */
 //#define ABL_BI
-#define ABL_UBL
+//#define ABL_UBL
 
 //#define POWER_LOSS_RECOVERY //Large and does not fit with any other features on Melzi, or UBL on Atmega
 /*
@@ -118,9 +118,9 @@
    Standard is recommended in most other scenarios.
 */
 //#define MeshFast
-//#define MeshStd
+#define MeshStd
 //#define MeshFine
-#define MeshExtreme
+//#define MeshExtreme
 
 /*
    Disables SD Sort, Autotemp, Arc support, Linear Advance (Unless overridden with OrigLA above), Big edit fonts, and a few other little things
@@ -271,7 +271,7 @@
   #define ABL_BI
 #endif
 
-#if ANY(MachineEnder2, MachineEnder3, MachineCR10) && DISABLED(SKR13)
+#if ANY(MachineEnder2, MachineEnder3, MachineCR10, MachineEnder5) && DISABLED(SKR13)
   #define MachineCR10Orig
 #endif
 
@@ -951,9 +951,15 @@
 // Specify here all the endstop connectors that are connected to any endstop or probe.
 // Almost all printers will be using one per axis. Probes will use one or more of the
 // extra connectors. Leave undefined any used for non-endstop and non-probe purposes.
-#define USE_XMIN_PLUG
-#define USE_YMIN_PLUG
-#define USE_ZMIN_PLUG
+#if ENABLED(MachineEnder5)
+  #define USE_ZMIN_PLUG
+  #define USE_XMAX_PLUG
+  #define USE_YMAX_PLUG
+#else
+  #define USE_XMIN_PLUG
+  #define USE_YMIN_PLUG
+  #define USE_ZMIN_PLUG
+#endif
 //#define USE_XMAX_PLUG
 //#define USE_YMAX_PLUG
 //#define USE_ZMAX_PLUG
@@ -986,9 +992,9 @@
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
 #if(ENABLED(MachineEnder4))
-#define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+  #define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
 #else
-#define X_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
+  #define X_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
 #endif
 #define Y_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
 #define X_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
@@ -1130,7 +1136,7 @@
   #define DEFAULT_ACCELERATION          300    // X, Y, Z and E acceleration for printing moves
   #define DEFAULT_RETRACT_ACCELERATION  1000    // E acceleration for retracts
   #define DEFAULT_TRAVEL_ACCELERATION   300    // X, Y, Z acceleration for travel (non printing) moves
-#elif (ENABLED(MachineMini) || ENABLED(MachineCR20) || ENABLED(MachineEnder2) || ENABLED(MachineEnder3) || ENABLED(MachineEnder4))
+#elif (ANY(MachineMini, MachineCR20, MachineEnder2, MachineEnder3, MachineEnder4, MachineEnder5))
   #define DEFAULT_MAX_FEEDRATE          { 750, 750, 10, 75 }
   #define DEFAULT_MAX_ACCELERATION      { 2000, 2000, 100, 75 }
   #define DEFAULT_ACCELERATION          300    // X, Y, Z and E acceleration for printing moves
@@ -1523,7 +1529,7 @@
   #define INVERT_E0_DIR true
   #define INVERT_E1_DIR false
 #endif
-#elif(ENABLED(MachineEnder4))
+#elif(ANY(MachineEnder4, MachineEnder5))
   #define INVERT_X_DIR true
   #define INVERT_Y_DIR true
   #define INVERT_Z_DIR true
@@ -1570,9 +1576,15 @@
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
-#define X_HOME_DIR -1
-#define Y_HOME_DIR -1
-#define Z_HOME_DIR -1
+#if ENABLED(MachineEnder5)
+  #define X_HOME_DIR 1
+  #define Y_HOME_DIR 1
+  #define Z_HOME_DIR -1
+#else
+  #define X_HOME_DIR -1
+  #define Y_HOME_DIR -1
+  #define Z_HOME_DIR -1
+#endif
 
 // @section machine
 
@@ -1581,88 +1593,78 @@
 #if (DISABLED(ABL_EZABL)&& DISABLED(ABL_BLTOUCH) && DISABLED(ABL_NCSW))
 
 #if ENABLED(MachineMini)
-#define X_BED_SIZE 300
-#define Y_BED_SIZE 220
-#define Z_MAX_POS 300
-#endif
-#if(ENABLED(MachineEnder2))
-#define X_BED_SIZE 150
-#define Y_BED_SIZE 150
-#define Z_MAX_POS 200
-#endif
-#if(ENABLED(MachineEnder3))
-#define X_BED_SIZE 230
-#define Y_BED_SIZE 230
-#define Z_MAX_POS 250
-#endif
-#if(ENABLED(MachineEnder4))
-#define X_BED_SIZE 220
-#define Y_BED_SIZE 220
-#define Z_MAX_POS 300
-#endif
-
-#if(ENABLED(MachineCR20))
-#define X_BED_SIZE 230
-#define Y_BED_SIZE 230
-#define Z_MAX_POS 250
-#endif
-
-#if (ENABLED(MachineCR10Std))
-#define X_BED_SIZE 300
-#define Y_BED_SIZE 300
-#define Z_MAX_POS 400
-#endif
-
-#if ENABLED( MachineS4)
-#define X_BED_SIZE 400
-#define Y_BED_SIZE 400
-#define Z_MAX_POS 400
-#endif
-#if ENABLED(MachineS5)
-#define X_BED_SIZE 500
-#define Y_BED_SIZE 500
-#define Z_MAX_POS 500
+  #define X_BED_SIZE 300
+  #define Y_BED_SIZE 220
+  #define Z_MAX_POS 300
+#elif ENABLED(MachineEnder2)
+  #define X_BED_SIZE 150
+  #define Y_BED_SIZE 150
+  #define Z_MAX_POS 200
+#elif ENABLED(MachineEnder3)
+  #define X_BED_SIZE 230
+  #define Y_BED_SIZE 230
+  #define Z_MAX_POS 250
+#elif ANY(MachineEnder4, MachineEnder5)
+  #define X_BED_SIZE 220
+  #define Y_BED_SIZE 220
+  #define Z_MAX_POS 300
+#elif ENABLED(MachineCR20)
+  #define X_BED_SIZE 230
+  #define Y_BED_SIZE 230
+  #define Z_MAX_POS 250
+#elif ENABLED(MachineCR10Std)
+  #define X_BED_SIZE 300
+  #define Y_BED_SIZE 300
+  #define Z_MAX_POS 400
+#elif ENABLED(MachineS4)
+  #define X_BED_SIZE 400
+  #define Y_BED_SIZE 400
+  #define Z_MAX_POS 400
+#elif ENABLED(MachineS5)
+  #define X_BED_SIZE 500
+  #define Y_BED_SIZE 500
+  #define Z_MAX_POS 500
 #endif
 // The size of the print bed
 
 #else
 
 #if ENABLED(MachineMini)
-#define X_BED_SIZE 300
-#define Y_BED_SIZE 220
-#define Z_MAX_POS 300
+  #define X_BED_SIZE 300
+  #define Y_BED_SIZE 220
+  #define Z_MAX_POS 300
 #elif(ENABLED(MachineEnder2))
-#define X_BED_SIZE 150
-#define Y_BED_SIZE 150
-#define Z_MAX_POS 200
-#elif(ENABLED(MachineEnder3))
-#define X_BED_SIZE 230
-#define Y_BED_SIZE 230
-#define Z_MAX_POS 250
-#elif(ENABLED(MachineEnder4))
-#define X_BED_SIZE 220
-#define Y_BED_SIZE 220
-#define Z_MAX_POS 300
+  #define X_BED_SIZE 150
+  #define Y_BED_SIZE 150
+  #define Z_MAX_POS 200
+  #elif(ENABLED(MachineEnder3))
+  #define X_BED_SIZE 230
+  #define Y_BED_SIZE 230
+  #define Z_MAX_POS 250
+#elif(ANY(MachineEnder4, MachineEnder5))
+  #define X_BED_SIZE 220
+  #define Y_BED_SIZE 220
+  #define Z_MAX_POS 300
 #elif(ENABLED(MachineCR20))
-#define X_BED_SIZE 240
-#define Y_BED_SIZE 240
-#define Z_MAX_POS 250
+  #define X_BED_SIZE 240
+  #define Y_BED_SIZE 240
+  #define Z_MAX_POS 250
 #elif (ENABLED(MachineCRX))
-#define X_BED_SIZE 315
-#define Y_BED_SIZE 330
-#define Z_MAX_POS 400
+  #define X_BED_SIZE 315
+  #define Y_BED_SIZE 330
+  #define Z_MAX_POS 400
 #elif (ENABLED(MachineCR10Std))
-#define X_BED_SIZE 315
-#define Y_BED_SIZE 310
-#define Z_MAX_POS 400
+  #define X_BED_SIZE 315
+  #define Y_BED_SIZE 310
+  #define Z_MAX_POS 400
 #elif ENABLED( MachineS4)
-#define X_BED_SIZE 410
-#define Y_BED_SIZE 400
-#define Z_MAX_POS 400
+  #define X_BED_SIZE 410
+  #define Y_BED_SIZE 400
+  #define Z_MAX_POS 400
 #elif ENABLED(MachineS5)
-#define X_BED_SIZE 510
-#define Y_BED_SIZE 500
-#define Z_MAX_POS 500
+  #define X_BED_SIZE 510
+  #define Y_BED_SIZE 500
+  #define Z_MAX_POS 500
 #endif
 
 #endif
@@ -1711,7 +1713,7 @@
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  * By default the firmware assumes HIGH=FILAMENT PRESENT.
  */
-#if(DISABLED(MachineCR10Orig) &&(DISABLED(MachineCR20)|| ENABLED(AddonFilSensor)) && (DISABLED(MachineEnder4) || ENABLED(AddonFilSensor)) && (DISABLED(MachineCRX)|| ENABLED(AddonFilSensor) || ENABLED(DualFilSensors)))
+#if (NONE(MachineCR10Orig, MachineCR20, MachineEnder4, MachineEnder5, MachineCRX) || ENABLED(AddonFilSensor))
   #define FILAMENT_RUNOUT_SENSOR
 #endif
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
@@ -1953,72 +1955,42 @@
 #if(DISABLED(MachineCR10Orig) && DISABLED(MachineEnder4))
 #define MESH_EDIT_GFX_OVERLAY   // Display a graphics overlay while editing the mesh
 #endif
-#if ENABLED(MachineMini)
-#define PROBE_PT_1_X 50       // Probing points for 3-Point leveling of the mesh
-#define PROBE_PT_1_Y 180
-#define PROBE_PT_2_X 180
-#define PROBE_PT_2_Y 180
-#define PROBE_PT_3_X 180
-#define PROBE_PT_3_Y 50
-#endif
+
 #if ENABLED(MachineEnder2)
-#define PROBE_PT_1_X 50       // Probing points for 3-Point leveling of the mesh
-#define PROBE_PT_1_Y 130
-#define PROBE_PT_2_X 100
-#define PROBE_PT_2_Y 130
-#define PROBE_PT_3_X 100
-#define PROBE_PT_3_Y 50
-#endif
-#if ENABLED(MachineEnder3)
-#define PROBE_PT_1_X 50       // Probing points for 3-Point leveling of the mesh
-#define PROBE_PT_1_Y 180
-#define PROBE_PT_2_X 180
-#define PROBE_PT_2_Y 180
-#define PROBE_PT_3_X 180
-#define PROBE_PT_3_Y 50
-#endif
-#if ENABLED(MachineEnder4)
-#define PROBE_PT_1_X 50       // Probing points for 3-Point leveling of the mesh
-#define PROBE_PT_1_Y 180
-#define PROBE_PT_2_X 150
-#define PROBE_PT_2_Y 180
-#define PROBE_PT_3_X 150
-#define PROBE_PT_3_Y 50
-#endif
-
-#if ENABLED(MachineCR20)
-#define PROBE_PT_1_X 50       // Probing points for 3-Point leveling of the mesh
-#define PROBE_PT_1_Y 180
-#define PROBE_PT_2_X 150
-#define PROBE_PT_2_Y 180
-#define PROBE_PT_3_X 150
-#define PROBE_PT_3_Y 50
-#endif
-
-#if (ENABLED(MachineCR10Std) )
-#define PROBE_PT_1_X 50       // Probing points for 3-Point leveling of the mesh
-#define PROBE_PT_1_Y 270
-#define PROBE_PT_2_X 250
-#define PROBE_PT_2_Y 270
-#define PROBE_PT_3_X 250
-#define PROBE_PT_3_Y 50
-#endif
-
-#if ENABLED( MachineS4)
-#define PROBE_PT_1_X 60       // Probing points for 3-Point leveling of the mesh
-#define PROBE_PT_1_Y 340
-#define PROBE_PT_2_X 340
-#define PROBE_PT_2_Y 340
-#define PROBE_PT_3_X 340
-#define PROBE_PT_3_Y 60
-#endif
-#if ENABLED(MachineS5)
-#define PROBE_PT_1_X 80       // Probing points for 3-Point leveling of the mesh
-#define PROBE_PT_1_Y 420
-#define PROBE_PT_2_X 420
-#define PROBE_PT_2_Y 420
-#define PROBE_PT_3_X 420
-#define PROBE_PT_3_Y 80
+  #define PROBE_PT_1_X 50       // Probing points for 3-Point leveling of the mesh
+  #define PROBE_PT_1_Y 130
+  #define PROBE_PT_2_X 100
+  #define PROBE_PT_2_Y 130
+  #define PROBE_PT_3_X 100
+  #define PROBE_PT_3_Y 50
+#elif ANY(MachineEnder3, MachineEnder4, MachineEnder5, MachineCR20, MachineMini)
+  #define PROBE_PT_1_X 50       // Probing points for 3-Point leveling of the mesh
+  #define PROBE_PT_1_Y 180
+  #define PROBE_PT_2_X 150
+  #define PROBE_PT_2_Y 180
+  #define PROBE_PT_3_X 150
+  #define PROBE_PT_3_Y 50
+#elif (ENABLED(MachineCR10Std) )
+  #define PROBE_PT_1_X 50       // Probing points for 3-Point leveling of the mesh
+  #define PROBE_PT_1_Y 270
+  #define PROBE_PT_2_X 250
+  #define PROBE_PT_2_Y 270
+  #define PROBE_PT_3_X 250
+  #define PROBE_PT_3_Y 50
+#elif ENABLED( MachineS4)
+  #define PROBE_PT_1_X 60       // Probing points for 3-Point leveling of the mesh
+  #define PROBE_PT_1_Y 340
+  #define PROBE_PT_2_X 340
+  #define PROBE_PT_2_Y 340
+  #define PROBE_PT_3_X 340
+  #define PROBE_PT_3_Y 60
+#elif ENABLED(MachineS5)
+  #define PROBE_PT_1_X 80       // Probing points for 3-Point leveling of the mesh
+  #define PROBE_PT_1_Y 420
+  #define PROBE_PT_2_X 420
+  #define PROBE_PT_2_Y 420
+  #define PROBE_PT_3_X 420
+  #define PROBE_PT_3_Y 80
 #endif
 #endif
 
