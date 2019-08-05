@@ -1,9 +1,9 @@
 #define ABL_BLTOUCH // Replaces RGB LED
 #define GraphicalLCD // Will work next to MKS TFT
-#define TMC_2209 // Defaults to TMC2100
-#define ABL_UBL // Defaults to Bilinear
+//#define TMC_2209 // Defaults to TMC2100
+//#define ABL_UBL // Defaults to Bilinear
 //#define RunoutSensor // Tinymachines Lerdge Sensor
-#define RELOCATE_LED // Since the bltouch by default removed the LED, set this if you simply moved them off the hotend
+//#define RELOCATE_LED // Since the bltouch by default removed the LED, set this if you simply moved them off the hotend
 
 /**
  * Marlin 3D Printer Firmware
@@ -940,7 +940,7 @@
 #define Z_PROBE_OFFSET_FROM_EXTRUDER 0   // Z offset: -below +above  [the nozzle]
 
 // Certain types of probes need to stay away from edges
-#define MIN_PROBE_EDGE 2
+#define MIN_PROBE_EDGE 10
 
 // X and Y axis travel speed (mm/m) between probes
 #define XY_PROBE_SPEED 8000
@@ -1288,7 +1288,7 @@
 
   //#define MESH_EDIT_GFX_OVERLAY   // Display a graphics overlay while editing the mesh
 
-  #define MESH_INSET 1              // Set Mesh bounds as an inset region of the bed
+  #define MESH_INSET 5              // Set Mesh bounds as an inset region of the bed
   #define GRID_MAX_POINTS_X 5      // Don't use more than 15 points per axis, implementation limited.
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
