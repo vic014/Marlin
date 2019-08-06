@@ -166,7 +166,7 @@ It will auto heat up if the current temp doesn't reach the target.
 
 
 #how many "More" button display on screen interface
->morefunc_cnt:2
+>morefunc_cnt:4
 
 #command setting on button1~5
 
