@@ -943,7 +943,7 @@
 #define MIN_PROBE_EDGE 10
 
 // X and Y axis travel speed (mm/m) between probes
-#define XY_PROBE_SPEED 8000
+#define XY_PROBE_SPEED 5000
 
 // Feedrate (mm/m) for the first approach when double-probing (MULTIPLE_PROBING == 2)
 #define Z_PROBE_SPEED_FAST HOMING_FEEDRATE_Z
@@ -1318,11 +1318,11 @@
  */
 #if EITHER(AUTO_BED_LEVELING_3POINT, AUTO_BED_LEVELING_UBL)
   #define PROBE_PT_1_X 50
-  #define PROBE_PT_1_Y 265
-  #define PROBE_PT_2_X 265
-  #define PROBE_PT_2_Y 265
-  #define PROBE_PT_3_X 50
-  #define PROBE_PT_3_Y 265
+  #define PROBE_PT_1_Y 250
+  #define PROBE_PT_2_X 250
+  #define PROBE_PT_2_Y 250
+  #define PROBE_PT_3_X 250
+  #define PROBE_PT_3_Y 50
 #endif
 
 /**
