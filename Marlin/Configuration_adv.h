@@ -1783,6 +1783,20 @@
   #define E4_SLAVE_ADDRESS 0
   #define E5_SLAVE_ADDRESS 0
 
+  #define X_SERIAL_TX_PIN    40
+  #define X_SERIAL_RX_PIN    63
+
+  #define Y_SERIAL_TX_PIN    59
+  #define Y_SERIAL_RX_PIN    64
+
+  #define Z_SERIAL_TX_PIN    59
+  #define Z_SERIAL_RX_PIN    64
+  #define Z2_SERIAL_TX_PIN   59
+  #define Z2_SERIAL_RX_PIN   64
+
+  #define E0_SERIAL_TX_PIN   59
+  #define E0_SERIAL_RX_PIN   64
+
   /**
    * Software enable
    *
