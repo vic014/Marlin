@@ -162,7 +162,7 @@ It will auto heat up if the current temp doesn't reach the target.
 
 
 #Leveling Setup
->moreitem_button7_cmd:M190S75;G28;G34I3;G29P1;G29S1;G29S0;G29F0.0;G29A;G28;M109S215;G1X150Y150;G1Z0;M500;M400;M77;M117 Set Z Offset;
+>moreitem_button7_cmd:M190S75;G28;G34;G29P1;G29P3R;G29S1;G29S0;G29F0.0;G29A;G28;M109S215;G1X150Y150;G1Z0;M500;M400;M77;M117 Set Z Offset;
 
 
 #how many "More" button display on screen interface
