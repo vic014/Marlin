@@ -264,6 +264,8 @@
 #define VerChar1 "E3"
 #elif(ENABLED(MachineEnder4))
 #define VerChar1 "E4"
+#elif(ENABLED(MachineEnder5))
+#define VerChar1 "E5"
 #elif(ENABLED(MachineCR20))
 #define VerChar1 "2"
 #elif(ENABLED(MachineCR10Orig))
