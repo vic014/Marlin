@@ -8,12 +8,12 @@
 //#define MachineEnder2
 //#define MachineEnder3
 //#define MachineEnder4
-#define MachineEnder5
+//#define MachineEnder5
 //#define MachineMini
 //#define MachineCR20 //Buzzer doesnt work
 //#define MachineCR20Pro
 //#define MachineCR10
-//#define MachineCR10S
+#define MachineCR10S
 //#define MachineCR10SPro //Currently only supports GraphicLCD. Graphics LCD Requires soldering R64 and R66
 //#define MachineCRX //Currently only supports GraphicLCD
 //#define MachineS4
