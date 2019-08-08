@@ -6,14 +6,14 @@
 */
 
 //#define MachineEnder2
-//#define MachineEnder3
+#define MachineEnder3
 //#define MachineEnder4
 //#define MachineEnder5
 //#define MachineMini
 //#define MachineCR20 //Buzzer doesnt work
 //#define MachineCR20Pro
 //#define MachineCR10
-#define MachineCR10S
+//#define MachineCR10S
 //#define MachineCR10SPro //Currently only supports GraphicLCD. Graphics LCD Requires soldering R64 and R66
 //#define MachineCRX //Currently only supports GraphicLCD
 //#define MachineS4
@@ -95,7 +95,7 @@
 */
 //#define ABL_EZABL // TH3D EZABL or Any NO Sensor
 //#define ABL_NCSW //Creality ABL or Any NC Sensor
-//#define ABL_BLTOUCH
+#define ABL_BLTOUCH
 
 //#define CREALITY_ABL_MOUNT //Using creality ABL mount
 //#define E3D_DUALFAN_MOUNT // Using HD Modular mount as above with 2 5015 blowers and sensor on the right
@@ -106,7 +106,7 @@
    Requires a sensor from above
    Melzi board users may only select ABL_BI for bilinear leveling
 */
-//#define ABL_BI
+#define ABL_BI
 //#define ABL_UBL
 
 //#define POWER_LOSS_RECOVERY //Large and does not fit with any other features on Melzi, or UBL on Atmega
@@ -1891,10 +1891,10 @@
 #endif
 
 */
-  #define LEFT_PROBE_BED_POSITION (MAX(X_MIN_BED + MIN_PROBE_EDGE, X_MIN_POS + X_PROBE_OFFSET_FROM_EXTRUDER)) + MESH_INSET
-  #define FRONT_PROBE_BED_POSITION (MAX(Y_MIN_BED + MIN_PROBE_EDGE, Y_MIN_POS + Y_PROBE_OFFSET_FROM_EXTRUDER)) + MESH_INSET
-  #define RIGHT_PROBE_BED_POSITION (MIN(X_MAX_BED - (MIN_PROBE_EDGE), X_MAX_POS + X_PROBE_OFFSET_FROM_EXTRUDER)) - MESH_INSET
-  #define BACK_PROBE_BED_POSITION (MIN(Y_MAX_BED - (MIN_PROBE_EDGE), Y_MAX_POS + Y_PROBE_OFFSET_FROM_EXTRUDER)) - MESH_INSET
+  #define LEFT_PROBE_BED_POSITION (_MAX(X_MIN_BED + MIN_PROBE_EDGE, X_MIN_POS + X_PROBE_OFFSET_FROM_EXTRUDER)) + MESH_INSET
+  #define FRONT_PROBE_BED_POSITION (_MAX(Y_MIN_BED + MIN_PROBE_EDGE, Y_MIN_POS + Y_PROBE_OFFSET_FROM_EXTRUDER)) + MESH_INSET
+  #define RIGHT_PROBE_BED_POSITION (_MIN(X_MAX_BED - (MIN_PROBE_EDGE), X_MAX_POS + X_PROBE_OFFSET_FROM_EXTRUDER)) - MESH_INSET
+  #define BACK_PROBE_BED_POSITION (_MIN(Y_MAX_BED - (MIN_PROBE_EDGE), Y_MAX_POS + Y_PROBE_OFFSET_FROM_EXTRUDER)) - MESH_INSET
 
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
