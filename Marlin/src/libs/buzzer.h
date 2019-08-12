@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,11 @@
 #if ENABLED(LCD_USE_I2C_BUZZER)
 
   #define BUZZ(d,f) ui.buzz(d,f)
+
+#elif ENABLED(PCA9632_BUZZER)
+
+  #include "../feature/leds/pca9632.h"
+  #define BUZZ(d, f) pca9632_buzz(d,f)
 
 #elif PIN_EXISTS(BEEPER)
 

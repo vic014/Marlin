@@ -1,7 +1,7 @@
 /**
  * Marlin 3D Printer Firmware
  *
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  * Copyright (c) 2016 Bob Cousins bobcousins42@googlemail.com
  * Copyright (c) 2015-2016 Nico Tonnhofer wurstnase.reprap@gmail.com
  *
@@ -19,19 +19,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 
 /**
  * Description: HAL for Teensy 3.5 and Teensy 3.6
  */
 
-#pragma once
-
 #define CPU_32_BIT
 
 #include "../shared/Marduino.h"
-
-#include "../math_32bit.h"
-#include "../HAL_SPI.h"
+#include "../shared/math_32bit.h"
+#include "../shared/HAL_SPI.h"
 
 #include "fastio_Teensy.h"
 #include "watchdog_Teensy.h"
@@ -89,6 +87,8 @@ typedef int8_t pin_t;
 #undef pgm_read_word
 #define pgm_read_word(addr) (*((uint16_t*)(addr)))
 
+inline void HAL_init(void) { }
+
 // Clear the reset reason
 void HAL_clear_reset_source(void);
 
@@ -97,9 +97,12 @@ uint8_t HAL_get_reset_source(void);
 
 FORCE_INLINE void _delay_ms(const int delay_ms) { delay(delay_ms); }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
 extern "C" {
   int freeMemory(void);
 }
+#pragma GCC diagnostic pop
 
 // SPI: Extended functions which take a channel number (hardware SPI only)
 

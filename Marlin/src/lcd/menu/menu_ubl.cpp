@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -392,7 +392,7 @@ void _lcd_ubl_storage_mesh() {
   START_MENU();
   MENU_BACK(MSG_UBL_LEVEL_BED);
   if (!WITHIN(ubl_storage_slot, 0, a - 1)) {
-    STATIC_ITEM(MSG_NO_STORAGE);
+    STATIC_ITEM(MSG_UBL_NO_STORAGE);
   }
   else {
     MENU_ITEM_EDIT(int3, MSG_UBL_STORAGE_SLOT, &ubl_storage_slot, 0, a - 1);
@@ -468,7 +468,6 @@ void _lcd_ubl_output_map_lcd() {
   static int16_t step_scaler = 0;
 
   if (ui.use_click()) return _lcd_ubl_map_lcd_edit_cmd();
-  ui.encoder_direction_normal();
 
   if (ui.encoderPosition) {
     step_scaler += int16_t(ui.encoderPosition);

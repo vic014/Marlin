@@ -1,7 +1,7 @@
 /**
  * Marlin 3D Printer Firmware
  *
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  * Copyright (c) 2016 Bob Cousins bobcousins42@googlemail.com
  * Copyright (c) 2015-2016 Nico Tonnhofer wurstnase.reprap@gmail.com
  * Copyright (c) 2017 Victor Perez
@@ -24,10 +24,6 @@
 
 #define CPU_32_BIT
 
-// --------------------------------------------------------------------------
-// Includes
-// --------------------------------------------------------------------------
-
 #include "../../core/macros.h"
 #include "../shared/Marduino.h"
 #include "../shared/math_32bit.h"
@@ -43,9 +39,9 @@
   #include <USBSerial.h>
 #endif
 
-// --------------------------------------------------------------------------
+// ------------------------
 // Defines
-// --------------------------------------------------------------------------
+// ------------------------
 
 #if SERIAL_PORT == 0
   #error "Serial port 0 does not exist"
@@ -128,56 +124,60 @@
 #undef pgm_read_ptr
 #define pgm_read_ptr(addr) (*(addr))
 
-// --------------------------------------------------------------------------
+// ------------------------
 // Types
-// --------------------------------------------------------------------------
+// ------------------------
 
-typedef int8_t pin_t;
+typedef int16_t pin_t;
 
 #define HAL_SERVO_LIB libServo
 
-// --------------------------------------------------------------------------
+// ------------------------
 // Public Variables
-// --------------------------------------------------------------------------
+// ------------------------
 
-/** result of last ADC conversion */
+// result of last ADC conversion
 extern uint16_t HAL_adc_result;
 
-// --------------------------------------------------------------------------
+// ------------------------
 // Public functions
-// --------------------------------------------------------------------------
+// ------------------------
 
 // Memory related
 #define __bss_end __bss_end__
 
 // Enable hooks into  setup for HAL
-#define HAL_INIT 1
 void HAL_init(void);
 
-/** clear reset reason */
+// Clear reset reason
 void HAL_clear_reset_source (void);
 
-/** reset reason */
+// Reset reason
 uint8_t HAL_get_reset_source(void);
 
 void _delay_ms(const int delay);
 
 extern "C" char* _sbrk(int incr);
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
+
 static inline int freeMemory() {
   volatile char top;
   return &top - reinterpret_cast<char*>(_sbrk(0));
 }
 
+#pragma GCC diagnostic pop
+
 //
 // SPI: Extended functions which take a channel number (hardware SPI only)
 //
 
-/** Write single byte to specified SPI channel */
+// Write single byte to specified SPI channel
 void spiSend(uint32_t chan, byte b);
-/** Write buffer to specified SPI channel */
+// Write buffer to specified SPI channel
 void spiSend(uint32_t chan, const uint8_t* buf, size_t n);
-/** Read single byte from specified SPI channel */
+// Read single byte from specified SPI channel
 uint8_t spiRec(uint32_t chan);
 
 //
@@ -187,8 +187,8 @@ uint8_t spiRec(uint32_t chan);
 // Wire library should work for i2c EEPROMs
 void eeprom_write_byte(uint8_t *pos, unsigned char value);
 uint8_t eeprom_read_byte(uint8_t *pos);
-void eeprom_read_block (void *__dst, const void *__src, size_t __n);
-void eeprom_update_block (const void *__src, void *__dst, size_t __n);
+void eeprom_read_block(void *__dst, const void *__src, size_t __n);
+void eeprom_update_block(const void *__src, void *__dst, size_t __n);
 
 //
 // ADC
