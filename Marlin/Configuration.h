@@ -95,14 +95,14 @@
 */
 //#define ABL_EZABL // TH3D EZABL or Any NO Sensor
 //#define ABL_NCSW //Creality ABL or Any NC Sensor
-//#define ABL_BLTOUCH
+#define ABL_BLTOUCH
 
 /*
    Choose bed leveling type here
    Requires a sensor from above
    Melzi board users may only select ABL_BI for bilinear leveling
 */
-//#define ABL_BI
+#define ABL_BI
 //#define ABL_UBL
 
 // Totally untested with the creality dwin touchscreen as of yet. Might kinda sorta almost work, but
@@ -399,11 +399,8 @@
 
    :[2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000]
 */
-#if ENABLED(CREALITY_DWIN)
-  #define BAUDRATE 250000
-#else
-  #define BAUDRATE 115200
-#endif
+#define BAUDRATE 250000
+
 // Enable the Bluetooth serial interface on AT90USB devices
 //#define BLUETOOTH
 
@@ -1102,10 +1099,6 @@
 */
 #if ENABLED(ABL_BLTOUCH)
   #define BLTOUCH
-#endif
-#if ENABLED(BLTOUCH)
-  #define BLTOUCH_DELAY 500   // (ms) Enable and increase if needed
-  #define BLTOUCH_FORCE_5V_MODE // For BLTouch V3.0 force 5V only mode
 #endif
 
 /**

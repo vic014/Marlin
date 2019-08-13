@@ -471,9 +471,7 @@ void report_current_position();
 #endif
 
 #if HAS_BED_PROBE || ENABLED(CREALITY_DWIN)
-  #if ENABLED(CREALITY_DWIN)
-    extern float rts_probe_zoffset;
-  #endif
+  extern float rts_probe_zoffset;
   extern float last_zoffset;
   extern float zprobe_zoffset;
 #endif
