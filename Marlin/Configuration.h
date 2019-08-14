@@ -6,7 +6,7 @@
 */
 
 //#define MachineEnder2
-#define MachineEnder3
+//#define MachineEnder3
 //#define MachineEnder4
 //#define MachineEnder5
 //#define MachineMini
@@ -15,7 +15,7 @@
 //#define MachineCR10
 //#define MachineCR10S
 //#define MachineCR10SPro //Currently only supports GraphicLCD. Graphics LCD Requires soldering R64 and R66
-//#define MachineCRX //Currently only supports GraphicLCD
+#define MachineCRX //Currently only supports GraphicLCD
 //#define MachineS4
 //#define MachineS5
 
@@ -30,7 +30,7 @@
 
 //#define Big_UI // Lightweight status screen
 
-//#define GraphicLCD //Full graphics LCD for Ender 4, CR-X or CR10SPro
+#define GraphicLCD //Full graphics LCD for Ender 4, CR-X or CR10SPro
 //#define AddonFilSensor //Adds a filamnt runout sensor to the CR20 or Ender 4
 //#define lerdgeFilSensor //Using lerdge filament sensor, which is opposite polarity to stock
 //#define DualFilSensors //Using dual filament sensors on XMax and YMAX
@@ -106,8 +106,8 @@
    Requires a sensor from above
    Melzi board users may only select ABL_BI for bilinear leveling
 */
-#define ABL_BI
-//#define ABL_UBL
+//#define ABL_BI
+#define ABL_UBL
 
 //#define POWER_LOSS_RECOVERY //Large and does not fit with any other features on Melzi, or UBL on Atmega
 /*
@@ -2016,6 +2016,8 @@
 #endif
 #if ENABLED(LEVEL_BED_CORNERS)
   #define LEVEL_CORNERS_INSET 40    // (mm) An inset for corner leveling
+  #define LEVEL_CORNERS_Z_HOP  4.0  // (mm) Move nozzle up before moving between corners
+  #define LEVEL_CORNERS_HEIGHT 0.0  // (mm) Z height of nozzle at leveling points
   #define LEVEL_CENTER_TOO        // Move to the center after the last corner
 #endif
 
