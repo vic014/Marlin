@@ -234,7 +234,7 @@ void RTSSHOW::RTS_SDCardUpate(void)
 	}
 }
 
-#if ENABLED(MachineCR10SPro) || ENABLED(AddonFilSensor)
+#if ENABLED(MachineCR10SPro) || ENABLED(MachineCR10Max) || ENABLED(AddonFilSensor)
 
 	int RTSSHOW::RTS_CheckFilement(int mode)
 	{
@@ -914,7 +914,7 @@ SERIAL_ECHO(Checkkey);
 		}
 		else if(recdat.addr == Resumeprint && recdat.data[0] == 1)
 		{
-			#if ENABLED(MachineCR10SPro) || ENABLED(AddonFilSensor)
+			#if ENABLED(MachineCR10SPro) || ENABLED(MachineCR10Max) || ENABLED(AddonFilSensor)
 			/**************checking filement status during printing************/
 			if(RTS_CheckFilement(0))
 			{
@@ -1509,7 +1509,7 @@ SERIAL_ECHO(Checkkey);
 
 	case Filement:
 
-		#if ENABLED(MachineCR10SPro) || ENABLED(AddonFilSensor)
+		#if ENABLED(MachineCR10SPro) || ENABLED(MachineCR10Max) || ENABLED(AddonFilSensor)
 		/**************checking filement status during changing filement************/
 		if(RTS_CheckFilement(3)) break;
 		#endif
@@ -1687,7 +1687,7 @@ SERIAL_ECHO(Checkkey);
 		if(recdat.data[0] == 1)
 		{
 			/**************checking filement status during changing filement************/
-			#if ENABLED(MachineCR10SPro) || ENABLED(AddonFilSensor)
+			#if ENABLED(MachineCR10SPro) || ENABLED(MachineCR10Max) || ENABLED(AddonFilSensor)
 				if(RTS_CheckFilement(0)) break;
 			#endif
 
@@ -1963,7 +1963,7 @@ SERIAL_ECHO(Checkkey);
 				memset(cmdbuf,0,sizeof(cmdbuf));
 				strcpy(cmdbuf,cmd);
 
-				#if ENABLED(MachineCR10SPro) || ENABLED(AddonFilSensor)
+				#if ENABLED(MachineCR10SPro) || ENABLED(MachineCR10Max) || ENABLED(AddonFilSensor)
 				/**************checking filement status during printing beginning ************/
 					if(RTS_CheckFilement(1)) break;
 				#endif
@@ -2268,7 +2268,7 @@ void RTSUpdate()	//looping at the loop function
 	/*Check the status of card*/
 	rtscheck.RTS_SDCardUpate();
 
-#if ENABLED(MachineCR10SPro) || ENABLED(AddonFilSensor)
+#if ENABLED(MachineCR10SPro) || ENABLED(MachineCR10Max) || ENABLED(AddonFilSensor)
 	/*checking filement status during printing */
 
 	//SERIAL_ECHOPAIR("\n ***FilementStatus[1] =",FilementStatus[1]);

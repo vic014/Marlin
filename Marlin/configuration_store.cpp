@@ -1700,6 +1700,8 @@ void MarlinSettings::postprocess() {
   bool MarlinSettings::load() {
     if (validate()) return _load();
     reset();
+    (void)save();
+      SERIAL_PROTOCOLLN("EEPROM Initialized");
     return true;
   }
 
