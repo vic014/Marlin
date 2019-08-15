@@ -159,7 +159,7 @@ void RTSSHOW::RTS_SDCardInit(void)
 void RTSSHOW::RTS_SDCardUpate(void)
 {
 	//SERIAL_ECHO("\n SDUpdate ");
-	const bool sd_status = card.cardOK;
+	const bool sd_status = (card.cardOK || IS_SD_INSERTED);
     	if (sd_status != lcd_sd_status)
 	{
 		//SERIAL_PROTOCOLLN("  ***test6*** ");
