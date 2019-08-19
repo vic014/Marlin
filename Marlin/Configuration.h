@@ -1,9 +1,9 @@
-#define ABL_BLTOUCH // Replaces RGB LED
-#define GraphicalLCD // Will work next to MKS TFT
-#define TMC_2209 // Defaults to TMC2100
-#define ABL_UBL // Defaults to Bilinear
+//#define ABL_BLTOUCH // Replaces RGB LED
+//#define GraphicalLCD // Will work next to MKS TFT
+//#define TMC_2209 // Defaults to TMC2100
+//#define ABL_UBL // Defaults to Bilinear
 //#define RunoutSensor // Tinymachines Lerdge Sensor
-#define RELOCATE_LED // Since the bltouch by default removed the LED, set this if you simply moved them off the hotend
+//#define RELOCATE_LED // Since the bltouch by default removed the LED, set this if you simply moved them off the hotend
 
 /**
  * Marlin 3D Printer Firmware
@@ -95,13 +95,13 @@
  * We encourage you to take advantage of this new feature and we also
  * respectfully request that you retain the unmodified Marlin boot screen.
  */
+#if ENABLED(GraphicalLCD)
+  // Enable to show the bitmap in Marlin/_Bootscreen.h on startup.
+  #define SHOW_CUSTOM_BOOTSCREEN
 
-// Enable to show the bitmap in Marlin/_Bootscreen.h on startup.
-#define SHOW_CUSTOM_BOOTSCREEN
-
-// Enable to show the bitmap in Marlin/_Statusscreen.h on the status screen.
-#define CUSTOM_STATUS_SCREEN_IMAGE
-
+  // Enable to show the bitmap in Marlin/_Statusscreen.h on the status screen.
+  #define CUSTOM_STATUS_SCREEN_IMAGE
+#endif
 // @section machine
 
 /**

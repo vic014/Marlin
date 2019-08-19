@@ -883,7 +883,7 @@
  * LED Control Menu
  * Enable this feature to add LED Control to the LCD menu
  */
-#if DISABLED(ABL_BLTOUCH) || ENABLED(RELOCATE_LED)
+#if (DISABLED(ABL_BLTOUCH) || ENABLED(RELOCATE_LED)) && ENABLED(GraphicalLCD)
   #define LED_CONTROL_MENU
 #endif
 
