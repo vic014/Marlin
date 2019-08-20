@@ -28,9 +28,9 @@
 >cfg_max_hotbed_temperature:150
 
 #pause position (-1 is invalid; Z-axis is relative position)
->cfg_XPOS:10
->cfg_YPOS:10
->cfg_ZADD:0
+>cfg_XPOS:-1
+>cfg_YPOS:-1
+>cfg_ZADD:10
 
 #-----------------------------------------------------------------------
 #########  Advanced Function Option  ##################################
@@ -58,24 +58,24 @@
 #########  Filament Change Function  ##############################
 
 #the speed to extrude filament(mm/min)
->cfg_filament_load_speed:1200
+>cfg_filament_load_speed:400
 #the lenght to extrude filament (mm)
->cfg_filament_load_length:200
+>cfg_filament_load_length:100
 
 #the speed to retract filament(mm/min)
->cfg_filament_unload_speed:1200
+>cfg_filament_unload_speed:2000
 #the lenght to retract filament(mm)
->cfg_filament_unload_length:200
+>cfg_filament_unload_length:100
 
 #It is the minimum temperature for filament change.
 It will auto heat up if the current temp doesn't reach the target.
 >cfg_filament_load_limit_temperature:200
 
 #The length of Load filament before unloader filament. 
->cfg_unload_retract_length:2
+>cfg_unload_retract_length:5
 
 #The speed of load filament  before unloader filament.
->cfg_unload_retract_speed:1200
+>cfg_unload_retract_speed:500
 
 #---------------------------------------------------------------------------
 
@@ -88,7 +88,7 @@ It will auto heat up if the current temp doesn't reach the target.
 >cfg_auto_leveling_cmd:G28;G29;
 
 #the point number of manual leveling:(3,4,5 point available)
->cfg_point_number:4
+>cfg_point_number:5
 
 #the coordinates of 5 point on manual leveling
 >cfg_point1:50,50
@@ -99,7 +99,7 @@ It will auto heat up if the current temp doesn't reach the target.
 
 #the travel speed of leveling(mm/min)
 >cfg_leveling_z_speed:1500
->cfg_leveling_xy_speed:3000
+>cfg_leveling_xy_speed:5000
 
 #---------------------------------------------------------------------------
  
@@ -109,14 +109,14 @@ It will auto heat up if the current temp doesn't reach the target.
 >cfg_wifi_type:0
 
 #wifi mode(0:sta;1:ap)
->cfg_wifi_mode:0
+>cfg_wifi_mode:1
 
 #wifi name and password
->cfg_wifi_ap_name:MKS_wifi
->cfg_wifi_key_code:makerbase
+>cfg_wifi_ap_name:Artillery
+>cfg_wifi_key_code:12345678
 
 #0:disable cloud service 1:enable cloud service
->cfg_cloud_enable:1
+>cfg_cloud_enable:0
 #cloud service adress
 >cfg_wifi_cloud_host:www.baizhongyun.cn
 #cloud service port
@@ -148,17 +148,17 @@ It will auto heat up if the current temp doesn't reach the target.
 #edit command for 1~7 "More" button,each command must be separated by semicolon ";"
 >moreitem_button1_cmd:M502; M500;
 
->moreitem_button2_cmd:G29S1;
+>moreitem_button2_cmd:G29 S1;
 
 >moreitem_button3_cmd:G91; G1 Z0.025; G90;
 
 >moreitem_button4_cmd:G91; G1 Z-0.025; G90;
 
->moreitem_button5_cmd:G29S2; M500;
+>moreitem_button5_cmd:G29 S2; M500;
 
->moreitem_button6_cmd:M290Z0.025; M500;
+>moreitem_button6_cmd:M290 Z0.025; M500;
 
->moreitem_button7_cmd:M290Z-0.025; M500;
+>moreitem_button7_cmd:M290 Z-0.025; M500;
 
 #how many "More" button display on screen interface
 >morefunc_cnt:4
@@ -199,10 +199,10 @@ It will auto heat up if the current temp doesn't reach the target.
 >cfg_printingstat_word_color:0xFFFFFF
 
 #3D effects setting (disable: 0; enable: 1)
->cfg_BUTTON_3D_effects:0
+>cfg_BUTTON_3D_effects:1
 
-#The screen is flipped 180°(0x00: no flip, 0xEE: flip)
->cfg_OVERTURN_180:0x00
+#The screen is flipped 180°(0: no flip, 1: flip)
+>cfg_OVERTURN_180:0
 
 #shield the function of detection power (0:no shield ,1:shield)
 >cfg_disable_PWR_det:0
@@ -215,9 +215,9 @@ It will auto heat up if the current temp doesn't reach the target.
 >cfg_single_nozzle:0
 
 #For the M110 command plus check, the version of Marlin 1.0.2 and below is set to 1, and the other versions are set to 0.
->cfg_M110_add_checkSum:1
+>cfg_M110_add_checkSum:0
 
 #Enable function of display error message. (no:0; Yes:1）
->cfg_display_eeror_message:0
+>cfg_display_eeror_message:1
 
 #-----------------------------------------------------------------------
