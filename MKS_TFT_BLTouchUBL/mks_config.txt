@@ -30,7 +30,7 @@
 #pause position (-1 is invalid; Z-axis is relative position)
 >cfg_XPOS:10
 >cfg_YPOS:10
->cfg_ZADD:-1
+>cfg_ZADD:0
 
 #-----------------------------------------------------------------------
 #########  Advanced Function Option  ##################################
