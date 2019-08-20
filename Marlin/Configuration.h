@@ -12,10 +12,10 @@
 //#define MachineMini
 //#define MachineCR20 //Buzzer doesnt work
 //#define MachineCR20Pro
-//#define MachineCR10
+#define MachineCR10
 //#define MachineCR10S
 //#define MachineCR10SPro //Currently only supports GraphicLCD. Graphics LCD Requires soldering R64 and R66
-#define MachineCRX //Currently only supports GraphicLCD
+//#define MachineCRX //Currently only supports GraphicLCD
 //#define MachineS4
 //#define MachineS5
 
@@ -30,7 +30,7 @@
 
 //#define Big_UI // Lightweight status screen
 
-#define GraphicLCD //Full graphics LCD for Ender 4, CR-X or CR10SPro
+//#define GraphicLCD //Full graphics LCD for Ender 4, CR-X or CR10SPro
 //#define AddonFilSensor //Adds a filamnt runout sensor to the CR20 or Ender 4
 //#define lerdgeFilSensor //Using lerdge filament sensor, which is opposite polarity to stock
 //#define DualFilSensors //Using dual filament sensors on XMax and YMAX
@@ -93,9 +93,9 @@
    Choose ABL sensor type below
    Leave all disabled if no sensor is available
 */
-//#define ABL_EZABL // TH3D EZABL or Any NO Sensor
+#define ABL_EZABL // TH3D EZABL or Any NO Sensor
 //#define ABL_NCSW //Creality ABL or Any NC Sensor
-#define ABL_BLTOUCH
+//#define ABL_BLTOUCH
 
 //#define CREALITY_ABL_MOUNT //Using creality ABL mount
 //#define E3D_DUALFAN_MOUNT // Using HD Modular mount as above with 2 5015 blowers and sensor on the right
@@ -106,8 +106,8 @@
    Requires a sensor from above
    Melzi board users may only select ABL_BI for bilinear leveling
 */
-//#define ABL_BI
-#define ABL_UBL
+#define ABL_BI
+//#define ABL_UBL
 
 //#define POWER_LOSS_RECOVERY //Large and does not fit with any other features on Melzi, or UBL on Atmega
 /*
@@ -2192,8 +2192,8 @@
 
 // Preheat Constants
 #define PREHEAT_1_LABEL       "PLA"
-#define PREHEAT_1_TEMP_HOTEND 180
-#define PREHEAT_1_TEMP_BED     70
+#define PREHEAT_1_TEMP_HOTEND 205
+#define PREHEAT_1_TEMP_BED     60
 #define PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
 
 #define PREHEAT_2_LABEL       "ABS"
