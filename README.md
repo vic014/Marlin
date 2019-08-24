@@ -2,6 +2,11 @@
 
 This branch is intended to support our modifications to the X1 and as a research platform for what additional upgrades may be desierable on the machine. An overview of what we have done is here https://www.youtube.com/watch?v=Em0babDKAH0
 
+- TMC2209 Drivers in UART Mode
+- Full Graphics LCD
+- BLTouch
+- Automatic gantry alignment
+
 ## About Our Branches
 
 The firmware branches maintained here are made possible by the support of sponsors like [Tiny Machines 3D](https://tinymachines3d.com/) as well as our customer base through our 3D printing Services. Maintaining and developing these branches takes a significant investment, made up of time and machines. To support continued development, please consider your next 3D Printer related purchase from Tiny Machines 3D and thank them for supporting open source development. Or, consider us for printing services outside of your machine’s capabilities. Print service requests can be sent to d.menzel@insanityautomation.com and we will respond typically within 1 working day. If you do not need anything printed or a 3D Printer but still want to contribute, you can support us through [Patreon](https://www.patreon.com/InsanityAutomation).
@@ -28,6 +33,7 @@ For this branch, we still have some active goals open that we plan to continue w
 - Wiring for Z steppers is reverse of standard, so G34 needs directions inverted. Working on an auto detection functing to avoid a dedicated pin file setting the Z / E1 steppers opposite.
 - Adaption of Bigtreetech 24 TFT to fit the MKS opening and modification to its source to support mode switching on filament runout
 - Use of stallguard on TMC2209 drivers to trigger a re-home of X/Y
+- High voltage power safety shutoff
 
 
 ## Firmware Branches
