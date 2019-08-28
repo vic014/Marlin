@@ -1,82 +1,99 @@
-# Marlin 3D Printer Firmware
+﻿## Creality CR10S Pro, CR-X, CR10 Max and Ender 5 Plus Touch Screen supported firmware
 
-[![Build Status](https://travis-ci.org/MarlinFirmware/Marlin.svg?branch=RCBugFix)](https://travis-ci.org/MarlinFirmware/Marlin)
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/2224/badge.svg)](https://scan.coverity.com/projects/2224)
+This branch has been replaced by [CrealityDwin_2.0](https://github.com/InsanityAutomation/Marlin/tree/CrealityDwin_2.0) which is running on Marlin 2.0 - While this is just the first release and some work still remains to be done for most cases this will have a more reliable operation as the backend is a completely unmodified branch of the upstream Marlin Repo with the touchscreen implemented through a standard API.
 
-<img align="top" width=175 src="buildroot/share/pixmaps/logo/marlin-250.png" />
+This branch is intended specifically for the Creality touchscreen machines and was split off from the standard Creality branches due to specific custom changes not found upstream. Primary machines supported here are :
 
-Additional documentation can be found at the [Marlin Home Page](http://marlinfw.org/).
-Please test this firmware and let us know if it misbehaves in any way. Volunteers are standing by!
+- CR10S Pro
+- CR10 Max
+- CR-X
+- Ender 5 Plus (Preliminary, untested)
 
-## Bugfix Branch
+Any machine with bed leveling should utilize the 10SPro tagged screen files. Anything without should use the CR-X tagged screen files. For more notes on supported configurations here, see the Bleeding Edge or Devel branches.
 
-__Not for production use. Use with caution!__
+Screen files are archived with [7-Zip](https://www.7-zip.org/) simply because it came out 1/5 the file size of a zip file. That added up fast!
 
-This branch is used to accumulate patches to the latest 1.1.x release version. Periodically this branch will form the basis for the next minor 1.1.x release.
+## About Our Branches
 
-Download earlier versions of Marlin on the [Releases page](https://github.com/MarlinFirmware/Marlin/releases). (The latest tagged release of Marlin is version 1.1.7.)
+The firmware branches maintained here are made possible by the support of sponsors like [Tiny Machines 3D](https://tinymachines3d.com/) as well as our customer base through our 3D printing Services. Maintaining and developing these branches takes a significant investment, made up of time and machines. To support continued development, please consider your next 3D Printer related purchase from Tiny Machines 3D and thank them for supporting open source development. Or, consider us for printing services outside of your machine’s capabilities. Print service requests can be sent to d.menzel@insanityautomation.com and we will respond typically within 1 working day. If you do not need anything printed or a 3D Printer but still want to contribute, you can support us through [Patreon](https://www.patreon.com/InsanityAutomation).
 
-## Recent Changes
-- Internally always use native machine space
-- Initial UBL LCD Menu
-- New optimized G-code parser singleton
-- Initial `M3`/`M4`/`M5` Spindle and Laser support
-- Added `M421 Q` to offset a mesh point
-- Refinements to `G26` and `G33`
-- Added `M80 S` to query the power state
-- "Cancel Print" now shuts off heaters
-- Added `EXTRAPOLATE_BEYOND_GRID` option for mesh-based leveling
+## Setup
 
-## Submitting Patches
+All configuration options intended to be adjusted by end users have been placed in the top section of Configuration.h and have been documented there. There is typically a break line to segregate the standard configuration below. Anything aside from the upper options is intended for advanced users only.
 
-Proposed patches should be submitted as a Pull Request against this branch ([bugfix-1.1.x](https://github.com/MarlinFirmware/Marlin/tree/bugfix-1.1.x)).
+## Support
 
-- This branch is for fixing bugs and integrating any new features for the duration of the Marlin 1.1.x life-cycle. We've opted for a simplified branch structure while we work on the maintainability and encapsulation of code modules. Version 2.0 and beyond should improve on separation of bug fixes and cutting-edge development.
-- Follow the proper coding style to gain points with the maintainers. See our [Coding Standards](http://marlinfw.org/docs/development/coding_standards.html) page for more information.
-- Please submit your questions and concerns to the [Issue Queue](https://github.com/MarlinFirmware/Marlin/issues). The "naive" question is often the one we forget to ask.
+This firmware is provided to the public as-is with no warranty or guarantee. It's based on a large open source project and there is no entitlement to support. That said, Tiny Machines 3D customers may obtain support through their normal support queue. I will provide support to Patreons as I am able. If you require more immediate support and are not a Tiny Machines customer, you may contact them at support@tinymachines3d.com about purchasing support hours. Aside from this, we are active many Facebook groups as well as several discord channels and typically help anyone we can when we come across them.
 
-### [RepRap.org Wiki Page](http://reprap.org/wiki/Marlin)
+3D Printing Discord - https://discord.gg/MZrsgVU
+Marlin Discord - https://discord.gg/n5NJ59y
 
-## Credits
+## Firmware Branches
+  - 1.1.9 Firmware (Stable, EOL) [TM_CR10](https://github.com/InsanityAutomation/Marlin/tree/TM_CR10)
+  - 2.0 Firmware [Creality_Marlin2.0.x](https://github.com/InsanityAutomation/Marlin/tree/Creality_Marlin2.0.x)
+  - 2.0 Development Branch (Beta, but well tested) [Creality_2.0_Devel](https://github.com/InsanityAutomation/Marlin/tree/Creality_2.0_Devel)
+  - 2.0 Bleeding edge Branch (Here there be dragons!) [Creality_2.0_Bleeding](https://github.com/InsanityAutomation/Marlin/tree/Creality_2.0_Bleeding)
+  - Touchscreen Firmware (10SPro and CR-X 1.1.9 Stable) [Creality_DWINTest](https://github.com/InsanityAutomation/Marlin/tree/Creality_DWINTest)
+  - Touchscreen Firmware (10SPro and CR-X 2.0 Active Development) [CrealityDwin_2.0](https://github.com/InsanityAutomation/Marlin/tree/CrealityDwin_2.0)
+## Formbot / Vivedino Firmware Branches
+  - Raptor 1 1.1.9 Firmware [TM_Raptor](https://github.com/InsanityAutomation/Marlin/tree/TM_Raptor)
+  - Raptor 1/2 2.0 Firmware [Raptor_2.0.X](https://github.com/InsanityAutomation/Marlin/tree/Raptor_2.0.X)
+  - Trex 2+/3 1.1.9 Firmware [Trex3_1.1.9](https://github.com/InsanityAutomation/Marlin/tree/Trex3_1.1.9)
+  - Trex 2+/3 2.0 Firmware (Be warned of layer shift issue below!) [TM_Trex2+_2.0.x](https://github.com/InsanityAutomation/Marlin/tree/TM_Trex2+_2.0.x)
+## Mamorubot / HieHa Firmware Branches
+  - SX4 1.1.9 Firmware (Stable, EOL) [Mamorubot_SX4]( https://github.com/InsanityAutomation/Marlin/tree/Mamorubot_SX4)
+  - SX4 2.0 Firmware (Beta, but well tested) [TM_SX4_2.0](https://github.com/InsanityAutomation/Marlin/tree/TM_SX4_2.0)
+  - SX4 Development Branch [TM_SX4_2.0_Devel](https://github.com/InsanityAutomation/Marlin/tree/TM_SX4_2.0_Devel)
+## Other Firmware
+  - Raise 3D N2+ (Dual) 2.0 [Raise3D-N2+-Dual](https://github.com/InsanityAutomation/Marlin/tree/Raise3D-N2+-Dual)
+  - Evnovo Artillery Sidewinder X1 2.0 [Evnovo X1](https://github.com/InsanityAutomation/Marlin/tree/ArtilleryX1_2.0_Devel)
 
-The current Marlin dev team consists of:
- - Roxanne Neufeld [[@Roxy-3D](https://github.com/Roxy-3D)]
- - Scott Lahteine [[@thinkyhead](https://github.com/thinkyhead)]
- - Bob Kuhn [[@Bob-the-Kuhn](https://github.com/Bob-the-Kuhn)]
+[Marlin Commit History](https://github.com/MarlinFirmware/Marlin/pulls?q=is%3Apr+is%3Aclosed+author%3AInsanityAutomation)
 
-Notable contributors include:
- - Alberto Cotronei [[@MagoKimbra](https://github.com/MagoKimbra)]
- - Andreas Hardtung [[@AnHardt](https://github.com/AnHardt)]
- - Bernhard Kubicek [[@bkubicek](https://github.com/bkubicek)]
- - Bob Cousins [[@bobc](https://github.com/bobc)]
- - Chris Palmer [[@nophead](https://github.com/nophead)]
- - David Braam [[@daid](https://github.com/daid)]
- - Edward Patel [[@epatel](https://github.com/epatel)]
- - Erik van der Zalm [[@ErikZalm](https://github.com/ErikZalm)]
- - Ernesto Martinez [[@emartinez167](https://github.com/emartinez167)]
- - F. Malpartida [[@fmalpartida](https://github.com/fmalpartida)]
- - Jochen Groppe [[@CONSULitAS](https://github.com/CONSULitAS)]
- - João Brazio [[@jbrazio](https://github.com/jbrazio)]
- - Kai [[@Kaibob2](https://github.com/Kaibob2)]
- - Luc Van Daele[[@LVD-AC](https://github.com/LVD-AC)]
- - Nico Tonnhofer [[@Wurstnase](https://github.com/Wurstnase)]
- - Petr Zahradnik [[@clexpert](https://github.com/clexpert)]
- - Thomas Moore [[@tcm0116](https://github.com/tcm0116)]
- - [[@alexxy](https://github.com/alexxy)]
- - [[@android444](https://github.com/android444)]
- - [[@benlye](https://github.com/benlye)]
- - [[@bgort](https://github.com/bgort)]
- - [[@Grogyan](https://github.com/Grogyan)]
- - [[@marcio-ao](https://github.com/marcio-ao)]
- - [[@maverikou](https://github.com/maverikou)]
- - [[@oysteinkrog](https://github.com/oysteinkrog)]
- - [[@p3p](https://github.com/p3p)]
- - [[@paclema](https://github.com/paclema)]
- - [[@paulusjacobus](https://github.com/paulusjacobus)]
- - [[@psavva](https://github.com/psavva)]
- - [[@Tannoo](https://github.com/Tannoo)]
- - [[@teemuatlut](https://github.com/teemuatlut)]
- - ...and many others
+## Active Projects
+  - [Tracing Marlin 2.0 Planner bug causing layer Shifting](https://github.com/MarlinFirmware/Marlin/issues/12403)
+  - Creality Dwin Touchscreen rewrite to ExtUI - DONE
+  - [IDEX drifting z offset on tool change with UBL](https://github.com/MarlinFirmware/Marlin/issues/13817)
+  - [Multiple touch homing](https://github.com/MarlinFirmware/Marlin/issues/9802)
+  - [Tool change offset changes](https://github.com/MarlinFirmware/Marlin/issues/12568)
+  - [Hotend offset adjustment clamping](https://github.com/MarlinFirmware/Marlin/pull/13669)
+  - [Filament width sensor hang on 32 bit](https://github.com/MarlinFirmware/Marlin/issues/13701)
+  - Probe point output for all leveling types matching incomplete ubl implementation - DONE
+  - SKR1.1 Pro integration to Trex2 with TMC2209 Drivers - Mostly done, blew an output...
+  - SKR1.3 Integration to Mamorubot SX4 - DONE
+  - Mosquito BMG-M integration to Raptor
+  - Porting Chithu Touchscreen board to Marlin 2.0 with ExtUI
+  - Anet A10 Delta STM32F103 board analysis
+  - Smoothing integration and vendor components of Marlin 2.0 (Revision to version.h handling, limit clamping, usability enhancements ect)
+  - Consolidate more probing functions, improve G33/4 and G28/29 handling
+  - G34 Z stepper reordering and automatic detection / adjustment of reversed stepper connections
+  - Video documentation of firmware branch configuration options and flashing with platformio
+## Planned Projects
+  - Implement Virtual Tools
+  - Port Duet2 Wifi with Duex5 to Marlin 2.0
+  - Further Gcode Parity with RRF
+  - Extend Host Prompt Support for Power Loss Recovery
+  - Improve native ESP32 web support
+  - Port M425 Auto backlash and offset calibration to IDEX
+  - Integrate 12 stepper LPC1778 PCB to configure ideXY quad head system as well as integrate 3 extruder mixing to IDEX
+  - Video walkthrough of each bed leveling system usage and all functions
+
+## Marlin
+This is just one of many forks of Marlin. We don't try to bury that behind fancy marmarketingketting or anything else. As you can see from the links above, most of the work done here is submitted back to the mainstream Marlin branches. The end goal of every project is to get it to the point where it is merged and maintained there. See marlin resources, including how to contribute to the Marlin Project as well, down below.
+
+## Building Marlin 2.0
+
+To build Marlin 2.0 you'll need [Arduino IDE 1.8.8 or newer](https://www.arduino.cc/en/main/software) or [PlatformIO](http://docs.platformio.org/en/latest/ide.html#platformio-ide). We've posted detailed instructions on [Building Marlin with Arduino](http://marlinfw.org/docs/basics/install_arduino.html) and [Building Marlin with PlatformIO for ReArm](http://marlinfw.org/docs/basics/install_rearm.html) (which applies well to other 32-bit boards).
+
+
+## The current Marlin dev team consists of:
+
+ - Scott Lahteine [[@thinkyhead](https://github.com/thinkyhead)] - USA &nbsp; [![Flattr Scott](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=thinkyhead&url=https://github.com/MarlinFirmware/Marlin&title=Marlin&language=&tags=github&category=software)
+ - Roxanne Neufeld [[@Roxy-3D](https://github.com/Roxy-3D)] - USA
+ - Bob Kuhn [[@Bob-the-Kuhn](https://github.com/Bob-the-Kuhn)] - USA
+ - Chris Pepper [[@p3p](https://github.com/p3p)] - UK
+ - João Brazio [[@jbrazio](https://github.com/jbrazio)] - Portugal
+ - Erik van der Zalm [[@ErikZalm](https://github.com/ErikZalm)] - Netherlands &nbsp; [![Flattr Erik](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=ErikZalm&url=https://github.com/MarlinFirmware/Marlin&title=Marlin&language=&tags=github&category=software)
 
 ## License
 
