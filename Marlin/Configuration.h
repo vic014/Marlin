@@ -38,6 +38,8 @@
  */
 #define RunoutSensor
 
+//#define tallVersion // For 700mm version
+
 /**
  * Enable if you wish to change the auto level strategy to Unified Bed Leveling. Under CUSTOM COMMANDS, run Step 1 and 2 before setting Z Offset
  */
