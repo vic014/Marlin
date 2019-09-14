@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,8 +39,8 @@
  *   E   Engage the probe for each probe (default 1)
  */
 void GcodeSuite::G30() {
-  const float xpos = parser.linearval('X', current_position[X_AXIS] + X_PROBE_OFFSET_FROM_EXTRUDER),
-              ypos = parser.linearval('Y', current_position[Y_AXIS] + Y_PROBE_OFFSET_FROM_EXTRUDER);
+  const float xpos = parser.linearval('X', current_position[X_AXIS] + zprobe_offset[X_AXIS]),
+              ypos = parser.linearval('Y', current_position[Y_AXIS] + zprobe_offset[Y_AXIS]);
 
   if (!position_is_reachable_by_probe(xpos, ypos)) return;
 
