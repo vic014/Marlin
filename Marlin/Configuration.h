@@ -861,7 +861,7 @@
 #else
   #define Y_MAXFEED 150
 #endif
-#define DEFAULT_MAX_FEEDRATE          { 200, Y_MAXFEED, 5, 25 }
+#define DEFAULT_MAX_FEEDRATE          { 200, Y_MAXFEED, 8, 25 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -1028,7 +1028,7 @@
  * Z Probe to nozzle (X,Y) offset, relative to (0, 0).
  * Default X and Y offsets must be integers.
  * Floats may be set with M851 if required.
- * 
+ *
  * In the following example the X and Y offsets are both positive:
  *
  *   #define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
@@ -1043,7 +1043,7 @@
  *     |           |
  *     O-- FRONT --+
  *   (0,0)
- * 
+ *
  * Specify a Probe position as { X, Y, Z }
  */
 
@@ -1513,7 +1513,7 @@
 
 // Homing speeds (mm/m)
 #define HOMING_FEEDRATE_XY (50*60)
-#define HOMING_FEEDRATE_Z  (4*60)
+#define HOMING_FEEDRATE_Z  (6*60)
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS
