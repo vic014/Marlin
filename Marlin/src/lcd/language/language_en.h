@@ -61,14 +61,29 @@
 #ifndef MSG_BACK
   #define MSG_BACK                            _UxGT("Back")
 #endif
-#ifndef MSG_SD_INSERTED
-  #define MSG_SD_INSERTED                     _UxGT("Card Inserted")
+#ifndef MSG_MEDIA_ABORTING
+  #define MSG_MEDIA_ABORTING                  _UxGT("Aborting...")
 #endif
-#ifndef MSG_SD_REMOVED
-  #define MSG_SD_REMOVED                      _UxGT("Card Removed")
+#ifndef MSG_MEDIA_INSERTED
+  #define MSG_MEDIA_INSERTED                  _UxGT("Media Inserted")
 #endif
-#ifndef MSG_SD_RELEASED
-  #define MSG_SD_RELEASED                     _UxGT("Card Released")
+#ifndef MSG_MEDIA_REMOVED
+  #define MSG_MEDIA_REMOVED                   _UxGT("Media Removed")
+#endif
+#ifndef MSG_MEDIA_RELEASED
+  #define MSG_MEDIA_RELEASED                  _UxGT("Media Released")
+#endif
+#ifndef MSG_MEDIA_WAITING
+  #define MSG_MEDIA_WAITING                   _UxGT("Waiting for media")
+#endif
+#ifndef MSG_MEDIA_READ_ERROR
+  #define MSG_MEDIA_READ_ERROR                _UxGT("Media read error")
+#endif
+#ifndef MSG_MEDIA_USB_REMOVED
+  #define MSG_MEDIA_USB_REMOVED               _UxGT("USB device removed")
+#endif
+#ifndef MSG_MEDIA_USB_FAILED
+  #define MSG_MEDIA_USB_FAILED                _UxGT("USB start failed")
 #endif
 #ifndef MSG_LCD_ENDSTOPS
   #define MSG_LCD_ENDSTOPS                    _UxGT("Endstops") // Max length 8 characters
@@ -232,6 +247,9 @@
 #ifndef MSG_NEXT_CORNER
   #define MSG_NEXT_CORNER                     _UxGT("Next Corner")
 #endif
+#ifndef MSG_MESH_EDITOR
+  #define MSG_MESH_EDITOR                     _UxGT("Mesh Editor")
+#endif
 #ifndef MSG_EDIT_MESH
   #define MSG_EDIT_MESH                       _UxGT("Edit Mesh")
 #endif
@@ -382,6 +400,27 @@
 #ifndef MSG_UBL_VALIDATE_CUSTOM_MESH
   #define MSG_UBL_VALIDATE_CUSTOM_MESH        _UxGT("Validate Custom Mesh")
 #endif
+#ifndef MSG_G26_HEATING_BED
+  #define MSG_G26_HEATING_BED                 _UxGT("G26 Heating Bed")
+#endif
+#ifndef MSG_G26_HEATING_NOZZLE
+  #define MSG_G26_HEATING_NOZZLE              _UxGT("G26 Heating Nozzle")
+#endif
+#ifndef MSG_G26_MANUAL_PRIME
+  #define MSG_G26_MANUAL_PRIME                _UxGT("Manual priming...")
+#endif
+#ifndef MSG_G26_FIXED_LENGTH
+  #define MSG_G26_FIXED_LENGTH                _UxGT("Fixed Length Prime")
+#endif
+#ifndef MSG_G26_PRIME_DONE
+  #define MSG_G26_PRIME_DONE                  _UxGT("Done Priming")
+#endif
+#ifndef MSG_G26_CANCELED
+  #define MSG_G26_CANCELED                    _UxGT("G26 Canceled")
+#endif
+#ifndef MSG_G26_LEAVING
+  #define MSG_G26_LEAVING                     _UxGT("Leaving G26")
+#endif
 #ifndef MSG_UBL_CONTINUE_MESH
   #define MSG_UBL_CONTINUE_MESH               _UxGT("Continue Bed Mesh")
 #endif
@@ -468,6 +507,9 @@
 #endif
 #ifndef MSG_UBL_RESTORE_ERROR
   #define MSG_UBL_RESTORE_ERROR               _UxGT("Err: UBL Restore")
+#endif
+#ifndef MSG_UBL_Z_OFFSET
+  #define MSG_UBL_Z_OFFSET                    _UxGT("Z-Offset: ")
 #endif
 #ifndef MSG_UBL_Z_OFFSET_STOPPED
   #define MSG_UBL_Z_OFFSET_STOPPED            _UxGT("Z-Offset Stopped")
@@ -765,8 +807,8 @@
 #ifndef MSG_INIT_EEPROM
   #define MSG_INIT_EEPROM                     _UxGT("Initialize EEPROM")
 #endif
-#ifndef MSG_SD_UPDATE
-  #define MSG_SD_UPDATE                       _UxGT("SD Update")
+#ifndef MSG_MEDIA_UPDATE
+  #define MSG_MEDIA_UPDATE                    _UxGT("Media Update")
 #endif
 #ifndef MSG_RESET_PRINTER
   #define MSG_RESET_PRINTER                   _UxGT("Reset Printer")
@@ -819,11 +861,11 @@
 #ifndef MSG_OUTAGE_RECOVERY
   #define MSG_OUTAGE_RECOVERY                 _UxGT("Outage Recovery")
 #endif
-#ifndef MSG_CARD_MENU
-  #define MSG_CARD_MENU                       _UxGT("Print from SD")
+#ifndef MSG_MEDIA_MENU
+  #define MSG_MEDIA_MENU                      _UxGT("Print from Media")
 #endif
-#ifndef MSG_NO_CARD
-  #define MSG_NO_CARD                         _UxGT("No SD Card")
+#ifndef MSG_NO_MEDIA
+  #define MSG_NO_MEDIA                        _UxGT("No Media")
 #endif
 #ifndef MSG_DWELL
   #define MSG_DWELL                           _UxGT("Sleep...")
@@ -909,14 +951,14 @@
 #ifndef MSG_FILAMENTUNLOAD_ALL
   #define MSG_FILAMENTUNLOAD_ALL              _UxGT("Unload All")
 #endif
-#ifndef MSG_INIT_SDCARD
-  #define MSG_INIT_SDCARD                     _UxGT("Init. SD Card")
+#ifndef MSG_INIT_MEDIA
+  #define MSG_INIT_MEDIA                      _UxGT("Init. Media")
 #endif
-#ifndef MSG_CHANGE_SDCARD
-  #define MSG_CHANGE_SDCARD                   _UxGT("Change SD Card")
+#ifndef MSG_CHANGE_MEDIA
+  #define MSG_CHANGE_MEDIA                    _UxGT("Change Media")
 #endif
-#ifndef MSG_RELEASE_SDCARD
-  #define MSG_RELEASE_SDCARD                  _UxGT("Release SD Card")
+#ifndef MSG_RELEASE_MEDIA
+  #define MSG_RELEASE_MEDIA                   _UxGT("Release Media")
 #endif
 #ifndef MSG_ZPROBE_OUT
   #define MSG_ZPROBE_OUT                      _UxGT("Z Probe Past Bed")
@@ -1164,6 +1206,11 @@
 #ifndef MSG_CASE_LIGHT_BRIGHTNESS
   #define MSG_CASE_LIGHT_BRIGHTNESS           _UxGT("Light Brightness")
 #endif
+
+#ifndef MSG_EXPECTED_PRINTER
+  #define MSG_EXPECTED_PRINTER                 _UxGT("INCORRECT PRINTER")
+#endif
+
 #if LCD_WIDTH >= 20
   #ifndef MSG_INFO_PRINT_COUNT
     #define MSG_INFO_PRINT_COUNT              _UxGT("Print Count")
@@ -1211,6 +1258,9 @@
 #endif
 #ifndef MSG_DAC_PERCENT
   #define MSG_DAC_PERCENT                     _UxGT("Driver %")
+#endif
+#ifndef MSG_ERROR_TMC
+  #define MSG_ERROR_TMC                       _UxGT("TMC CONNECTION ERROR")
 #endif
 #ifndef MSG_DAC_EEPROM_WRITE
   #define MSG_DAC_EEPROM_WRITE                _UxGT("DAC EEPROM Write")

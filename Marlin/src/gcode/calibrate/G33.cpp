@@ -190,7 +190,7 @@ static float std_dev_points(float z_pt[NPP + 1], const bool _0p_cal, const bool 
  */
 static float calibration_probe(const float &nx, const float &ny, const bool stow) {
   #if HAS_BED_PROBE
-    return probe_pt(nx, ny, stow ? PROBE_PT_STOW : PROBE_PT_RAISE, 0, false);
+    return probe_at_point(nx, ny, stow ? PROBE_PT_STOW : PROBE_PT_RAISE, 0, false);
   #else
     UNUSED(stow);
     return lcd_probe_pt(nx, ny);
@@ -369,10 +369,11 @@ static float auto_tune_a() {
         delta_r = {0.0},
         delta_t[ABC] = {0.0};
 
+  ZERO(delta_t);
   LOOP_XYZ(axis) {
-    LOOP_XYZ(axis_2) delta_t[axis_2] = 0.0;
     delta_t[axis] = diff;
     calc_kinematics_diff_probe_points(z_pt, delta_e, delta_r, delta_t);
+    delta_t[axis] = 0;
     a_fac += z_pt[uint8_t((axis * _4P_STEP) - _7P_STEP + NPP) % NPP + 1] / 6.0;
     a_fac -= z_pt[uint8_t((axis * _4P_STEP) + 1 + _7P_STEP)] / 6.0;
   }
@@ -411,7 +412,7 @@ void GcodeSuite::G33() {
 
   const int8_t probe_points = parser.intval('P', DELTA_CALIBRATION_DEFAULT_POINTS);
   if (!WITHIN(probe_points, 0, 10)) {
-    SERIAL_ECHOLNPGM("?(P)oints is implausible (0-10).");
+    SERIAL_ECHOLNPGM("?(P)oints implausible (0-10).");
     return;
   }
 
@@ -419,19 +420,19 @@ void GcodeSuite::G33() {
 
   const float calibration_precision = parser.floatval('C', 0.0);
   if (calibration_precision < 0) {
-    SERIAL_ECHOLNPGM("?(C)alibration precision is implausible (>=0).");
+    SERIAL_ECHOLNPGM("?(C)alibration precision implausible (>=0).");
     return;
   }
 
   const int8_t force_iterations = parser.intval('F', 0);
   if (!WITHIN(force_iterations, 0, 30)) {
-    SERIAL_ECHOLNPGM("?(F)orce iteration is implausible (0-30).");
+    SERIAL_ECHOLNPGM("?(F)orce iteration implausible (0-30).");
     return;
   }
 
   const int8_t verbose_level = parser.byteval('V', 1);
   if (!WITHIN(verbose_level, 0, 3)) {
-    SERIAL_ECHOLNPGM("?(V)erbose level is implausible (0-3).");
+    SERIAL_ECHOLNPGM("?(V)erbose level implausible (0-3).");
     return;
   }
 
@@ -445,7 +446,7 @@ void GcodeSuite::G33() {
              _tower_results       = (_4p_calibration && towers_set) || probe_points >= 3,
              _opposite_results    = (_4p_calibration && !towers_set) || probe_points >= 3,
              _endstop_results     = probe_points != 1 && probe_points != -1 && probe_points != 0,
-             _angle_results       = probe_points >= 3  && towers_set;
+             _angle_results       = probe_points >= 3 && towers_set;
   static const char save_message[] PROGMEM = "Save with M500 and/or copy to Configuration.h";
   int8_t iterations = 0;
   float test_precision,
@@ -475,7 +476,7 @@ void GcodeSuite::G33() {
       const float a = RADIANS(210 + (360 / NPP) *  (axis - 1)),
                   r = delta_calibration_radius;
       if (!position_is_reachable(cos(a) * r, sin(a) * r)) {
-        SERIAL_ECHOLNPGM("?(M665 B)ed radius is implausible.");
+        SERIAL_ECHOLNPGM("?(M665 B)ed radius implausible.");
         return;
       }
     }

@@ -187,6 +187,9 @@ bool load_filament(const float &slow_load_length/*=0*/, const float &fast_load_l
       host_action_prompt_button(PSTR("Continue"));
       host_action_prompt_show();
     #endif
+    #if ENABLED(EXTENSIBLE_UI)
+      ExtUI::onUserConfirmRequired(PSTR("Load Filament"));
+    #endif
     while (wait_for_user) {
       #if HAS_BUZZER
         filament_change_beep(max_beep_count);
@@ -238,6 +241,9 @@ bool load_filament(const float &slow_load_length/*=0*/, const float &fast_load_l
     wait_for_user = true;
     #if ENABLED(HOST_PROMPT_SUPPORT)
       host_prompt_do(PROMPT_USER_CONTINUE, PSTR("Continuous Purge Running..."), PSTR("Continue"));
+    #endif
+    #if ENABLED(EXTENSIBLE_UI)
+      ExtUI::onUserConfirmRequired(PSTR("Continuous Purge Running..."));
     #endif
     for (float purge_count = purge_length; purge_count > 0 && wait_for_user; --purge_count)
       do_pause_e_move(1, ADVANCED_PAUSE_PURGE_FEEDRATE);
@@ -353,8 +359,8 @@ bool unload_filament(const float &unload_length, const bool show_lcd/*=false*/,
     planner.settings.retract_acceleration = saved_acceleration;
   #endif
 
-  // Disable extruders steppers for manual filament changing (only on boards that have separate ENABLE_PINS)
-  #if (E0_ENABLE_PIN != X_ENABLE_PIN && E1_ENABLE_PIN != Y_ENABLE_PIN) || AXIS_DRIVER_TYPE_E0(TMC2660) || AXIS_DRIVER_TYPE_E1(TMC2660) || AXIS_DRIVER_TYPE_E2(TMC2660) || AXIS_DRIVER_TYPE_E3(TMC2660) || AXIS_DRIVER_TYPE_E4(TMC2660) || AXIS_DRIVER_TYPE_E5(TMC2660)
+  // Disable E steppers for manual change
+  #if HAS_E_STEPPER_ENABLE
     disable_e_stepper(active_extruder);
     safe_delay(100);
   #endif
@@ -392,9 +398,6 @@ bool pause_print(const float &retract, const point_t &park_point, const float &u
       host_action_paused();
     #elif defined(ACTION_ON_PAUSE)
       host_action_pause();
-    #endif
-    #if ENABLED(HOST_PROMPT_SUPPORT)
-      host_prompt_open(PROMPT_INFO, PSTR("Pause"));
     #endif
   #endif
 
@@ -497,6 +500,8 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
 
   #if HAS_BUZZER
     filament_change_beep(max_beep_count, true);
+  #else
+    UNUSED(max_beep_count);
   #endif
 
   // Start the heater idle timers
@@ -517,6 +522,9 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
   #if ENABLED(HOST_PROMPT_SUPPORT)
     host_prompt_do(PROMPT_USER_CONTINUE, PSTR("Nozzle Parked"), PSTR("Continue"));
   #endif
+  #if ENABLED(EXTENSIBLE_UI)
+    ExtUI::onUserConfirmRequired(PSTR("Nozzle Parked"));
+  #endif
   while (wait_for_user) {
     #if HAS_BUZZER
       filament_change_beep(max_beep_count);
@@ -536,6 +544,10 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
 
       #if ENABLED(HOST_PROMPT_SUPPORT)
         host_prompt_do(PROMPT_USER_CONTINUE, PSTR("HeaterTimeout"), PSTR("Reheat"));
+      #endif
+
+      #if ENABLED(EXTENSIBLE_UI)
+        ExtUI::onUserConfirmRequired(PSTR("HeaterTimeout"));
       #endif
 
       // Wait for LCD click or M108
@@ -663,10 +675,6 @@ void resume_print(const float &slow_load_length/*=0*/, const float &fast_load_le
   #endif
 
   --did_pause_print;
-
-  #if ENABLED(HOST_PROMPT_SUPPORT)
-    host_prompt_open(PROMPT_INFO, PSTR("Resume"));
-  #endif
 
   #if ENABLED(SDSUPPORT)
     if (did_pause_print) {
