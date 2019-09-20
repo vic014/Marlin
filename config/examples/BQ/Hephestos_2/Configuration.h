@@ -889,12 +889,11 @@
 
 /**
  * Z Probe to nozzle (X,Y) offset, relative to (0, 0).
- * Default X and Y offsets must be integers.
- * Floats may be set with M851 if required.
- * 
- * In the following example the X and Y offsets are both positive:
+ * X and Y offsets must be integers.
  *
- *   #define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
+ * In the following example the X and Y offsets are both positive:
+ * #define X_PROBE_OFFSET_FROM_EXTRUDER 10
+ * #define Y_PROBE_OFFSET_FROM_EXTRUDER 10
  *
  *     +-- BACK ---+
  *     |           |
@@ -906,10 +905,10 @@
  *     |           |
  *     O-- FRONT --+
  *   (0,0)
- * 
- * Specify a Probe position as { X, Y, Z }
  */
-#define NOZZLE_TO_PROBE_OFFSET { 34, 15, 0 }
+#define X_PROBE_OFFSET_FROM_EXTRUDER 34  // X offset: -left  +right  [of the nozzle]
+#define Y_PROBE_OFFSET_FROM_EXTRUDER 15  // Y offset: -front +behind [the nozzle]
+#define Z_PROBE_OFFSET_FROM_EXTRUDER  0  // Z offset: -below +above  [the nozzle]
 
 // Certain types of probes need to stay away from edges
 #define MIN_PROBE_EDGE 10
@@ -943,7 +942,7 @@
  *
  * Use these settings to specify the distance (mm) to raise the probe (or
  * lower the bed). The values set here apply over and above any (negative)
- * probe Z Offset set with NOZZLE_TO_PROBE_OFFSET, M851, or the LCD.
+ * probe Z Offset set with Z_PROBE_OFFSET_FROM_EXTRUDER, M851, or the LCD.
  * Only integer values >= 1 are valid here.
  *
  * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
@@ -1201,10 +1200,10 @@
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   // Set the boundaries for probing (where the probe can reach).
-  //#define LEFT_PROBE_BED_POSITION  X_MIN_POS + probe_offset[X_AXIS]
-  //#define RIGHT_PROBE_BED_POSITION X_MAX_POS - probe_offset[X_AXIS]
-  //#define FRONT_PROBE_BED_POSITION Y_MIN_POS + probe_offset[Y_AXIS]
-  //#define BACK_PROBE_BED_POSITION  Y_MAX_POS - probe_offset[Y_AXIS]
+  //#define LEFT_PROBE_BED_POSITION  X_MIN_POS + (X_PROBE_OFFSET_FROM_EXTRUDER)
+  //#define RIGHT_PROBE_BED_POSITION X_MAX_POS - (X_PROBE_OFFSET_FROM_EXTRUDER)
+  //#define FRONT_PROBE_BED_POSITION Y_MIN_POS + (Y_PROBE_OFFSET_FROM_EXTRUDER)
+  //#define BACK_PROBE_BED_POSITION  Y_MAX_POS - (Y_PROBE_OFFSET_FROM_EXTRUDER)
 
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST

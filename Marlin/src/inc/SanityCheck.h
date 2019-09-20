@@ -388,8 +388,6 @@
   #error "SDPOWER is now SDPOWER_PIN. Please update your configuration and/or pins."
 #elif defined(STRING_SPLASH_LINE1) || defined(STRING_SPLASH_LINE2)
   #error "STRING_SPLASH_LINE[12] are now obsolete. Please remove them from Configuration.h."
-#elif defined(X_PROBE_OFFSET_FROM_EXTRUDER) || defined(Y_PROBE_OFFSET_FROM_EXTRUDER) || defined(Z_PROBE_OFFSET_FROM_EXTRUDER)
-  #error "[XYZ]_PROBE_OFFSET_FROM_EXTRUDER is now NOZZLE_TO_PROBE_OFFSET. Please update your configuration."
 #elif defined(Z_PROBE_ALLEN_KEY_DEPLOY_1_X) || defined(Z_PROBE_ALLEN_KEY_STOW_1_X)
   #error "Z_PROBE_ALLEN_KEY_(DEPLOY|STOW) coordinates are now a single setting. Please update your configuration."
 #endif
@@ -563,6 +561,10 @@ static_assert(Y_MAX_LENGTH >= Y_BED_SIZE, "Movement bounds (Y_MIN_POS, Y_MAX_POS
   #endif
 #elif ENABLED(LCD_SET_PROGRESS_MANUALLY) && !HAS_GRAPHICAL_LCD && DISABLED(EXTENSIBLE_UI)
   #error "LCD_SET_PROGRESS_MANUALLY requires LCD_PROGRESS_BAR, Graphical LCD, or EXTENSIBLE_UI."
+#endif
+
+#if !HAS_LCD_MENU && ENABLED(SD_REPRINT_LAST_SELECTED_FILE)
+  #error "SD_REPRINT_LAST_SELECTED_FILE currently requires a Marlin-native LCD menu."
 #endif
 
 /**
@@ -835,7 +837,7 @@ static_assert(Y_MAX_LENGTH >= Y_BED_SIZE, "Movement bounds (Y_MIN_POS, Y_MAX_POS
  */
 #if ENABLED(MIXING_EXTRUDER)
   #if EXTRUDERS > 1
-    #error "MIXING_EXTRUDER currently only supports one extruder."
+    #error "For MIXING_EXTRUDER set MIXING_STEPPERS > 1 instead of EXTRUDERS > 1."
   #elif MIXING_STEPPERS < 2
     #error "You must set MIXING_STEPPERS >= 2 for a mixing extruder."
   #elif ENABLED(FILAMENT_SENSOR)
@@ -1047,6 +1049,9 @@ static_assert(Y_MAX_LENGTH >= Y_BED_SIZE, "Movement bounds (Y_MIN_POS, Y_MAX_POS
 #endif
 
 #if HAS_BED_PROBE
+
+  static_assert(FLOOR(float(X_PROBE_OFFSET_FROM_EXTRUDER)) == float(X_PROBE_OFFSET_FROM_EXTRUDER), "X_PROBE_OFFSET_FROM_EXTRUDER must be an integer!");
+  static_assert(FLOOR(float(Y_PROBE_OFFSET_FROM_EXTRUDER)) == float(Y_PROBE_OFFSET_FROM_EXTRUDER), "Y_PROBE_OFFSET_FROM_EXTRUDER must be an integer!");
 
   /**
    * Z_PROBE_SLED is incompatible with DELTA

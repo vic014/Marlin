@@ -42,9 +42,9 @@
         && active_extruder == 0
       #endif
     ) {
-      zprobe_offset[Z_AXIS] += offs;
+      zprobe_zoffset += offs;
       SERIAL_ECHO_START();
-      SERIAL_ECHOLNPAIR(MSG_PROBE_OFFSET MSG_Z ": ", zprobe_offset[Z_AXIS]);
+      SERIAL_ECHOLNPAIR(MSG_PROBE_Z_OFFSET ": ", zprobe_zoffset);
     }
     #if ENABLED(BABYSTEP_HOTEND_Z_OFFSET)
       else {

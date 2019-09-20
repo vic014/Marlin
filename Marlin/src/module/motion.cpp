@@ -502,7 +502,7 @@ void clean_up_after_endstop_or_probe_move() {
       soft_endstop[axis].min = base_min_pos(axis);
       soft_endstop[axis].max = (axis == Z_AXIS ? delta_height
       #if HAS_BED_PROBE
-        - zprobe_offset[Z_AXIS]
+        - zprobe_zoffset
       #endif
       : base_max_pos(axis));
 
@@ -1337,7 +1337,7 @@ void set_axis_is_at_home(const AxisEnum axis) {
   #elif ENABLED(DELTA)
     current_position[axis] = (axis == Z_AXIS ? delta_height
     #if HAS_BED_PROBE
-      - zprobe_offset[Z_AXIS]
+      - zprobe_zoffset
     #endif
     : base_home_pos(axis));
   #else
@@ -1351,9 +1351,9 @@ void set_axis_is_at_home(const AxisEnum axis) {
     if (axis == Z_AXIS) {
       #if HOMING_Z_WITH_PROBE
 
-        current_position[Z_AXIS] -= zprobe_offset[Z_AXIS];
+        current_position[Z_AXIS] -= zprobe_zoffset;
 
-        if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("*** Z HOMED WITH PROBE (Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN) ***\n> zprobe_offset[Z_AXIS] = ", zprobe_offset[Z_AXIS]);
+        if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("*** Z HOMED WITH PROBE (Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN) ***\n> zprobe_zoffset = ", zprobe_zoffset);
 
       #else
 
@@ -1658,7 +1658,12 @@ void homeaxis(const AxisEnum axis) {
     ];
     if (backoff_mm) {
       current_position[axis] -= ABS(backoff_mm) * axis_home_dir;
-      line_to_current_position(Z_PROBE_SPEED_FAST);
+      line_to_current_position(
+        #if HOMING_Z_WITH_PROBE
+          (axis == Z_AXIS) ? MMM_TO_MMS(Z_PROBE_SPEED_FAST) :
+        #endif
+        homing_feedrate(axis)
+      );
     }
   #endif
 
