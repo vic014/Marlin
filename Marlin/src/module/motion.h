@@ -30,6 +30,10 @@
 
 #include "../inc/MarlinConfig.h"
 
+#if HAS_BED_PROBE
+  #include "probe.h"
+#endif
+
 #if IS_SCARA
   #include "scara.h"
 #endif
@@ -124,8 +128,10 @@ XYZ_DEFS(signed char, home_dir, HOME_DIR);
 #if HAS_HOTEND_OFFSET
   extern float hotend_offset[XYZ][HOTENDS];
   void reset_hotend_offsets();
-#else
+#elif HOTENDS > 0
   constexpr float hotend_offset[XYZ][HOTENDS] = { { 0 }, { 0 }, { 0 } };
+#else
+  constexpr float hotend_offset[XYZ][1] = { { 0 }, { 0 }, { 0 } };
 #endif
 
 typedef struct { float min, max; } axis_limits_t;
@@ -197,8 +203,9 @@ FORCE_INLINE void do_blocking_move_to(const float (&raw)[XYZE], const float &fr_
   do_blocking_move_to(raw[X_AXIS], raw[Y_AXIS], raw[Z_AXIS], fr_mm_s);
 }
 
-void setup_for_endstop_or_probe_move();
-void clean_up_after_endstop_or_probe_move();
+void remember_feedrate_and_scaling();
+void remember_feedrate_scaling_off();
+void restore_feedrate_and_scaling();
 
 //
 // Homing
@@ -254,11 +261,6 @@ void homeaxis(const AxisEnum axis);
  */
 
 #if IS_KINEMATIC // (DELTA or SCARA)
-
-  #if IS_SCARA
-    extern const float L1, L2;
-  #endif
-
   #if HAS_SCARA_OFFSET
     extern float scara_home_offset[ABC]; // A and B angular offsets, Z mm offset
   #endif
@@ -282,7 +284,7 @@ void homeaxis(const AxisEnum axis);
     // Return true if the both nozzle and the probe can reach the given point.
     // Note: This won't work on SCARA since the probe offset rotates with the arm.
     inline bool position_is_reachable_by_probe(const float &rx, const float &ry) {
-      return position_is_reachable(rx - (X_PROBE_OFFSET_FROM_EXTRUDER), ry - (Y_PROBE_OFFSET_FROM_EXTRUDER))
+      return position_is_reachable(rx - zprobe_offset[X_AXIS], ry - zprobe_offset[Y_AXIS])
              && position_is_reachable(rx, ry, ABS(MIN_PROBE_EDGE));
     }
   #endif
@@ -311,9 +313,9 @@ void homeaxis(const AxisEnum axis);
      *          nozzle must be be able to reach +10,-10.
      */
     inline bool position_is_reachable_by_probe(const float &rx, const float &ry) {
-      return position_is_reachable(rx - (X_PROBE_OFFSET_FROM_EXTRUDER), ry - (Y_PROBE_OFFSET_FROM_EXTRUDER))
-          && WITHIN(rx, MIN_PROBE_X - slop, MAX_PROBE_X + slop)
-          && WITHIN(ry, MIN_PROBE_Y - slop, MAX_PROBE_Y + slop);
+      return position_is_reachable(rx - zprobe_offset[X_AXIS], ry - zprobe_offset[Y_AXIS])
+          && WITHIN(rx, probe_min_x() - slop, probe_max_x() + slop)
+          && WITHIN(ry, probe_min_y() - slop, probe_max_y() + slop);
     }
   #endif
 

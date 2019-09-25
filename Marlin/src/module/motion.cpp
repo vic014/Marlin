@@ -105,7 +105,7 @@ float current_position[XYZE] = { X_HOME_POS, Y_HOME_POS, Z_HOME_POS };
  * Cartesian Destination
  *   The destination for a move, filled in by G-code movement commands,
  *   and expected by functions like 'prepare_move_to_destination'.
- *   Set with 'get_destination_from_command' or 'set_destination_from_current'.
+ *   G-codes can set destination using 'get_destination_from_command'
  */
 float destination[XYZE]; // = { 0 }
 
@@ -424,7 +424,7 @@ void do_blocking_move_to_x(const float &rx, const float &fr_mm_s/*=0.0*/) {
   do_blocking_move_to(rx, current_position[Y_AXIS], current_position[Z_AXIS], fr_mm_s);
 }
 void do_blocking_move_to_y(const float &ry, const float &fr_mm_s/*=0.0*/) {
-  do_blocking_move_to(current_position[Y_AXIS], ry, current_position[Z_AXIS], fr_mm_s);
+  do_blocking_move_to(current_position[X_AXIS], ry, current_position[Z_AXIS], fr_mm_s);
 }
 void do_blocking_move_to_z(const float &rz, const float &fr_mm_s/*=0.0*/) {
   do_blocking_move_to(current_position[X_AXIS], current_position[Y_AXIS], rz, fr_mm_s);
@@ -439,12 +439,15 @@ void do_blocking_move_to_xy(const float &rx, const float &ry, const float &fr_mm
 //
 static float saved_feedrate_mm_s;
 static int16_t saved_feedrate_percentage;
-void setup_for_endstop_or_probe_move() {
+void remember_feedrate_and_scaling() {
   saved_feedrate_mm_s = feedrate_mm_s;
   saved_feedrate_percentage = feedrate_percentage;
+}
+void remember_feedrate_scaling_off() {
+  remember_feedrate_and_scaling();
   feedrate_percentage = 100;
 }
-void clean_up_after_endstop_or_probe_move() {
+void restore_feedrate_and_scaling() {
   feedrate_mm_s = saved_feedrate_mm_s;
   feedrate_percentage = saved_feedrate_percentage;
 }
@@ -502,7 +505,7 @@ void clean_up_after_endstop_or_probe_move() {
       soft_endstop[axis].min = base_min_pos(axis);
       soft_endstop[axis].max = (axis == Z_AXIS ? delta_height
       #if HAS_BED_PROBE
-        - zprobe_zoffset
+        - zprobe_offset[Z_AXIS]
       #endif
       : base_max_pos(axis));
 
@@ -670,7 +673,7 @@ void clean_up_after_endstop_or_probe_move() {
 
     // For SCARA enforce a minimum segment size
     #if IS_SCARA
-      NOMORE(segments, cartesian_mm * (1.0f / float(SCARA_MIN_SEGMENT_LENGTH)));
+      NOMORE(segments, cartesian_mm * RECIPROCAL(SCARA_MIN_SEGMENT_LENGTH));
     #endif
 
     // At least one segment is required
@@ -1325,11 +1328,6 @@ void set_axis_is_at_home(const AxisEnum axis) {
   SBI(axis_known_position, axis);
   SBI(axis_homed, axis);
 
-  #if HAS_POSITION_SHIFT
-    position_shift[axis] = 0;
-    update_workspace_offset(axis);
-  #endif
-
   #if ENABLED(DUAL_X_CARRIAGE)
     if (axis == X_AXIS && (active_extruder == 1 || dual_x_carriage_mode == DXC_DUPLICATION_MODE)) {
       current_position[X_AXIS] = x_home_pos(active_extruder);
@@ -1342,7 +1340,7 @@ void set_axis_is_at_home(const AxisEnum axis) {
   #elif ENABLED(DELTA)
     current_position[axis] = (axis == Z_AXIS ? delta_height
     #if HAS_BED_PROBE
-      - zprobe_zoffset
+      - zprobe_offset[Z_AXIS]
     #endif
     : base_home_pos(axis));
   #else
@@ -1356,9 +1354,9 @@ void set_axis_is_at_home(const AxisEnum axis) {
     if (axis == Z_AXIS) {
       #if HOMING_Z_WITH_PROBE
 
-        current_position[Z_AXIS] -= zprobe_zoffset;
+        current_position[Z_AXIS] -= zprobe_offset[Z_AXIS];
 
-        if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("*** Z HOMED WITH PROBE (Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN) ***\n> zprobe_zoffset = ", zprobe_zoffset);
+        if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("*** Z HOMED WITH PROBE (Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN) ***\n> zprobe_offset[Z_AXIS] = ", zprobe_offset[Z_AXIS]);
 
       #else
 
@@ -1663,7 +1661,12 @@ void homeaxis(const AxisEnum axis) {
     ];
     if (backoff_mm) {
       current_position[axis] -= ABS(backoff_mm) * axis_home_dir;
-      line_to_current_position(Z_PROBE_SPEED_FAST);
+      line_to_current_position(
+        #if HOMING_Z_WITH_PROBE
+          (axis == Z_AXIS) ? MMM_TO_MMS(Z_PROBE_SPEED_FAST) :
+        #endif
+        homing_feedrate(axis)
+      );
     }
   #endif
 
