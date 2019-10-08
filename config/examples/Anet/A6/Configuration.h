@@ -756,6 +756,11 @@
 //#define DEFAULT_MAX_FEEDRATE          { 400, 400, 20, 50 }
 
 
+//#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
+#if ENABLED(LIMITED_MAX_FR_EDITING)
+  #define MAX_FEEDRATE_EDIT_VALUES    { 600, 600, 10, 50 } // ...or, set your own edit limits
+#endif
+
 /**
  * Default Max Acceleration (change/s) change = mm/s
  * (Maximum start speed for accelerated moves)
@@ -768,6 +773,11 @@
 // Amx x: 9000, Amax Y: 5000, Amax z: 50, Amax e: 10000
 #define DEFAULT_MAX_ACCELERATION      { 9000, 5000, 50,  10000 }
 //#define DEFAULT_MAX_ACCELERATION      { 10000, 10000, 200, 10000 }
+
+//#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
+#if ENABLED(LIMITED_MAX_ACCEL_EDITING)
+  #define MAX_ACCEL_EDIT_VALUES       { 6000, 6000, 200, 20000 } // ...or, set your own edit limits
+#endif
 
 /**
  * Default Acceleration (change/s) change = mm/s
@@ -818,6 +828,11 @@
   #define DEFAULT_XJERK 10.0
   #define DEFAULT_YJERK 10.0
   #define DEFAULT_ZJERK  0.3
+
+  //#define LIMITED_JERK_EDITING        // Limit edit via M205 or LCD to DEFAULT_aJERK * 2
+  #if ENABLED(LIMITED_JERK_EDITING)
+    #define MAX_JERK_EDIT_VALUES { 20, 20, 0.6, 10 } // ...or, set your own edit limits
+  #endif
 #endif
 
 #define DEFAULT_EJERK    5.0  // May be used by Linear Advance
@@ -935,9 +950,7 @@
 
 /**
  * Z Probe to nozzle (X,Y) offset, relative to (0, 0).
- * Default X and Y offsets must be integers.
- * Floats may be set with M851 if required.
- * 
+ *
  * In the following example the X and Y offsets are both positive:
  *
  *   #define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
@@ -952,7 +965,7 @@
  *     |           |
  *     O-- FRONT --+
  *   (0,0)
- * 
+ *
  * Specify a Probe position as { X, Y, Z }
  */
 //#define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
@@ -1305,36 +1318,6 @@
   #define GRID_MAX_POINTS_X 4
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
-  // Set the boundaries for probing (where the probe can reach).
-  //#define LEFT_PROBE_BED_POSITION 15
-  //#define RIGHT_PROBE_BED_POSITION (X_BED_SIZE - 15)
-  //#define FRONT_PROBE_BED_POSITION 15
-  //#define BACK_PROBE_BED_POSITION (Y_BED_SIZE - 15)
-
-  // ANET A6
-  //#define LEFT_PROBE_BED_POSITION 20
-  //#define RIGHT_PROBE_BED_POSITION 190
-  //#define FRONT_PROBE_BED_POSITION 20
-  //#define BACK_PROBE_BED_POSITION 190
-
-  // ANET A6 BLTOUCH right (39mm) to the nozzle
-  //#define LEFT_PROBE_BED_POSITION 36
-  //#define RIGHT_PROBE_BED_POSITION 190
-  //#define FRONT_PROBE_BED_POSITION 20
-  //#define BACK_PROBE_BED_POSITION 190
-
-  // ANET A6 with new X-Axis and modded Y-Axis
-  //#define LEFT_PROBE_BED_POSITION 20
-  //#define RIGHT_PROBE_BED_POSITION 205
-  //#define FRONT_PROBE_BED_POSITION 20
-  //#define BACK_PROBE_BED_POSITION 205
-
-  // ANET A6 with new X-Axis and modded Y-Axis, X0/Y0 front left bed edge
-  //#define LEFT_PROBE_BED_POSITION 20
-  //#define RIGHT_PROBE_BED_POSITION 194
-  //#define FRONT_PROBE_BED_POSITION 20
-  //#define BACK_PROBE_BED_POSITION 194
-
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
 
@@ -1387,19 +1370,6 @@
   //#define MESH_G28_REST_ORIGIN // After homing all axes ('G28' or 'G28 XYZ') rest Z at Z_MIN_POS
 
 #endif // BED_LEVELING
-
-/**
- * Points to probe for all 3-point Leveling procedures.
- * Override if the automatically selected points are inadequate.
- */
-#if EITHER(AUTO_BED_LEVELING_3POINT, AUTO_BED_LEVELING_UBL)
-  //#define PROBE_PT_1_X 15
-  //#define PROBE_PT_1_Y 180
-  //#define PROBE_PT_2_X 15
-  //#define PROBE_PT_2_Y 20
-  //#define PROBE_PT_3_X 170
-  //#define PROBE_PT_3_Y 20
-#endif
 
 /**
  * Add a bed leveling sub-menu for ABL or MBL.

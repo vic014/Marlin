@@ -179,13 +179,13 @@ void StatusScreen::draw_fine_motion(draw_mode_t what) {
 
     ui.bounds(POLY(fine_label), x, y, h, v);
     cmd.cmd(COLOR_RGB(bg_text_enabled))
-       .text(x, y, h, v, GET_TEXTF(FINE_MOTION));
+       .text(x, y, h, v, GET_TEXT_F(FINE_MOTION));
   }
 
   if (what & FOREGROUND) {
     ui.bounds(POLY(fine_toggle), x, y, h, v);
     cmd.colors(ui_toggle)
-       .toggle2(x, y, h, v, GET_TEXTF(NO), GET_TEXTF(YES), fine_motion);
+       .toggle2(x, y, h, v, GET_TEXT_F(NO), GET_TEXT_F(YES), fine_motion);
   }
 }
 
@@ -218,11 +218,11 @@ void StatusScreen::draw_buttons(draw_mode_t) {
      .colors(has_media ? action_btn : normal_btn)
      .tag(9).button(BTN_POS(1,9), BTN_SIZE(1,1),
         isPrintingFromMedia() ?
-          GET_TEXTF(PRINTING) :
-          GET_TEXTF(MEDIA)
+          GET_TEXT_F(PRINTING) :
+          GET_TEXT_F(MEDIA)
       );
 
-  cmd.colors(!has_media ? action_btn : normal_btn).tag(10).button(BTN_POS(2,9), BTN_SIZE(1,1), GET_TEXTF(MENU));
+  cmd.colors(!has_media ? action_btn : normal_btn).tag(10).button(BTN_POS(2,9), BTN_SIZE(1,1), GET_TEXT_F(MENU));
 }
 
 void StatusScreen::loadBitmaps() {
@@ -258,24 +258,24 @@ bool StatusScreen::onTouchStart(uint8_t) {
 
 bool StatusScreen::onTouchEnd(uint8_t tag) {
   switch (tag) {
-    case 1:
-    case 2:
-    case 3:
-    case 4:
+    case  1:
+    case  2:
+    case  3:
+    case  4:
     case 12:
       if (!jog_xy) {
         jog_xy = true;
         injectCommands_P(PSTR("M17"));
       }
-      jog(0,  0,  0);
+      jog({ 0, 0, 0 });
       break;
-    case 5:
-    case 6:
-      jog(0,  0,  0);
+    case  5:
+    case  6:
+      jog({ 0, 0, 0 });
       break;
-    case 9:  GOTO_SCREEN(FilesScreen); break;
+    case  9: GOTO_SCREEN(FilesScreen); break;
     case 10: GOTO_SCREEN(MainMenu); break;
-    case 13: SpinnerDialogBox::enqueueAndWait_P(F("G112"));  break;
+    case 13: GOTO_SCREEN(BioConfirmHomeE); break;
     case 14: SpinnerDialogBox::enqueueAndWait_P(F("G28 Z")); break;
     case 15: GOTO_SCREEN(TemperatureScreen);  break;
     case 16: fine_motion = !fine_motion; break;
@@ -289,19 +289,18 @@ bool StatusScreen::onTouchEnd(uint8_t tag) {
 
 bool StatusScreen::onTouchHeld(uint8_t tag) {
   if (tag >= 1 && tag <= 4 && !jog_xy) return false;
-  const float s  = min_speed  + (fine_motion ? 0 : (max_speed  - min_speed)  * sq(increment));
+  const float s = min_speed + (fine_motion ? 0 : (max_speed - min_speed) * sq(increment));
   switch (tag) {
-    case 1: jog(-s,  0,  0); break;
-    case 2: jog( s,  0,  0); break;
-    case 4: jog( 0, -s,  0); break; // NOTE: Y directions inverted because bed rather than needle moves
-    case 3: jog( 0,  s,  0); break;
-    case 5: jog( 0,  0, -s); break;
-    case 6: jog( 0,  0,  s); break;
-    case 7:
-    case 8:
+    case 1: jog({-s,  0,  0}); break;
+    case 2: jog({ s,  0,  0}); break;
+    case 4: jog({ 0, -s,  0}); break; // NOTE: Y directions inverted because bed rather than needle moves
+    case 3: jog({ 0,  s,  0}); break;
+    case 5: jog({ 0,  0, -s}); break;
+    case 6: jog({ 0,  0,  s}); break;
+    case 7: case 8:
     {
       if (ExtUI::isMoving()) return false;
-      const float feedrate  =  emin_speed + (fine_motion ? 0 : (emax_speed - emin_speed) * sq(increment));
+      const feedRate_t feedrate = emin_speed + (fine_motion ? 0 : (emax_speed - emin_speed) * sq(increment));
       const float increment = 0.25 * feedrate * (tag == 7 ? -1 : 1);
       MoveAxisScreen::setManualFeedrate(E0, feedrate);
       UI_INCREMENT(AxisPosition_mm, E0);

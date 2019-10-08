@@ -103,8 +103,8 @@ Temperature thermalManager;
 #else
   #define _CHAMBER_PSTR(M,E)
 #endif
-#define _E_PSTR(M,E,N) ((HOTENDS) >= (N) && (E) == (N)-1) ? PSTR(MSG_E##N " " M) :
-#define TEMP_ERR_PSTR(M,E) _BED_PSTR(M##_BED,E) _CHAMBER_PSTR(M##_CHAMBER,E) _E_PSTR(M,E,2) _E_PSTR(M,E,3) _E_PSTR(M,E,4) _E_PSTR(M,E,5) _E_PSTR(M,E,6) PSTR(MSG_E1 " " M)
+#define _E_PSTR(M,E,N) ((HOTENDS) > (N) && (E) == (N)) ? PSTR(LCD_STR_E##N " " M) :
+#define TEMP_ERR_PSTR(M,E) _BED_PSTR(M##_BED,E) _CHAMBER_PSTR(M##_CHAMBER,E) _E_PSTR(M,E,1) _E_PSTR(M,E,2) _E_PSTR(M,E,3) _E_PSTR(M,E,4) _E_PSTR(M,E,5) PSTR(LCD_STR_E0 " " M)
 
 // public:
 
@@ -157,18 +157,6 @@ Temperature thermalManager;
     uint8_t Temperature::fan_speed_scaler[FAN_COUNT] = ARRAY_N(FAN_COUNT, 128, 128, 128, 128, 128, 128);
   #endif
 
-  #if HAS_LCD_MENU
-
-    uint8_t Temperature::lcd_tmpfan_speed[
-      #if ENABLED(SINGLENOZZLE)
-        _MAX(EXTRUDERS, FAN_COUNT)
-      #else
-        FAN_COUNT
-      #endif
-    ]; // = { 0 }
-
-  #endif
-
   /**
    * Set the print fan speed for a target extruder
    */
@@ -187,9 +175,6 @@ Temperature thermalManager;
     if (target >= FAN_COUNT) return;
 
     fan_speed[target] = speed;
-    #if HAS_LCD_MENU
-      lcd_tmpfan_speed[target] = speed;
-    #endif
   }
 
   #if EITHER(PROBING_FANS_OFF, ADVANCED_PAUSE_FANS_PAUSE)
@@ -389,7 +374,7 @@ volatile bool Temperature::temp_meas_ready = false;
       next_auto_fan_check_ms = next_temp_ms + 2500UL;
     #endif
 
-    if (target > GHV(BED_MAXTEMP, temp_range[heater].maxtemp) - 15) {
+    if (target > GHV(BED_MAXTEMP - 10, temp_range[heater].maxtemp - 15)) {
       SERIAL_ECHOLNPGM(MSG_PID_TEMP_TOO_HIGH);
       return;
     }
@@ -500,7 +485,7 @@ volatile bool Temperature::temp_meas_ready = false;
 
       // Did the temperature overshoot very far?
       #ifndef MAX_OVERSHOOT_PID_AUTOTUNE
-        #define MAX_OVERSHOOT_PID_AUTOTUNE 20
+        #define MAX_OVERSHOOT_PID_AUTOTUNE 30
       #endif
       if (current_temp > target + MAX_OVERSHOOT_PID_AUTOTUNE) {
         SERIAL_ECHOLNPGM(MSG_PID_TEMP_TOO_HIGH);
@@ -665,10 +650,10 @@ int16_t Temperature::getHeaterPower(const heater_ind_t heater_id) {
         , AUTO_2_IS_0 ? 0 : AUTO_2_IS_1 ? 1 : 2
       #endif
       #if HOTENDS > 3
-        , AUTO_3_IS_0 ? 0 : AUTO_3_IS_1 ? 1 : AUTO_3_IS_2 ? 2 : 3,
+        , AUTO_3_IS_0 ? 0 : AUTO_3_IS_1 ? 1 : AUTO_3_IS_2 ? 2 : 3
       #endif
       #if HOTENDS > 4
-        , AUTO_4_IS_0 ? 0 : AUTO_4_IS_1 ? 1 : AUTO_4_IS_2 ? 2 : AUTO_4_IS_3 ? 3 : 4,
+        , AUTO_4_IS_0 ? 0 : AUTO_4_IS_1 ? 1 : AUTO_4_IS_2 ? 2 : AUTO_4_IS_3 ? 3 : 4
       #endif
       #if HOTENDS > 5
         , AUTO_5_IS_0 ? 0 : AUTO_5_IS_1 ? 1 : AUTO_5_IS_2 ? 2 : AUTO_5_IS_3 ? 3 : AUTO_5_IS_4 ? 4 : 5
@@ -813,15 +798,8 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
 
 #if HOTENDS
 
-  float Temperature::get_pid_output_hotend(const uint8_t e) {
-    #if HOTENDS == 1
-      #define _HOTEND_TEST true
-    #else
-      #define _HOTEND_TEST (e == active_extruder)
-    #endif
-    E_UNUSED();
+  float Temperature::get_pid_output_hotend(const uint8_t E_NAME) {
     const uint8_t ee = HOTEND_INDEX;
-    float pid_output;
     #if ENABLED(PIDTEMP)
       #if DISABLED(PID_OPENLOOP)
         static hotend_pid_t work_pid[HOTENDS];
@@ -829,6 +807,8 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
                      temp_dState[HOTENDS] = { 0 };
         static bool pid_reset[HOTENDS] = { false };
         const float pid_error = temp_hotend[ee].target - temp_hotend[ee].celsius;
+
+        float pid_output;
 
         if (temp_hotend[ee].target == 0
           || pid_error < -(PID_FUNCTIONAL_RANGE)
@@ -859,8 +839,13 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
           pid_output = work_pid[ee].Kp + work_pid[ee].Ki + work_pid[ee].Kd + float(MIN_POWER);
 
           #if ENABLED(PID_EXTRUSION_SCALING)
+            #if HOTENDS == 1
+              constexpr bool this_hotend = true;
+            #else
+              const bool this_hotend = (ee == active_extruder);
+            #endif
             work_pid[ee].Kc = 0;
-            if (_HOTEND_TEST) {
+            if (this_hotend) {
               const long e_position = stepper.position(E_AXIS);
               if (e_position > last_e_position) {
                 lpq[lpq_ptr] = e_position - last_e_position;
@@ -886,7 +871,7 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
       #endif // PID_OPENLOOP
 
       #if ENABLED(PID_DEBUG)
-        if (e == active_extruder) {
+        if (ee == active_extruder) {
           SERIAL_ECHO_START();
           SERIAL_ECHOPAIR(
             MSG_PID_DEBUG, ee,
@@ -894,6 +879,7 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
             MSG_PID_DEBUG_OUTPUT, pid_output
           );
           #if DISABLED(PID_OPENLOOP)
+          {
             SERIAL_ECHOPAIR(
               MSG_PID_DEBUG_PTERM, work_pid[ee].Kp,
               MSG_PID_DEBUG_ITERM, work_pid[ee].Ki,
@@ -902,6 +888,7 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
                 , MSG_PID_DEBUG_CTERM, work_pid[ee].Kc
               #endif
             );
+          }
           #endif
           SERIAL_EOL();
         }
@@ -910,12 +897,11 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
     #else // No PID enabled
 
       #if HEATER_IDLE_HANDLER
-        #define _TIMED_OUT_TEST hotend_idle[ee].timed_out
+        const bool is_idling = hotend_idle[ee].timed_out;
       #else
-        #define _TIMED_OUT_TEST false
+        constexpr bool is_idling = false;
       #endif
-      pid_output = (!_TIMED_OUT_TEST && temp_hotend[ee].celsius < temp_hotend[ee].target) ? BANG_MAX : 0;
-      #undef _TIMED_OUT_TEST
+      const float pid_output = (!is_idling && temp_hotend[ee].celsius < temp_hotend[ee].target) ? BANG_MAX : 0;
 
     #endif
 
@@ -942,7 +928,7 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
         pid_reset = true;
       }
       else if (pid_error > PID_FUNCTIONAL_RANGE) {
-        pid_output = BANG_MAX;
+        pid_output = MAX_BED_POWER;
         pid_reset = true;
       }
       else {
@@ -970,6 +956,7 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
     #endif // PID_OPENLOOP
 
     #if ENABLED(PID_BED_DEBUG)
+    {
       SERIAL_ECHO_START();
       SERIAL_ECHOLNPAIR(
         " PID_BED_DEBUG : Input ", temp_bed.celsius, " Output ", pid_output,
@@ -979,6 +966,7 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
           MSG_PID_DEBUG_DTERM, work_pid.Kd,
         #endif
       );
+    }
     #endif
 
     return pid_output;
@@ -999,7 +987,7 @@ void Temperature::manage_heater() {
 
   #if EARLY_WATCHDOG
     // If thermal manager is still not running, make sure to at least reset the watchdog!
-    if (!inited) return watchdog_reset();
+    if (!inited) return watchdog_refresh();
   #endif
 
   #if BOTH(PROBING_HEATERS_OFF, BED_LIMIT_SWITCHING)
@@ -1517,10 +1505,8 @@ void Temperature::updateTemperaturesFromRawValues() {
     filwidth.update_measured_mm();
   #endif
 
-  #if ENABLED(USE_WATCHDOG)
-    // Reset the watchdog after we know we have a temperature measurement.
-    watchdog_reset();
-  #endif
+  // Reset the watchdog on good temperature measurement
+  watchdog_refresh();
 
   temp_meas_ready = false;
 }
@@ -1812,8 +1798,7 @@ void Temperature::init() {
    * their target temperature by a configurable margin.
    * This is called when the temperature is set. (M104, M109)
    */
-  void Temperature::start_watching_hotend(const uint8_t e) {
-    E_UNUSED();
+  void Temperature::start_watching_hotend(const uint8_t E_NAME) {
     const uint8_t ee = HOTEND_INDEX;
     if (degTargetHotend(ee) && degHotend(ee) < degTargetHotend(ee) - (WATCH_TEMP_INCREASE + TEMP_HYSTERESIS + 1)) {
       watch_hotend[ee].target = degHotend(ee) + WATCH_TEMP_INCREASE;
@@ -2932,11 +2917,14 @@ void Temperature::isr() {
   #if HOTENDS && HAS_DISPLAY
     void Temperature::set_heating_message(const uint8_t e) {
       const bool heating = isHeatingHotend(e);
-      #if HOTENDS > 1
-        ui.status_printf_P(0, heating ? PSTR("E%c " MSG_HEATING) : PSTR("E%c " MSG_COOLING), '1' + e);
-      #else
-        ui.set_status_P(heating ? PSTR("E " MSG_HEATING) : PSTR("E " MSG_COOLING));
-      #endif
+      ui.status_printf_P(0,
+        #if HOTENDS > 1
+          PSTR("E%c " S_FMT), '1' + e
+        #else
+          PSTR("E " S_FMT)
+        #endif
+        , heating ? PSTR(MSG_HEATING) : PSTR(MSG_COOLING)
+      );
     }
   #endif
 

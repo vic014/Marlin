@@ -64,7 +64,7 @@ void BootScreen::onIdle() {
   } else {
     if (!UIFlashStorage::is_valid()) {
       StatusScreen::loadBitmaps();
-      SpinnerDialogBox::show(GET_TEXTF(PLEASE_WAIT));
+      SpinnerDialogBox::show(GET_TEXT_F(PLEASE_WAIT));
       UIFlashStorage::format_flash();
       SpinnerDialogBox::hide();
     }
@@ -83,7 +83,7 @@ void BootScreen::onIdle() {
       current_screen.forget();
       PUSH_SCREEN(StatusScreen);
       PUSH_SCREEN(BioConfirmHomeE);
-    #elif defined(TOUCH_UI_LANGUAGE_MENU)
+    #elif NUM_LANGUAGES > 1
       StatusScreen::setStatusMessage(F(WELCOME_MSG));
       GOTO_SCREEN(LanguageMenu);
     #else
