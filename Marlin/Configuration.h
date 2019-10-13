@@ -2,14 +2,19 @@
 //#define BondtechBMG
 //#define CR10SPro_GearedExtruder
 //#define E3DV6
+
 //#define FilamentSensorStd
 //#define FilamentSensorLerdge
-//#define STOCK_2208 // V2 Stock Board with TMC2208 Drivers
+
+#define STOCK_2208 // V2 Stock Board with TMC2208 Drivers
 //#define SKR13 // 32 bit board - assumes 2208 drivers
 //#define SKR13_2209
 //#define E_8825
 //#define SKR13_UART // Configure SKR board with drivers in UART mode
-//#define DUAL_Z
+
+#define SX2 // Small formfactor 200mm machine
+
+#define DUAL_Z
 //#define GRAPHICSLCD
 //#define UBL
 
@@ -1025,7 +1030,7 @@
  * A total of 3 or more adds more slow probes, taking the average.
  */
 #define MULTIPLE_PROBING 2
-#define EXTRA_PROBING    1
+//#define EXTRA_PROBING    1
 
 /**
  * Z probes require clearance when deploying, stowing, and moving between
@@ -1142,9 +1147,13 @@
 // @section machine
 
 // The size of the print bed
-#define X_BED_SIZE 398
-#define Y_BED_SIZE 390
-
+#if ENABLED(SX2)
+  #define X_BED_SIZE 248
+  #define Y_BED_SIZE 230
+#else
+  #define X_BED_SIZE 398
+  #define Y_BED_SIZE 390
+#endif
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #define X_MIN_POS 0
@@ -1152,8 +1161,11 @@
 #define Z_MIN_POS 0
 #define X_MAX_POS X_BED_SIZE
 #define Y_MAX_POS Y_BED_SIZE
-#define Z_MAX_POS 500
-
+#if ENABLED(SX2)
+  #define Z_MAX_POS 500
+#else
+  #define Z_MAX_POS 250
+#endif
 /**
  * Software Endstops
  *
@@ -1312,7 +1324,11 @@
 #if EITHER(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
 
   // Set the number of grid points per dimension.
-  #define GRID_MAX_POINTS_X 10
+  #if ENABLED(SX2)
+    #define GRID_MAX_POINTS_X 5
+  #else
+    #define GRID_MAX_POINTS_X 10
+  #endif
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   // Probe along the Y axis, advancing X after each column

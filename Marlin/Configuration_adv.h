@@ -590,7 +590,7 @@
    * This feature was designed for Delta's with very fast Z moves however higher speed cartesians may function
    * If the machine cannot raise the probe fast enough after a trigger, it may enter a fault state.
    */
-  //#define BLTOUCH_HS_MODE
+  #define BLTOUCH_HS_MODE
 
   // Safety: Enable voltage mode settings in the LCD menu.
   //#define BLTOUCH_LCD_VOLTAGE_MENU
@@ -606,10 +606,15 @@
 #endif
 #if ENABLED(Z_STEPPER_AUTO_ALIGN)
   // Define probe X and Y positions for Z1, Z2 [, Z3]
-  #define Z_STEPPER_ALIGN_X { 50, 350 }
-  #define Z_STEPPER_ALIGN_Y { 200, 200 }
+  #if ENABLED(SX2)
+    #define Z_STEPPER_ALIGN_X { 50, 225 }
+    #define Z_STEPPER_ALIGN_Y { 100, 100 }
+  #else
+    #define Z_STEPPER_ALIGN_X { 50, 350 }
+    #define Z_STEPPER_ALIGN_Y { 200, 200 }
+  #endif
   // Set number of iterations to align
-  #define Z_STEPPER_ALIGN_ITERATIONS 3
+  #define Z_STEPPER_ALIGN_ITERATIONS 6
   // Enable to restore leveling setup after operation
   #define RESTORE_LEVELING_AFTER_G34
 
@@ -1365,12 +1370,12 @@
  * Useful to get probe points to exact positions on targets or
  * to allow leveling to avoid plate clamps on only specific
  * sides of the bed.
- * 
+ *
  * If you are replacing the prior *_PROBE_BED_POSITION options,
  * LEFT and FRONT values in most cases will map directly over
- * RIGHT and REAR would be the inverse such as 
+ * RIGHT and REAR would be the inverse such as
  * (X/Y_BED_SIZE - RIGHT/BACK_PROBE_BED_POSITION)
- * 
+ *
  * This will allow all positions to match at compilation, however
  * should the probe position be modified with M851XY then the
  * probe points will follow. This prevents any change from causing
@@ -2514,7 +2519,7 @@
 
   #define CommBedTmp "65"
   #if ENABLED(DUAL_Z)
-    #define ALIGN_CMD "G34I3\n"
+    #define ALIGN_CMD "G34I20\n"
   #else
     #define ALIGN_CMD ""
   #endif
