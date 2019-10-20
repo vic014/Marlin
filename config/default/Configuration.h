@@ -2207,3 +2207,17 @@
 
 // Allow servo angle to be edited and saved to EEPROM
 //#define EDITABLE_SERVO_ANGLES
+
+
+/**
+ * Extra modifications to Marlin for LulzBot printers
+ */
+//#define WIPE_SEQUENCE_COMMANDS
+//#define AXIS_LEVELING_COMMANDS
+//#define CALIBRATION_COMMANDS
+//#define AO_EXP1_DEPRECATED_PINMAP
+//#define DISABLE_DUE_SD_MMC
+//#define EXTRUDER_FAN_ON_PIN_6
+//#define ACTION_ON_FILAMENT_RUNOUT
+//#define ARCHIM2_SPI_FLASH_EEPROM_BACKUP_SIZE
+
