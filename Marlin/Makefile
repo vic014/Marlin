@@ -92,20 +92,6 @@ U8GLIB             ?= 1
 # this defines whether to include the Trinamic TMCStepper library
 TMC                ?= 1
 
-############
-# Try to automatically determine whether RELOC_WORKAROUND is needed based
-# on GCC versions:
-#   http://www.avrfreaks.net/comment/1789106#comment-1789106
-
-CC_MAJ:=$(shell $(CC) -dM -E - < /dev/null | grep __GNUC__ | cut -f3 -d\ )
-CC_MIN:=$(shell $(CC) -dM -E - < /dev/null | grep __GNUC_MINOR__ | cut -f3 -d\ )
-CC_PATCHLEVEL:=$(shell $(CC) -dM -E - < /dev/null | grep __GNUC_PATCHLEVEL__ | cut -f3 -d\ )
-CC_VER:=$(shell echo $$(( $(CC_MAJ) * 10000 + $(CC_MIN) * 100 + $(CC_PATCHLEVEL) )))
-ifeq ($(shell test $(CC_VER) -lt 40901 && echo 1),1)
-  @echo This version of GCC is likely broken. Enabling relocation workaround.
-  RELOC_WORKAROUND = 1
-endif
-
 ############################################################################
 # Below here nothing should be changed...
 
@@ -507,7 +493,7 @@ endif
 # that derives from that, and their source are present in
 # the main Marlin source directory
 
-TARGET = $(notdir $(CURDIR))
+TARGET = marlin
 
 # VPATH tells make to look into these directory for source files,
 # there is no need to specify explicit pathnames as long as the
