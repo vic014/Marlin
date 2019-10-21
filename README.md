@@ -18,27 +18,7 @@ LulzBot made a conservative decision of keeping most customers on older but inte
 
 ## *Drunken Octopus* comes in up to 196 different flavors!
 
-If you are savvy with electrical and mechanical things, *Drunken Octopus* will give you the software to match any hardware upgrades you make to your printer. Many of the following combinations have been tried either at LulzBot R&D or by LulzBot employees on their own printers, so any of these choices are within the realm of the possible!
-
-Printer Chassis and Electronics (your pick!)                                  | Toolhead (your pick!)
-------------------------------------------------------------------------------|---------------------------
-Mini with original electronics with or w/o B&W display and SD card  :factory: | Single Extruder for Mini :factory:
-Mini with Einsy Retro with or w/o B&W display                                 | Flexystruder for Mini
-Mini with original electronics, Color Touch Screen and SD card                | Aerostruder for Mini 2 :factory:
-Mini with Einsy Retro and Color Touch Screen and SD card                      | Single Extruder for TAZ :factory:
-Mini 2 with original electronics, B&W display and SD card           :factory: | Flexystruder for TAZ
-Mini 2 with original electronics, Color Touch Screen and SD card              | MOARstruder for TAZ
-Bio with original electronics, Color Touch Screen and SD card       :factory: | Goostruder for Bio :factory:
-TAZ 5 with original electronics                                     :factory: | FlexyDually for TAZ
-TAZ 5 with Archim 2.0 upgrade                                                 | DualExtruder V2 for TAZ
-TAZ 6 with original electronics                                     :factory: | DualExtruder V3 for TAZ
-TAZ 6 with Archim 2.0 upgrade                                                 | Universal Adapter for Mini
-TAZ Workhorse with original electronics                             :factory: | Universal Adapter for TAZ
-TAZ Workhorse with original electronics and Filament Sensor                   | Universal SL 0.25mm
-TAZ Workhorse with Archim 2.0 and Filament Sensor                             | Universal SE 0.5mm :factory:
-TAZ Pro with Color Touch Screen, USB Flashdrive and Filament Sensor :factory: | Universal HS 0.8mm
-
-:factory: = Standard/stock configuration
+If you are savvy with electrical and mechanical things, *Drunken Octopus* will give you the software to match any hardware upgrades you make to your printer. See the [FAQ] for a complete list of supported printers and upgrades!
 
 # How can you help make *Drunken Octopus* a success?
 
@@ -47,63 +27,20 @@ TAZ Pro with Color Touch Screen, USB Flashdrive and Filament Sensor :factory: | 
 Working on Marlin used to be a paid, full-time job for me, but without LulzBot to support me, I will have
 to work on my own time using my own resources. In exchange for your help, I hope to create content, such as printer upgrade guides and other tutorials. I learned a *ton* at the R&D department at LulzBot and I have much I want to teach you!
 
-Aside from the lack of a paycheck, I will no longer have the resources of the company to help me test firmware. All I have is an Einsy Retro upgraded first-generation Mini and a TAZ 5. Because of this, *Drunken Octopus* will need to be a collaborative effort to survive. Here's how you can participate:
+Even if you are unable to contribute, I can still use your help. See the [FAQ] for a list of non-monetary ways to chip in!
 
-- If you have a LulzBot printer and some toolheads, you can become a tester!
-- If you are experienced with Marlin, you can help triage issues and build config files!
-- If you are experienced with slicers, you can develop start and end GCODE and help others with Cura or other slicers!
-- If you have coding skills, you can help by squashing bugs or building binaries!
+## Got more questions?
 
-## How does *Drunken Octopus* differ from LulzBot Marlin?
+See the [FAQ] for information on the following topics:
 
-To simplify the code, a few things have changed:
-
-- I have removed or replaced LulzBot logos to prevent possible trademark complications.
-- After changing the Z offset you must now save it using the save settings menu item, for consistency with other settings.
-- I have simplified firmware file names for ease of understanding.
-- You need to tell Cura to connect to unknown printers, as Cura LE does not know about *Drunken Octopus*.
-- The M115 output is now unmodified from the standard Marlin response.
-- I have removed EMI mitigation code to simplify endstop and probe troubleshooting.
-- All Mini firmware now outputs LCD data, regardless of whether one is hooked up.
-- You can build it on a Windows 10 PC using *Windows Subsystem for Linux* (in addition to the Arduino IDE or standalone Linux)
-
-## How does *Drunken Octopus* differ from Marlin 2.0 upstream?
-
-Hopefully it differs as little as possible. *Drunken Octopus* will be where I first implement new features before sending them upstream for incorporation. *Drunken Octopus* also includes source and build scripts for making configuration files for all the varieties of firmware.
-
-## Will *Drunken Octopus* binaries and pre-build configuration files be provided?
-
-To get you started with *Drunken Octopus*, pre-built binaries and configs will be provided for the **stock toolhead** for each **standard LulzBot printer** (as indicated by :factory: above).
-
-Project supporters will be able to request firmware for modified printers and accessory toolheads (and possibly other variations, as time goes on!).
-
-Source code for building everything will always be available to anyone!
-
-## Will using *Drunken Octopus* void my printer warranty?
-
-Probably, if you let LulzBot know about it.
-
-## Will *Drunken Octopus* damage my printer?
-
-He doesn't mean to, but it depends on how much he has had to drink the night before! **Use *Drunken Octopus* at your own risk.**
-
-## What if I want my printer to remain sober?
-
-Reach out to [LulzBot] and use their firmware. Rumor has it they are still answering the phone.
-
-## Where can I find parts to upgrade my printer?
-
-Einsy Retro and Archim 2.0 boards are available from [ultimachine]. Although I believe ultimachine was manufacturing all boards for LulzBot, I do not know whether they have any remaining stock to sell. If you want to make your own, here are the open-source files for the PCBs:
-
-Source Files for PCB design                                 | Component
-------------------------------------------------------------|-------------------------
-[Frying Pan](https://code.alephobjects.com/source/aotctl/)  | Color touch display
-[Green](https://code.alephobjects.com/diffusion/GREEN/)     | USB reader
-[Hidden](https://code.alephobjects.com/diffusion/HIDDEN/)   | SD reader
-[Kettle](https://code.alephobjects.com/source/kettle/)      | Filament sensor
-[Dolores](https://code.alephobjects.com/diffusion/DOLORES/) | Brake board
-[Elk](https://code.alephobjects.com/diffusion/ELK/)         | Alternative B&W LCD panel
-[Illinois](https://code.alephobjects.com/source/illinois/)  | TAZ Pro dual extruder
+- What printers can I use with *Drunken Octopus*?
+- How can you contribute to *Drunken Octopus*?
+- How does *Drunken Octopus* differ from LulzBot Marlin?
+- How does *Drunken Octopus* differ from Marlin 2.0 upstream?
+- Will *Drunken Octopus* binaries and pre-build configuration files be provided?
+- Will *Drunken Octopus* damage my printer?
+- What if I want my printer to remain sober?
+- Where can I find parts to upgrade my printer?
 
 # License
 
@@ -120,4 +57,4 @@ While we can't prevent the use of this code in products (3D printers, CNC, etc.)
 [Patreon page]: https://www.patreon.com/marciot "Marcio's Patreon Page"
 [LulzBot]: https://www.lulzbot.com "www.lulzbot.com"
 [major contributor]: https://github.com/marcio-ao
-[ultimachine]: https://ultimachine.com/
+[FAQ]: /docs/FAQ.md
