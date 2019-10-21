@@ -37,9 +37,10 @@ See the [FAQ] for information on the following topics:
 - How can you contribute to *Drunken Octopus*?
 - How does *Drunken Octopus* differ from LulzBot Marlin?
 - How does *Drunken Octopus* differ from Marlin 2.0 upstream?
-- Will *Drunken Octopus* binaries and pre-build configuration files be provided?
 - Will *Drunken Octopus* damage my printer?
 - What if I want my printer to remain sober?
+- Will *Drunken Octopus* binaries and pre-build configuration files be provided?
+- How do I compile *Drunken Octopus* from source?
 - Where can I find parts to upgrade my printer?
 
 # License
