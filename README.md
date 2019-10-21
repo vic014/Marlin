@@ -28,7 +28,7 @@ Mini with original electronics, Color Touch Screen and SD card                | 
 Mini with Einsy Retro and Color Touch Screen and SD card                      | Single Extruder for TAZ :factory:
 Mini 2 with original electronics, B&W display and SD card           :factory: | Flexystruder for TAZ
 Mini 2 with original electronics, Color Touch Screen and SD card              | MOARstruder for TAZ
-Bio with original electronics and Color Touch Screen and SD card    :factory: | Goostruder for Bio :factory:
+Bio with original electronics, Color Touch Screen and SD card       :factory: | Goostruder for Bio :factory:
 TAZ 5 with original electronics                                     :factory: | FlexyDually for TAZ
 TAZ 5 with Archim 2.0 upgrade                                                 | DualExtruder V2 for TAZ
 TAZ 6 with original electronics                                     :factory: | DualExtruder V3 for TAZ
@@ -40,11 +40,21 @@ TAZ Pro with Color Touch Screen, USB Flashdrive and Filament Sensor :factory: | 
 
 :factory: = Standard/stock configuration
 
-Einsy Retro and Archim 2.0 boards are available from [ultimachine]. No source yet exists for the color touch display, the SD card reader or the filament sensors but hopefully the situation will soon change.
+## Where can I find parts to upgrade my printer?
+
+Einsy Retro and Archim 2.0 boards are available from [ultimachine]. Although I believe ultimachine was manufacturing all boards for LulzBot, I do not know whether they have any remaining stock to sell. If you want to make your own, here are the open-source designs:
+
+- [Frying Pan](https://code.alephobjects.com/source/aotctl/) - Color touch display PCB
+- [Green](https://code.alephobjects.com/diffusion/GREEN/) - USB reader PCB
+- [Hidden](https://code.alephobjects.com/diffusion/HIDDEN/) - SD reader PCB
+- [Kettle](https://code.alephobjects.com/source/kettle/) - Filament sensor PCB
+- [Dolores](https://code.alephobjects.com/diffusion/DOLORES/) - Brake board PCB
+- [Elk](https://code.alephobjects.com/diffusion/ELK/) - Alternative B&W LCD panel PCB
+- [Illinois](https://code.alephobjects.com/source/illinois/) - TAZ Pro dual extruder PCB
 
 # How can you help make *Drunken Octopus* a success?
 
-:heart: :heart: :heart: **To help me the most, please consider contributions via my [Patreon page](https://www.patreon.com/marciot)**. :heart: :heart: :heart:
+:heart: :heart: :heart: **To help me the most, please consider contributions via my [Patreon page]**. :heart: :heart: :heart:
 
 Working on Marlin used to be a paid, full-time job for me, but without LulzBot to support me, I will have
 to work on my own time using my own resources. In exchange for your help, I hope to create content, such as printer upgrade guides and other tutorials. I learned a *ton* at the R&D department at LulzBot and I have much I want to teach you!
