@@ -1,8 +1,8 @@
 #!/bin/sh
 
 ####
-# Copyright (C) 2019  AlephObjects, Inc.
-#
+# Portions copyright (C) 2019, AlephObjects, Inc.
+# Portions copyright (C) 2019, Marcio Teixeira
 #
 # The bash script in this page is free software: you can
 # redistribute it and/or modify it under the terms of the GNU Affero
@@ -22,7 +22,7 @@ usage() {
   echo
   echo "Usage: $0 [-s|--short-names] [-h|--hash] [-c|--config] [printer toolhead|config_file]"
   echo
-  echo "   -s|--short-names  Omits LulzBot code names from generated firmware files"
+  echo "   -s|--short-names  Omits code names from generated firmware files"
   echo
   echo "   -h|--hash         Records md5sum of the firmware files. These files will be generated:"
   echo "                       md5sums-full*    Sum w/  embedded version str and timestamp"

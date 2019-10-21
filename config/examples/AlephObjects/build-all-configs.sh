@@ -1,7 +1,8 @@
 #!/bin/sh
 
 ####
-# Copyright (C) 2019  AlephObjects, Inc.
+# Portions copyright (C) 2019, AlephObjects, Inc.
+# Portions copyright (C) 2019, Marcio Teixeira
 #
 #
 # The bash script in this page is free software: you can
@@ -93,13 +94,13 @@ build_config Redgum_TAZWorkhorse                DingyCutworm_HardenedSteelPlus
 build_config Redgum_TAZWorkhorse                Goldenrod_HardenedExtruder
 build_config Redgum_TAZWorkhorse                Yellowfin_DualExtruderV3
 
-build_config KangarooPaw_Experimental           KangarooPaw_SingleExtruder
-build_config HibiscusTouchSD_Experimental       CecropiaSilk_SingleExtruderAeroV2
-build_config HibiscusTouchUSB_Experimental      CecropiaSilk_SingleExtruderAeroV2
-build_config RedgumArchim_Experimental          CecropiaSilk_SingleExtruderAeroV2
-build_config JuniperArchim_Experimental         Tilapia_SingleExtruder
-build_config OliveoilArchim_Experimental        Tilapia_SingleExtruder
-build_config GladiolaTouchUSB_Experimental      Gladiola_SingleExtruder
-build_config GladiolaEinsyLCD_Experimental      Gladiola_SingleExtruder
-build_config GladiolaEinsyTouchUSB_Experimental Gladiola_SingleExtruder
-build_config CLCDTestStand_Experimental         Gladiola_SingleExtruder
+build_config KangarooPaw_Bio                    KangarooPaw_SingleExtruder
+build_config Hibiscus_Mini2TouchSD              CecropiaSilk_SingleExtruderAeroV2
+build_config Hibiscus_Mini2TouchUSB             CecropiaSilk_SingleExtruderAeroV2
+build_config Redgum_TAZWorkhorseArchim          CecropiaSilk_SingleExtruderAeroV2
+build_config Juniper_TAZ5Archim                 Tilapia_SingleExtruder
+build_config Oliveoil_TAZ6Archim                Tilapia_SingleExtruder
+build_config Gladiola_MiniTouchUSB              Gladiola_SingleExtruder
+build_config Gladiola_Mini2EinsyLCD             Gladiola_SingleExtruder
+build_config Gladiola_MiniEinsyTouchUSB         Gladiola_SingleExtruder
+build_config Hibiscus_TouchDemo                 Gladiola_SingleExtruder

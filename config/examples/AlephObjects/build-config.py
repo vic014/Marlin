@@ -27,16 +27,16 @@ PRINTER_CHOICES = [
     "Oliveoil_TAZ6",
     "Quiver_TAZPro",
     "Redgum_TAZWorkhorse",
-    "RedgumArchim_Experimental",
-    "JuniperArchim_Experimental",
-    "HibiscusTouchSD_Experimental",
-    "HibiscusTouchUSB_Experimental",
-    "KangarooPaw_Experimental",
-    "GladiolaTouchUSB_Experimental",
-    "GladiolaEinsyLCD_Experimental",
-    "GladiolaEinsyTouchUSB_Experimental",
-    "OliveoilArchim_Experimental",
-    "CLCDTestStand_Experimental"
+    "Redgum_TAZWorkhorseArchim",
+    "Juniper_TAZ5Archim",
+    "Hibiscus_Mini2TouchSD",
+    "Hibiscus_Mini2TouchUSB",
+    "KangarooPaw_Bio",
+    "Gladiola_MiniTouchUSB",
+    "Gladiola_Mini2EinsyLCD",
+    "Gladiola_MiniEinsyTouchUSB",
+    "Oliveoil_TAZ6Archim",
+    "Hibiscus_TouchDemo"
 ]
 
 TOOLHEAD_CHOICES = [
@@ -311,7 +311,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["MACHINE_UUID"]                           = C_STRING("5ee798fb-4062-4d35-8224-5e846ffb45a5")
         MARLIN["SDSUPPORT"]                              = True
 
-    if PRINTER == "JuniperArchim_Experimental":
+    if PRINTER == "Juniper_TAZ5Archim":
         IS_TAZ                                           = True
         TAZ_BED                                          = True
         USE_Z_SCREW                                      = True
@@ -329,7 +329,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["BAUDRATE"]                               = 250000
         MARLIN["MACHINE_UUID"]                           = C_STRING("c3255c96-4097-4884-8ed0-ded2ff9bae61")
 
-    if PRINTER == "RedgumArchim_Experimental":
+    if PRINTER == "Redgum_TAZWorkhorseArchim":
         IS_TAZ                                           = True
         TAZ_BED                                          = True
         USE_TWO_PIECE_BED                                = True
@@ -351,7 +351,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["MACHINE_UUID"]                           = C_STRING("fd546ced-5941-44e4-8d17-5d494bfc2ca3")
         MARLIN["SDSUPPORT"]                              = True
 
-    if PRINTER == "HibiscusTouchSD_Experimental":
+    if PRINTER == "Hibiscus_Mini2TouchSD":
         # Use a 480x272 display and SD adapter
         IS_MINI                                          = True
         MINI_BED                                         = True
@@ -379,7 +379,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["AO_EXP1_PINMAP"]                         = True
         MARLIN["SDSUPPORT"]                              = True
 
-    if PRINTER == "HibiscusTouchUSB_Experimental":
+    if PRINTER == "Hibiscus_Mini2TouchUSB":
         # Use a 480x272 display and USB flashdrive
         IS_MINI                                          = True
         MINI_BED                                         = True
@@ -409,7 +409,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["USB_FLASH_DRIVE_SUPPORT"]                = True
         MARLIN["USE_UHS3_USB"]                           = True
 
-    if PRINTER == "KangarooPaw_Experimental":
+    if PRINTER == "KangarooPaw_Bio":
         # Kangaroo Paw uses a 480x272 display and SD card
         IS_MINI                                          = True
         MINI_BED                                         = True
@@ -438,7 +438,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["AO_EXP1_PINMAP"]                         = True
         MARLIN["SDSUPPORT"]                              = True
 
-    if PRINTER == "GladiolaTouchUSB_Experimental":
+    if PRINTER == "Gladiola_MiniTouchUSB":
         # Unsupported Mini with 480x272 Touch LCD and USB
         IS_MINI                                          = True
         MINI_BED                                         = True
@@ -465,7 +465,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["USB_FLASH_DRIVE_SUPPORT"]                = True
         MARLIN["USE_UHS3_USB"]                           = True
 
-    if PRINTER == "GladiolaEinsyLCD_Experimental":
+    if PRINTER == "Gladiola_Mini2EinsyLCD":
         # Unsupported Mini with Einsy Retro.
         IS_MINI                                          = True
         MINI_BED                                         = True
@@ -489,7 +489,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["MACHINE_UUID"]                           = C_STRING("b68ff322-3328-4543-bd93-bb8d8eb0c891")
         MARLIN["LIGHTWEIGHT_UI"]                         = True
 
-    if PRINTER == "GladiolaEinsyTouchUSB_Experimental":
+    if PRINTER == "Gladiola_MiniEinsyTouchUSB":
         # Unsupported Mini with Einsy Retro and 480x272 Touch LCD and USB
         IS_MINI                                          = True
         MINI_BED                                         = True
@@ -525,7 +525,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["USB_FLASH_DRIVE_SUPPORT"]                = True
         MARLIN["USE_UHS3_USB"]                           = True
 
-    if PRINTER == "OliveoilArchim_Experimental":
+    if PRINTER == "Oliveoil_TAZ6Archim":
         # Unsupported TAZ 6 with Archim 2.
         IS_TAZ                                           = True
         TAZ_BED                                          = True
@@ -554,7 +554,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["MACHINE_UUID"]                           = C_STRING("a07987e3-7ca7-48e1-b7a4-cc2c45ff2742")
         MARLIN["SDSUPPORT"]                              = True
 
-    if PRINTER == "CLCDTestStand_Experimental":
+    if PRINTER == "Hibiscus_TouchDemo":
         # Test stand with Einsy Retro and FT800 Touch LCD
         IS_MINI                                          = True
         MINI_BED                                         = True
@@ -585,7 +585,7 @@ def make_config(PRINTER, TOOLHEAD):
 
 ############################ GENERAL CONFIGURATION ############################
 
-    MARLIN["STRING_CONFIG_H_AUTHOR"]                     = C_STRING("(Drunken Octopus)")
+    MARLIN["STRING_CONFIG_H_AUTHOR"]                     = C_STRING("(Drunken Octopus Marlin)")
     MARLIN["SOURCE_CODE_URL"]                            = C_STRING("https://github.com/marciot/drunken-octopus-marlin")
     MARLIN["EEPROM_SETTINGS"]                            = True
     MARLIN["EEPROM_AUTO_INIT"]                           = True
@@ -683,7 +683,7 @@ def make_config(PRINTER, TOOLHEAD):
     MARLIN["USE_YMAX_PLUG"]                              = USE_MAX_ENDSTOPS or IS_MINI
     MARLIN["USE_ZMAX_PLUG"]                              = USE_MAX_ENDSTOPS or IS_MINI or (IS_TAZ and not USE_HOME_BUTTON)
 
-    if PRINTER in ["KangarooPaw_Experimental"]:
+    if PRINTER in ["KangarooPaw_Bio"]:
         MARLIN["USE_XMAX_PLUG"]                          = True
         MARLIN["E_MIN_PIN"]                              = 'X_MAX_PIN'
         MARLIN["E_MIN_PIN_INVERTING"]                    = NORMALLY_CLOSED_ENDSTOP
@@ -721,7 +721,7 @@ def make_config(PRINTER, TOOLHEAD):
 
 ########################## HOMING & AXIS DIRECTIONS ###########################
 
-    if PRINTER in ['Redgum_TAZWorkhorse', 'RedgumArchim_Experimental']:
+    if PRINTER in ['Redgum_TAZWorkhorse', 'Redgum_TAZWorkhorseArchim']:
         MARLIN["INVERT_X_DIR"]                           = 'true'
     else:
         MARLIN["INVERT_X_DIR"]                           = 'false'
@@ -737,13 +737,13 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["Z_HOME_DIR"]                             =  1 # Home to top
         MARLIN["QUICK_HOME"]                             =  True
 
-    elif PRINTER in ['Juniper_TAZ5', 'JuniperArchim_Experimental']:
+    elif PRINTER in ['Juniper_TAZ5', 'Juniper_TAZ5Archim']:
         MARLIN["X_HOME_DIR"]                             = -1 # Home left
         MARLIN["Y_HOME_DIR"]                             = -1 # Home bed rear
         MARLIN["Z_HOME_DIR"]                             = -1 # Home towards bed
         MARLIN["QUICK_HOME"]                             =  True
 
-    elif PRINTER in ['Redgum_TAZWorkhorse', 'RedgumArchim_Experimental']:
+    elif PRINTER in ['Redgum_TAZWorkhorse', 'Redgum_TAZWorkhorseArchim']:
         MARLIN["X_HOME_DIR"]                             = -1 # Home left
         MARLIN["Y_HOME_DIR"]                             = -1 # Home bed backwards
         MARLIN["Z_HOME_DIR"]                             =  1 # Home to top
@@ -784,7 +784,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["Z_SAFE_HOMING_X_POINT"]                  = -19
         MARLIN["Z_SAFE_HOMING_Y_POINT"]                  = 258
         MARLIN["Z_HOMING_HEIGHT"]                        = 5
-    elif PRINTER in ["Juniper_TAZ5", "JuniperArchim_Experimental"]:
+    elif PRINTER in ["Juniper_TAZ5", "Juniper_TAZ5Archim"]:
         # TAZ 5 safe homing position so fan duct does not hit.
         MARLIN["Z_SAFE_HOMING"]                          = True
         MARLIN["Z_SAFE_HOMING_X_POINT"]                  = 10
@@ -806,7 +806,7 @@ def make_config(PRINTER, TOOLHEAD):
 
     # Enable NO_MOTION_BEFORE_HOMING on newer printers that have no MAX endstops,
     # but leave TAZ5 as is so we don't introduce a change for those users.
-    if not USE_MAX_ENDSTOPS and not PRINTER in ["Juniper_TAZ5", "KangarooPaw_Experimental"]:
+    if not USE_MAX_ENDSTOPS and not PRINTER in ["Juniper_TAZ5", "KangarooPaw_Bio"]:
         MARLIN["NO_MOTION_BEFORE_HOMING"]                = True
 
     # If the printer uses dual Z endstops for X axis leveling,
@@ -1266,7 +1266,7 @@ def make_config(PRINTER, TOOLHEAD):
         STANDARD_X_BED_SIZE                              = 157
         STANDARD_Y_BED_SIZE                              = 157
 
-    elif PRINTER in ["Juniper_TAZ5", "JuniperArchim_Experimental"]:
+    elif PRINTER in ["Juniper_TAZ5", "Juniper_TAZ5Archim"]:
         STANDARD_X_MAX_POS                               = 298
         STANDARD_X_MIN_POS                               = 0
         STANDARD_Y_MAX_POS                               = 276
@@ -1275,7 +1275,7 @@ def make_config(PRINTER, TOOLHEAD):
         STANDARD_X_BED_SIZE                              = 288
         STANDARD_Y_BED_SIZE                              = 275
 
-    elif PRINTER in ["Redgum_TAZWorkhorse", "RedgumArchim_Experimental"]:
+    elif PRINTER in ["Redgum_TAZWorkhorse", "Redgum_TAZWorkhorseArchim"]:
         STANDARD_X_MAX_POS                               = 295
         STANDARD_X_MIN_POS                               = -50
         STANDARD_Y_MAX_POS                               = 308
@@ -1310,7 +1310,7 @@ def make_config(PRINTER, TOOLHEAD):
         STANDARD_Z_MIN_POS                               = 0
         STANDARD_Z_MAX_POS                               = 183
 
-    elif PRINTER in ["Juniper_TAZ5", "JuniperArchim_Experimental"]:
+    elif PRINTER in ["Juniper_TAZ5", "Juniper_TAZ5Archim"]:
         STANDARD_Z_MIN_POS                               = 0
         STANDARD_Z_MAX_POS                               = 250
 
@@ -1413,7 +1413,7 @@ def make_config(PRINTER, TOOLHEAD):
 
 ############################# X AXIS LEVELING #############################
 
-    if PRINTER == "KangarooPaw_Experimental":
+    if PRINTER == "KangarooPaw_Bio":
         XLEVEL_POS                                       = "G0 X170 Y75 F9999\n"
     else:
         XLEVEL_POS                                       = "G0 X150 F9999\n"
@@ -1459,7 +1459,7 @@ def make_config(PRINTER, TOOLHEAD):
 
 ######################### BIO-PRINTER STARTUP COMMANDS ########################
 
-    if PRINTER in ['KangarooPaw_Experimental']:
+    if PRINTER in ['KangarooPaw_Bio']:
         MARLIN["AXIS_LEVELING_COMMANDS"]                 = C_STRING(AXIS_LEVELING_COMMANDS)
 
         MARLIN["PARK_AND_RELEASE_COMMANDS"]              = C_STRING(
@@ -1715,26 +1715,26 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["FILAMENT_UNLOAD_PURGE_LENGTH"]           = 6
 
     if PRINTER in ["KangarooPaw_Bio"]:
-        MARLIN["ADVANCED_PAUSE_FEATURE"]                  = False
-        MARLIN["NOZZLE_PARK_FEATURE"]                     = False
+        MARLIN["ADVANCED_PAUSE_FEATURE"]                 = False
+        MARLIN["NOZZLE_PARK_FEATURE"]                    = False
 
     else:
-        MARLIN["NOZZLE_PARK_FEATURE"]                     = True
-        MARLIN["ADVANCED_PAUSE_FEATURE"]                  = True
+        MARLIN["NOZZLE_PARK_FEATURE"]                    = True
+        MARLIN["ADVANCED_PAUSE_FEATURE"]                 = True
         if IS_MINI:
-            MARLIN["NOZZLE_PARK_POINT"]                       = [  10, MARLIN["Y_MAX_POS"] - 10, 20 ]
+            MARLIN["NOZZLE_PARK_POINT"]                  = [  10, MARLIN["Y_MAX_POS"] - 10, 20 ]
         else:
             # Match the purge location of the v3 dual so a single tray can be used.
-            MARLIN["NOZZLE_PARK_POINT"]                       = [ 100, MARLIN["Y_MAX_POS"] -  1, 20 ]
+            MARLIN["NOZZLE_PARK_POINT"]                  = [ 100, MARLIN["Y_MAX_POS"] -  1, 20 ]
 
     if MARLIN["SDSUPPORT"]:
-        if PRINTER in ["KangarooPaw_Experimental"]:
+        if PRINTER in ["KangarooPaw_Bio"]:
             EVENT_GCODE_SD_STOP = "G28 Z\nM117 Print aborted."
 
         elif IS_MINI:
             EVENT_GCODE_SD_STOP = "G28 Z\nG0 X80 Y190 F3000\nM117 Print aborted."
 
-        elif PRINTER in ["Juniper_TAZ5", "JuniperArchim_Experimental"]:
+        elif PRINTER in ["Juniper_TAZ5", "Juniper_TAZ5Archim"]:
             EVENT_GCODE_SD_STOP = "G0 X170 Y290 F3000\nM117 Print aborted."
 
         elif IS_TAZ:
@@ -2104,7 +2104,7 @@ def make_config(PRINTER, TOOLHEAD):
 
     if USE_REPRAP_LCD_DISPLAY:
         MANUAL_FEEDRATE_Z                                = 40 if USE_Z_BELT else 4
-        MARLIN["MANUAL_FEEDRATE"]                        = [50*60, 50*60,   MANUAL_FEEDRATE_Z*60, MANUAL_FEEDRATE_E*60] # (mm/min)
+        MARLIN["MANUAL_FEEDRATE"]                        = [50*60, 50*60, MANUAL_FEEDRATE_Z*60, MANUAL_FEEDRATE_E*60] # (mm/min)
 
     if USE_TOUCH_UI:
         MANUAL_FEEDRATE_Z                                = 300
