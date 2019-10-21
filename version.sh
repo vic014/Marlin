@@ -1,8 +1,8 @@
 #!/bin/sh
 
 ####
-# Copyright (C) 2019  AlephObjects, Inc.
-#
+# Portions (C) 2019  AlephObjects, Inc.
+# Portions (C) 2019  Marcio Teixeira
 #
 # The bash script in this page is free software: you can
 # redistribute it and/or modify it under the terms of the GNU Affero
@@ -57,15 +57,15 @@ do
 done
 
 SRC=Marlin/src/inc/Version.h
-fw_version=`grep  -m 1 "define SHORT_BUILD_VERSION" $SRC | cut -d \" -f 2`
-fw_revision=`grep  -m 1 "define LULZBOT_FW_VERSION" $SRC | cut -d \" -f 2 | cut -d . -f 2`
+fw_version=`grep  -m 1 "define SHORT_BUILD_VERSION" $SRC | cut -d \" -f 2 | sed 's/bugfix-2.0.x/2.0.0/g'`
+fw_revision=`cat revision.txt`
 
 if [ $INCREMENT ]; then
   fw_revision=`expr $fw_revision + 1`
 fi
 
 if [ $COMMIT ]; then
-  sed -i "s/LULZBOT_FW_VERSION \".[0-9]\\+\"/LULZBOT_FW_VERSION \".$fw_revision\"/" $SRC
+  echo $fw_revision > revision.txt
   git add $SRC
   git commit -m "Change version number" -m "Changed version number to $fw_version.$fw_revision"
 fi

@@ -1,6 +1,6 @@
 ﻿![alt text][logo]
 
-# *Drunken Octopus* Marlin: An Alternative Firmware for LulzBot Printers
+# *Drunken Octopus* Marlin: An Alternative (Unofficial) Firmware for LulzBot Printers
 
 Hello. My name is Marcio. I was the Firmware Engineer at LulzBot prior to the massive [layoff of 2019] that decimated the staff and left nearly one hundred people out of a job.
 
@@ -28,6 +28,7 @@ Mini with original electronics, Color Touch Screen and SD card                | 
 Mini with Einsy Retro and Color Touch Screen and SD card                      | Single Extruder for TAZ :factory:
 Mini 2 with original electronics, B&W display and SD card           :factory: | Flexystruder for TAZ
 Mini 2 with original electronics, Color Touch Screen and SD card              | MOARstruder for TAZ
+Bio with original electronics and Color Touch Screen and SD card    :factory: | Goostruder for Bio :factory:
 TAZ 5 with original electronics                                     :factory: | FlexyDually for TAZ
 TAZ 5 with Archim 2.0 upgrade                                                 | DualExtruder V2 for TAZ
 TAZ 6 with original electronics                                     :factory: | DualExtruder V3 for TAZ

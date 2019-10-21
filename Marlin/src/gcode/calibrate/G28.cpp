@@ -172,7 +172,7 @@
     feedrate_mm_s = 1; // mm/s
 
     // Back off the extruder until the pin is triggered
-    set_destination_from_current();
+    destination = current_position;
     while(!read_e_min_pin()) {
       current_position[E_AXIS] = 0.5;
       sync_plan_position();

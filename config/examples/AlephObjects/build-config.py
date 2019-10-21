@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
-# Written By Marcio Teixeira 2019 - Aleph Objects, Inc.
+# Portions (c) 2019 Aleph Objects, Inc., 2019
+# Portions (c) 2019 Marcio Teixeira 2019
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -584,7 +585,8 @@ def make_config(PRINTER, TOOLHEAD):
 
 ############################ GENERAL CONFIGURATION ############################
 
-    MARLIN["STRING_CONFIG_H_AUTHOR"]                     = C_STRING("(Aleph Objects Inc., LulzBot Git Repository)")
+    MARLIN["STRING_CONFIG_H_AUTHOR"]                     = C_STRING("(Drunken Octopus)")
+    MARLIN["SOURCE_CODE_URL"]                            = C_STRING("https://github.com/marciot/drunken-octopus-marlin")
     MARLIN["EEPROM_SETTINGS"]                            = True
     MARLIN["EEPROM_AUTO_INIT"]                           = True
     MARLIN["EMERGENCY_PARSER"]                           = True
@@ -1457,11 +1459,10 @@ def make_config(PRINTER, TOOLHEAD):
 
 ######################### BIO-PRINTER STARTUP COMMANDS ########################
 
-    if PRINTER in ['KangarooPaw_Bio']:
+    if PRINTER in ['KangarooPaw_Experimental']:
         MARLIN["AXIS_LEVELING_COMMANDS"]                 = C_STRING(AXIS_LEVELING_COMMANDS)
 
-        MARLIN["LULZBOT_PARK_AND_RELEASE_COMMANDS"]      = C_STRING(
-
+        MARLIN["PARK_AND_RELEASE_COMMANDS"]              = C_STRING(
             "G0 X115 Z50 F6000\n"                        # Goto loading position
             "M400\n"                                     # Wait for moves to finish
             "M18 X Y"                                    # Unlock motors
@@ -2132,7 +2133,6 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["USE_SMALL_INFOFONT"]                     = True
         MARLIN["BOOT_MARLIN_LOGO_SMALL"]                 = True
         MARLIN["LCD_INFO_MENU"]                          = True
-        MARLIN["LCD_PRINTER_INFO_IS_BOOTSCREEN"]         = True
         MARLIN["ENCODER_PULSES_PER_STEP"]                = 2
         MARLIN["ENCODER_STEPS_PER_MENU_ITEM"]            = 1
         MARLIN["LCD_SET_PROGRESS_MANUALLY"]              = True

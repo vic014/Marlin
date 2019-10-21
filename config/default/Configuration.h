@@ -2211,10 +2211,12 @@
 /**
  * Extra modifications to Marlin for LulzBot printers
  */
+//#define SOURCE_CODE_URL
 //#define TOOLHEAD_NAME
 //#define TOOLHEAD_TYPE
 //#define WIPE_SEQUENCE_COMMANDS
 //#define AXIS_LEVELING_COMMANDS
+//#define PARK_AND_RELEASE_COMMANDS
 //#define CALIBRATION_COMMANDS
 //#define AO_EXP1_DEPRECATED_PINMAP
 //#define DISABLE_DUE_SD_MMC
