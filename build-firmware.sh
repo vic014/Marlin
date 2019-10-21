@@ -166,7 +166,7 @@ build_firmware() {
     echo
     EXTRA_OPTS='-Wfatal-errors -Wno-builtin-macro-redefined'
     # Hide timestamps and versions so binaries can be diffed
-    EXTRA_DEFS='__DATE__=\"?\" __TIME__=\"?\" LULZBOT_FW_VERSION=\"?\"'
+    EXTRA_DEFS='__DATE__=\"?\" __TIME__=\"?\"'
     compile_firmware
     record_checksum build/md5sums-bare
   fi
@@ -188,15 +188,21 @@ build_firmware() {
 
   # Copy builds to build directory
 
+  mkdir -p build/$printer/$toolhead
   if [ $motherboard_name = "BOARD_ARCHIM2" ]; then
-    mv Marlin/applet/Marlin.bin build/$fw_filename.bin
+    mv Marlin/applet/Marlin.bin build/$printer/$toolhead/$fw_filename.bin
   else
-    mv Marlin/applet/Marlin.hex build/$fw_filename.hex
+    mv Marlin/applet/Marlin.hex build/$printer/$toolhead/$fw_filename.hex
   fi
-  chmod a-x build/*
+  chmod a-x build/$printer/$toolhead/*
 
   if [ $GENERATE_CONFIG ]; then
-    cp $config/Configuration_summary.txt build/$fw_filename.config
+    cp $config/* build/$printer/$toolhead
+  fi
+  
+  if [ ! $FULLNAMES ]; then
+    # Shorten firmware name (removing the code names)
+    rename 's/Marlin_(.+)_(.+)_(.+)_(.+)_(.+)_(.+)/Marlin_$2_$4_$5_$6/' build/$printer/$toolhead/*
   fi
 }
 
@@ -269,7 +275,7 @@ build_summary() {
   echo
   echo Generated files stored in "`pwd`/build":
   echo
-  ls build
+  ls -R build
   echo
 }
 
@@ -342,11 +348,6 @@ done
 if [ $# -eq 0 ]; then
   # If compiling everything, clean up the config files after compilation is done
   git checkout Marlin/Configuration.h Marlin/Configuration_adv.h
-fi
-
-if [ ! $FULLNAMES ]; then
-  # Shorten firmware name (removing the code names)
-  rename 's/Marlin_(.+)_(.+)_(.+)_(.+)_(.+)_(.+)/Marlin_$2_$4_$5_$6/' build/*
 fi
 
 build_summary

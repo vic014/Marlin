@@ -1054,7 +1054,14 @@ def make_config(PRINTER, TOOLHEAD):
         ADAPTER_X_OFFSET                                 = 0
         ADAPTER_Y_OFFSET                                 = -2.0 if IS_TAZ else -7.2
 
-    if not TOOLHEAD_IS_UNIVERSAL and PRINTER in ["Quiver_TAZPro", "Redgum_TAZWorkhorse", "Hibiscus_Mini2"]:
+    if not TOOLHEAD_IS_UNIVERSAL and PRINTER in [
+      "Quiver_TAZPro",
+      "Redgum_TAZWorkhorse",
+      "Redgum_TAZWorkhorseArchim",
+      "Hibiscus_Mini2",
+      "Hibiscus_Mini2TouchSD",
+      "Hibiscus_Mini2TouchUSB"
+    ]:
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NO_ENDSTOP
         MARLIN["NO_MOTION_BEFORE_HOMING"]                = True
         ADAPTER_X_OFFSET                                 = 29
