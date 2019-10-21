@@ -20,9 +20,9 @@
 #
 usage() {
   echo
-  echo "Usage: $0 [-s|--short-names] [-h|--hash] [-c|--config] [printer toolhead|config_file]"
+  echo "Usage: $0 [-f|--full-names] [-h|--hash] [-c|--config] [printer toolhead|config_file]"
   echo
-  echo "   -s|--short-names  Omits code names from generated firmware files"
+  echo "   -f|--full-names   Use code names in generated firmware files"
   echo
   echo "   -h|--hash         Records md5sum of the firmware files. These files will be generated:"
   echo "                       md5sums-full*    Sum w/  embedded version str and timestamp"
@@ -286,8 +286,8 @@ do
       MAKE_HASHES=1
       shift
       ;;
-    -s|--short-names)
-      SHORTNAMES=1
+    -f|--full-names)
+      FULLNAMES=1
       shift
       ;;
     -c|--config)
@@ -344,8 +344,9 @@ if [ $# -eq 0 ]; then
   git checkout Marlin/Configuration.h Marlin/Configuration_adv.h
 fi
 
-if [ $SHORTNAMES ]; then
-  rename 's/Marlin_(.+)_(.+)_(.+)_(.+)_(.+)_(.+)/Marlin_$2_$4_$5_$6/'       build/*
+if [ ! $FULLNAMES ]; then
+  # Shorten firmware name (removing the code names)
+  rename 's/Marlin_(.+)_(.+)_(.+)_(.+)_(.+)_(.+)/Marlin_$2_$4_$5_$6/' build/*
 fi
 
 build_summary

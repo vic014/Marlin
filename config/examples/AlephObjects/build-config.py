@@ -33,7 +33,7 @@ PRINTER_CHOICES = [
     "Hibiscus_Mini2TouchUSB",
     "KangarooPaw_Bio",
     "Gladiola_MiniTouchUSB",
-    "Gladiola_Mini2EinsyLCD",
+    "Gladiola_MiniEinsyLCD",
     "Gladiola_MiniEinsyTouchUSB",
     "Oliveoil_TAZ6Archim",
     "Hibiscus_TouchDemo"
@@ -465,7 +465,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["USB_FLASH_DRIVE_SUPPORT"]                = True
         MARLIN["USE_UHS3_USB"]                           = True
 
-    if PRINTER == "Gladiola_Mini2EinsyLCD":
+    if PRINTER == "Gladiola_MiniEinsyLCD":
         # Unsupported Mini with Einsy Retro.
         IS_MINI                                          = True
         MINI_BED                                         = True

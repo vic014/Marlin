@@ -101,6 +101,6 @@ build_config Redgum_TAZWorkhorseArchim          CecropiaSilk_SingleExtruderAeroV
 build_config Juniper_TAZ5Archim                 Tilapia_SingleExtruder
 build_config Oliveoil_TAZ6Archim                Tilapia_SingleExtruder
 build_config Gladiola_MiniTouchUSB              Gladiola_SingleExtruder
-build_config Gladiola_Mini2EinsyLCD             Gladiola_SingleExtruder
+build_config Gladiola_MiniEinsyLCD              Gladiola_SingleExtruder
 build_config Gladiola_MiniEinsyTouchUSB         Gladiola_SingleExtruder
 build_config Hibiscus_TouchDemo                 Gladiola_SingleExtruder
