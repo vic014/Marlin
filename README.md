@@ -40,18 +40,6 @@ TAZ Pro with Color Touch Screen, USB Flashdrive and Filament Sensor :factory: | 
 
 :factory: = Standard/stock configuration
 
-## Where can I find parts to upgrade my printer?
-
-Einsy Retro and Archim 2.0 boards are available from [ultimachine]. Although I believe ultimachine was manufacturing all boards for LulzBot, I do not know whether they have any remaining stock to sell. If you want to make your own, here are the open-source designs:
-
-- [Frying Pan](https://code.alephobjects.com/source/aotctl/) - Color touch display PCB
-- [Green](https://code.alephobjects.com/diffusion/GREEN/) - USB reader PCB
-- [Hidden](https://code.alephobjects.com/diffusion/HIDDEN/) - SD reader PCB
-- [Kettle](https://code.alephobjects.com/source/kettle/) - Filament sensor PCB
-- [Dolores](https://code.alephobjects.com/diffusion/DOLORES/) - Brake board PCB
-- [Elk](https://code.alephobjects.com/diffusion/ELK/) - Alternative B&W LCD panel PCB
-- [Illinois](https://code.alephobjects.com/source/illinois/) - TAZ Pro dual extruder PCB
-
 # How can you help make *Drunken Octopus* a success?
 
 :heart: :heart: :heart: **To help me the most, please consider contributions via my [Patreon page]**. :heart: :heart: :heart:
@@ -102,6 +90,20 @@ He doesn't mean to, but it depends on how much he has had to drink the night bef
 ## What if I want my printer to remain sober?
 
 Reach out to [LulzBot] and use their firmware. Rumor has it they are still answering the phone.
+
+## Where can I find parts to upgrade my printer?
+
+Einsy Retro and Archim 2.0 boards are available from [ultimachine]. Although I believe ultimachine was manufacturing all boards for LulzBot, I do not know whether they have any remaining stock to sell. If you want to make your own, here are the open-source files for the PCBs:
+
+Source Files for PCB design                                 | Component
+------------------------------------------------------------|-------------------------
+[Frying Pan](https://code.alephobjects.com/source/aotctl/)  | Color touch display
+[Green](https://code.alephobjects.com/diffusion/GREEN/)     | USB reader
+[Hidden](https://code.alephobjects.com/diffusion/HIDDEN/)   | SD reader
+[Kettle](https://code.alephobjects.com/source/kettle/)      | Filament sensor
+[Dolores](https://code.alephobjects.com/diffusion/DOLORES/) | Brake board
+[Elk](https://code.alephobjects.com/diffusion/ELK/)         | Alternative B&W LCD panel
+[Illinois](https://code.alephobjects.com/source/illinois/)  | TAZ Pro dual extruder
 
 # License
 
