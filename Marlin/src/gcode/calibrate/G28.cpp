@@ -162,6 +162,30 @@
 
 #endif // Z_SAFE_HOMING
 
+#ifdef E_MIN_PIN
+  // E_MIN_PIN for syringe extruders for bio printers
+  static inline bool read_e_min_pin() {
+    return (READ(E_MIN_PIN) != E_MIN_PIN_INVERTING);
+  }
+
+  static void home_e() {
+    feedrate_mm_s = 1; // mm/s
+
+    // Back off the extruder until the pin is triggered
+    set_destination_from_current();
+    while(!read_e_min_pin()) {
+      current_position[E_AXIS] = 0.5;
+      sync_plan_position();
+      destination[E_AXIS] = 0;
+      prepare_move_to_destination();
+      planner.synchronize();
+    };
+
+    SBI(axis_known_position, E_AXIS);
+    SBI(axis_homed, E_AXIS);
+  }
+#endif
+
 /**
  * G28: Home all axes according to settings
  *
@@ -180,12 +204,20 @@
  *  Y   Home to the Y endstop
  *  Z   Home to the Z endstop
  *
+ * Syringe extruder parameters
+ *
+ *  E   Home to the E endstop
+ *
  */
 void GcodeSuite::G28(const bool always_home_all) {
   if (DEBUGGING(LEVELING)) {
     DEBUG_ECHOLNPGM(">>> G28");
     log_machine_info();
   }
+  
+  #ifdef E_MIN_PIN
+    if(parser.seen('E')) home_e();
+  #endif
 
   #if ENABLED(DUAL_X_CARRIAGE)
     bool IDEX_saved_duplication_state = extruder_duplication_enabled;

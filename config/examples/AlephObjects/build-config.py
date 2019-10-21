@@ -90,18 +90,19 @@ LulzBot printers.'''
 #  18. AXIS TRAVEL LIMITS
 #  19. AUTOLEVELING / BED PROBE
 #  20. X AXIS LEVELING
-#  21. AUTO-CALIBRATION (BACKLASH AND NOZZLE OFFSET)
-#  22. FILAMENT CONFIGURATION (LIN_ADVANCE/RUNOUT)
-#  23. MOTOR DRIVER TYPE
-#  24. TRINAMIC DRIVER CONFIGURATION
-#  25. TRINAMIC SENSORLESS HOMING
-#  26. ADVANCED PAUSE / FILAMENT CHANGE
-#  27. WIPER PAD
-#  28. REWIPE FUNCTIONALITY
-#  29. BACKLASH COMPENSATION
-#  30. MOTOR CURRENTS
-#  31. ACCELERATION, FEEDRATES AND XYZ MOTOR STEPS
-#  32. LCD OPTIONS
+#  21. BIO-PRINTER STARTUP COMMANDS
+#  22. AUTO-CALIBRATION (BACKLASH AND NOZZLE OFFSET)
+#  23. FILAMENT CONFIGURATION (LIN_ADVANCE/RUNOUT)
+#  24. MOTOR DRIVER TYPE
+#  25. TRINAMIC DRIVER CONFIGURATION
+#  26. TRINAMIC SENSORLESS HOMING
+#  27. ADVANCED PAUSE / FILAMENT CHANGE
+#  28. WIPER PAD
+#  29. REWIPE FUNCTIONALITY
+#  30. BACKLASH COMPENSATION
+#  31. MOTOR CURRENTS
+#  32. ACCELERATION, FEEDRATES AND XYZ MOTOR STEPS
+#  33. LCD OPTIONS
 
 def C_STRING(str):
     return '"' + str.strip().replace('\n','\\n') + '"'
@@ -177,8 +178,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_MIN_ENDSTOPS                                 = True
         USE_MAX_ENDSTOPS                                 = True
         CALIBRATE_ON_WASHER                              = "Back Right"
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("LulzBot Mini")
-        MARLIN["LULZBOT_LCD_MACHINE_NAME"]               = C_STRING("Mini")
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("Mini")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["ENDSTOPS_ALWAYS_ON_DEFAULT"]             = True
         MARLIN["BAUDRATE"]                               = 250000
@@ -195,8 +195,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_MAX_ENDSTOPS                                 = True
         USE_REPRAP_LCD_DISPLAY                           = True
         CALIBRATE_ON_WASHER                              = "Back Right"
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("LulzBot Mini LCD")
-        MARLIN["LULZBOT_LCD_MACHINE_NAME"]               = C_STRING("Mini")
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("Mini")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["ENDSTOPS_ALWAYS_ON_DEFAULT"]             = True
         MARLIN["BAUDRATE"]                               = 250000
@@ -210,8 +209,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_NORMALLY_OPEN_ENDSTOPS                       = True
         USE_MIN_ENDSTOPS                                 = True
         USE_REPRAP_LCD_DISPLAY                           = True
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("LulzBot TAZ 5")
-        MARLIN["LULZBOT_LCD_MACHINE_NAME"]               = C_STRING("TAZ 5")
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 5")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["BAUDRATE"]                               = 250000
         MARLIN["MACHINE_UUID"]                           = C_STRING("c3255c96-4097-4884-8ed0-ded2ff9bae61")
@@ -228,8 +226,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_HOME_BUTTON                                  = True
         USE_REPRAP_LCD_DISPLAY                           = True
         BED_WASHERS_PIN                                  = 'SERVO0_PIN'
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("LulzBot TAZ 6")
-        MARLIN["LULZBOT_LCD_MACHINE_NAME"]               = C_STRING("TAZ 6")
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 6")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["ENDSTOPS_ALWAYS_ON_DEFAULT"]             = True
         MARLIN["BAUDRATE"]                               = 250000
@@ -246,8 +243,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_EINSY_RETRO                                  = True
         USE_EXPERIMENTAL_FEATURES                        = True
         CALIBRATE_ON_WASHER                              = "Back Right"
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("LulzBot Mini 2")
-        MARLIN["LULZBOT_LCD_MACHINE_NAME"]               = C_STRING("Mini 2")
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("Mini 2")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["SENSORLESS_HOMING"]                      = True
         MARLIN["STEALTHCHOP_XY"]                         = False
@@ -271,8 +267,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_TOUCH_UI                                     = True
         USE_ARCHIM2                                      = True
         USE_EXPERIMENTAL_FEATURES                        = True
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("LulzBot TAZ Pro")
-        MARLIN["LULZBOT_LCD_MACHINE_NAME"]               = C_STRING("TAZ Pro")
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ Pro")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["SENSORLESS_HOMING"]                      = True
         MARLIN["STEALTHCHOP_XY"]                         = False
@@ -285,8 +280,8 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["USB_FLASH_DRIVE_SUPPORT"]                = True
         MARLIN["SDSUPPORT"]                              = True
         MARLIN["FILAMENT_RUNOUT_SENSOR"]                 = True
-        MARLIN["LULZBOT_USE_UHS3_USB"]                   = False
-        MARLIN["LULZBOT_EEPROM_BACKUP_SIZE"]             = 1000
+        MARLIN["USE_UHS3_USB"]                           = False
+        MARLIN["ARCHIM2_SPI_FLASH_EEPROM_BACKUP_SIZE"]   = 1000
         # Touch LCD configuration
         MARLIN["TOUCH_UI_PORTRAIT"]                      = True
         MARLIN["TOUCH_UI_800x480"]                       = True
@@ -307,8 +302,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_DUAL_Z_ENDSTOPS                              = True
         USE_REPRAP_LCD_DISPLAY                           = True
         USE_EXPERIMENTAL_FEATURES                        = True
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ Workhorse Edition")
-        MARLIN["LULZBOT_LCD_MACHINE_NAME"]               = C_STRING("LulzBot TAZ")
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ Workhorse")
         MARLIN["LIGHTWEIGHT_UI"]                         = True
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["BAUDRATE"]                               = 250000
@@ -326,8 +320,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_REPRAP_LCD_DISPLAY                           = True
         USE_ARCHIM2                                      = True
         USE_EXPERIMENTAL_FEATURES                        = True
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("LulzBot TAZ 5")
-        MARLIN["LULZBOT_LCD_MACHINE_NAME"]               = C_STRING("TAZ 5")
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 5")
         MARLIN["STEALTHCHOP_XY"]                         = False
         MARLIN["STEALTHCHOP_Z"]                          = True
         MARLIN["STEALTHCHOP_E"]                          = True
@@ -348,8 +341,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_REPRAP_LCD_DISPLAY                           = True
         USE_ARCHIM2                                      = True
         USE_EXPERIMENTAL_FEATURES                        = True
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ Workhorse Edition")
-        MARLIN["LULZBOT_LCD_MACHINE_NAME"]               = C_STRING("Archim Redgum")
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ Workhorse")
         # The LIGHTWEIGHT_UI is not currently compatible with 32-bit boards.
         MARLIN["LIGHTWEIGHT_UI"]                         = False
         MARLIN["BACKLASH_COMPENSATION"]                  = True
@@ -370,8 +362,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_EINSY_RETRO                                  = True
         USE_EXPERIMENTAL_FEATURES                        = True
         USE_LESS_MEMORY                                  = True
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("LulzBot Mini 2")
-        MARLIN["LULZBOT_LCD_MACHINE_NAME"]               = C_STRING("Mini 2")
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("Mini 2")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["SENSORLESS_HOMING"]                      = True
         MARLIN["STEALTHCHOP_XY"]                         = False
@@ -399,8 +390,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_EINSY_RETRO                                  = True
         USE_EXPERIMENTAL_FEATURES                        = True
         USE_LESS_MEMORY                                  = True
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("LulzBot Mini 2")
-        MARLIN["LULZBOT_LCD_MACHINE_NAME"]               = C_STRING("Mini 2")
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("Mini 2")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["SENSORLESS_HOMING"]                      = True
         MARLIN["STEALTHCHOP_XY"]                         = False
@@ -416,8 +406,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["AO_EXP1_PINMAP"]                         = True
         MARLIN["SDSUPPORT"]                              = True
         MARLIN["USB_FLASH_DRIVE_SUPPORT"]                = True
-        MARLIN["LULZBOT_USE_UHS3_USB"]                   = True
-        MARLIN["LULZBOT_MANUAL_USB_STARTUP"]             = True
+        MARLIN["USE_UHS3_USB"]                           = True
 
     if PRINTER == "KangarooPaw_Experimental":
         # Kangaroo Paw uses a 480x272 display and SD card
@@ -429,10 +418,9 @@ def make_config(PRINTER, TOOLHEAD):
         USE_TOUCH_UI                                     = True
         USE_EINSY_RETRO                                  = True
         USE_EXPERIMENTAL_FEATURES                        = True
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("KangarooPaw")
-        MARLIN["LULZBOT_LCD_MACHINE_NAME"]               = C_STRING("KangarooPaw")
-        MARLIN["LULZBOT_DISABLE_TOOLHEAD_HEATER"]        = True
-        MARLIN["LULZBOT_USE_BIOPRINTER_GCODE"]           = True
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("Bio")
+        MARLIN["NO_TOOLHEAD_HEATER_GCODE"]               = True
+        MARLIN["E_MAX_POS"]                              = 60
         MARLIN["LULZBOT_USE_BIOPRINTER_UI"]              = True
         MARLIN["SENSORLESS_HOMING"]                      = True
         MARLIN["BACKLASH_COMPENSATION"]                  = True
@@ -462,8 +450,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_TOUCH_UI                                     = True
         USE_LESS_MEMORY                                  = True
         CALIBRATE_ON_WASHER                              = "Back Right"
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("LulzBot Mini LCD")
-        MARLIN["LULZBOT_LCD_MACHINE_NAME"]               = C_STRING("Mini")
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("Mini")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["ENDSTOPS_ALWAYS_ON_DEFAULT"]             = True
         MARLIN["BAUDRATE"]                               = 250000
@@ -475,7 +462,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["AO_EXP2_PINMAP"]                         = True
         MARLIN["SDSUPPORT"]                              = True
         MARLIN["USB_FLASH_DRIVE_SUPPORT"]                = True
-        MARLIN["LULZBOT_USE_UHS3_USB"]                   = True
+        MARLIN["USE_UHS3_USB"]                           = True
 
     if PRINTER == "GladiolaEinsyLCD_Experimental":
         # Unsupported Mini with Einsy Retro.
@@ -490,8 +477,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_EINSY_RETRO                                  = True
         USE_EXPERIMENTAL_FEATURES                        = True
         CALIBRATE_ON_WASHER                              = "Back Right"
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("LulzBot Mini LCD")
-        MARLIN["LULZBOT_LCD_MACHINE_NAME"]               = C_STRING("Mini")
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("Mini")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["STEALTHCHOP_XY"]                         = False
         MARLIN["STEALTHCHOP_Z"]                          = True
@@ -515,8 +501,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_EINSY_RETRO                                  = True
         USE_LESS_MEMORY                                  = True
         CALIBRATE_ON_WASHER                              = "Back Right"
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("LulzBot Mini LCD")
-        MARLIN["LULZBOT_LCD_MACHINE_NAME"]               = C_STRING("Mini")
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("Mini")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["STEALTHCHOP_XY"]                         = False
         MARLIN["STEALTHCHOP_Z"]                          = True
@@ -537,7 +522,7 @@ def make_config(PRINTER, TOOLHEAD):
         # since EXP2 does not have 5V on pin 10
         MARLIN["SDSUPPORT"]                              = True
         MARLIN["USB_FLASH_DRIVE_SUPPORT"]                = True
-        MARLIN["LULZBOT_USE_UHS3_USB"]                   = True
+        MARLIN["USE_UHS3_USB"]                           = True
 
     if PRINTER == "OliveoilArchim_Experimental":
         # Unsupported TAZ 6 with Archim 2.
@@ -556,8 +541,7 @@ def make_config(PRINTER, TOOLHEAD):
         # bed washers will use Z_MIN pin (i.e. bed washers
         # and homing button wired together)
         BED_WASHERS_PIN                                  = 'SERVO0_PIN'
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("LulzBot TAZ 6")
-        MARLIN["LULZBOT_LCD_MACHINE_NAME"]               = C_STRING("TAZ 6")
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 6")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["ENDSTOPS_ALWAYS_ON_DEFAULT"]             = True
         MARLIN["STEALTHCHOP_XY"]                         = False
@@ -582,8 +566,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_EINSY_RETRO                                  = True
         USE_EXPERIMENTAL_FEATURES                        = True
         CALIBRATE_ON_WASHER                              = "Back Right"
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("LulzBot Mini LCD")
-        MARLIN["LULZBOT_LCD_MACHINE_NAME"]               = C_STRING("Mini")
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("Mini")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["BAUDRATE"]                               = 250000
         MARLIN["PRINTCOUNTER"]                           = True
@@ -605,7 +588,6 @@ def make_config(PRINTER, TOOLHEAD):
     MARLIN["EEPROM_SETTINGS"]                            = True
     MARLIN["EEPROM_AUTO_INIT"]                           = True
     MARLIN["EMERGENCY_PARSER"]                           = True
-    MARLIN["NOZZLE_PARK_FEATURE"]                        = True
     MARLIN["PAUSE_PARK_NOZZLE_TIMEOUT"]                  = 300
     MARLIN["ADVANCED_OK"]                                = True
     MARLIN["TX_BUFFER_SIZE"]                             = 32
@@ -645,12 +627,12 @@ def make_config(PRINTER, TOOLHEAD):
 
         # Force Archim to use same USB ID as Mini-Rambo and Rambo when flashed
         # NOTE: While in "erase" (bootloader) mode, the ID will be 03eb:6124
-        MARLIN["LULZBOT_USB_DEVICE_VENDOR_ID"]           = '0x27b1'
-        MARLIN["LULZBOT_USB_DEVICE_PRODUCT_ID"]          = '0x0001'
+        MARLIN["USB_DEVICE_VENDOR_ID"]                   = '0x27b1'
+        MARLIN["USB_DEVICE_PRODUCT_ID"]                  = '0x0001'
 
         # The host MMC bridge is impractically slow and should not be used
         if ENABLED("SDSUPPORT") or ENABLED("USB_FLASH_DRIVE_SUPPORT"):
-            MARLIN["LULZBOT_DISABLE_DUE_SD_MMC"]         = True
+            MARLIN["DISABLE_DUE_SD_MMC"]                 = True
 
     elif USE_EINSY_RETRO:
         MARLIN["MOTHERBOARD"]                            = 'BOARD_EINSY_RETRO'
@@ -703,13 +685,11 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["USE_XMAX_PLUG"]                          = True
         MARLIN["E_MIN_PIN"]                              = 'X_MAX_PIN'
         MARLIN["E_MIN_PIN_INVERTING"]                    = NORMALLY_CLOSED_ENDSTOP
+        MARLIN["MIN_SOFTWARE_ENDSTOPS"]                  = False
+        MARLIN["MAX_SOFTWARE_ENDSTOPS"]                  = False
 
     if ENABLED("SDSUPPORT"):
         MARLIN["SD_ABORT_ON_ENDSTOP_HIT"]                = True
-
-    if not PRINTER in ["KangarooPaw_Experimental"]:
-        MARLIN["MIN_SOFTWARE_ENDSTOPS"]                  = True
-        MARLIN["MAX_SOFTWARE_ENDSTOPS"]                  = True
 
     # Endstop settings are determined by printer model, except for the
     # X_MAX which varies by toolhead.
@@ -736,8 +716,6 @@ def make_config(PRINTER, TOOLHEAD):
     # Electrical probing pins are always open until contact is made
     MARLIN["Z_MIN_ENDSTOP_INVERTING"]                    = NORMALLY_OPEN_ENDSTOP
     MARLIN["Z_MIN_PROBE_ENDSTOP_INVERTING"]              = NORMALLY_OPEN_ENDSTOP
-
-    MARLIN["LULZBOT_EMI_MITIGATION"]                     = True
 
 ########################## HOMING & AXIS DIRECTIONS ###########################
 
@@ -872,69 +850,69 @@ def make_config(PRINTER, TOOLHEAD):
             MOTOR_CURRENT_E                              = 1250 # mA
 
     if TOOLHEAD in ["Gladiola_SingleExtruder"]:
-        TOOLHEAD_M115_TYPE                               = "SingleExtruder"
-        TOOLHEAD_BLOCK_TYPE                              = "AO_Hexagon"
+        TOOLHEAD_TYPE                                    = "SingleExtruder"
+        TOOLHEAD_BLOCK                                   = "AO_Hexagon"
         E_STEPS                                          = 833
-        MARLIN["LULZBOT_LCD_TOOLHEAD_NAME"]              = C_STRING("Single Extruder")
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("Single Extruder")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_OPEN_ENDSTOP
 
     if TOOLHEAD in ["Albatross_Flexystruder"]:
-        TOOLHEAD_M115_TYPE                               = "Flexystruder"
-        TOOLHEAD_BLOCK_TYPE                              = "AO_Hexagon"
+        TOOLHEAD_TYPE                                    = "Flexystruder"
+        TOOLHEAD_BLOCK                                   = "AO_Hexagon"
         E_STEPS                                          = 833
-        MARLIN["LULZBOT_LCD_TOOLHEAD_NAME"]              = C_STRING("Flexystruder")
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("Flexystruder")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_OPEN_ENDSTOP
 
     if TOOLHEAD in ["Finch_Aerostruder"]:
-        TOOLHEAD_M115_TYPE                               = "Aerostruder"
-        TOOLHEAD_BLOCK_TYPE                              = "E3D_Titan_Aero_V6"
+        TOOLHEAD_TYPE                                    = "Aerostruder"
+        TOOLHEAD_BLOCK                                   = "E3D_Titan_Aero_V6"
         E_STEPS                                          = 420
-        MARLIN["LULZBOT_LCD_TOOLHEAD_NAME"]              = C_STRING("Aerostruder")
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("Aerostruder")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_OPEN_ENDSTOP
 
 ############################# TAZ 4/5/6 TOOLHEADS #############################
 
     if TOOLHEAD in ["Tilapia_SingleExtruder"]:
-        TOOLHEAD_M115_TYPE                               = "SingleExtruder"
-        TOOLHEAD_BLOCK_TYPE                              = "AO_Hexagon"
+        TOOLHEAD_TYPE                                    = "SingleExtruder"
+        TOOLHEAD_BLOCK                                   = "AO_Hexagon"
         MOTOR_CURRENT_E                                  = 750 # mA
         E_STEPS                                          = 830
-        MARLIN["LULZBOT_LCD_TOOLHEAD_NAME"]              = C_STRING("Single Extruder")
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("Single Extruder")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_CLOSED_ENDSTOP
 
     if TOOLHEAD in ["Angelfish_Aerostruder"]:
-        TOOLHEAD_M115_TYPE                               = "Aerostruder"
-        TOOLHEAD_BLOCK_TYPE                              = "E3D_Titan_Aero_V6"
+        TOOLHEAD_TYPE                                    = "Aerostruder"
+        TOOLHEAD_BLOCK                                   = "E3D_Titan_Aero_V6"
         MOTOR_CURRENT_E                                  = 875 # mA
         E_STEPS                                          = 420
-        MARLIN["LULZBOT_LCD_TOOLHEAD_NAME"]              = C_STRING("Aerostruder")
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("Aerostruder")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_CLOSED_ENDSTOP
 
     if TOOLHEAD in ["Kanyu_Flexystruder"]:
-        TOOLHEAD_M115_TYPE                               = "Flexystruder"
-        TOOLHEAD_BLOCK_TYPE                              = "AO_Hexagon"
+        TOOLHEAD_TYPE                                    = "Flexystruder"
+        TOOLHEAD_BLOCK                                   = "AO_Hexagon"
         MOTOR_CURRENT_E                                  = 410 # mA
         E_STEPS                                          = 830
         TOOLHEAD_X_MAX_ADJ                               = -12
         TOOLHEAD_X_MIN_ADJ                               = -7
         TOOLHEAD_Y_MAX_ADJ                               = -1
-        MARLIN["LULZBOT_LCD_TOOLHEAD_NAME"]              = C_STRING("Flexystruder")
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("Flexystruder")
         #         16 chars max                                      ^^^^^^^^^^^^^^^
         MARLIN["EXTRUDERS"]                              = 1
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_OPEN_ENDSTOP
 
     if TOOLHEAD in ["Opah_Moarstruder"]:
-        TOOLHEAD_M115_TYPE                               = "MOARstruder"
-        TOOLHEAD_BLOCK_TYPE                              = "Moarstruder"
+        TOOLHEAD_TYPE                                    = "MOARstruder"
+        TOOLHEAD_BLOCK                                   = "Moarstruder"
         MOTOR_CURRENT_E                                  = 750 # mA
         TOOLHEAD_X_MAX_ADJ                               = -10
         E_STEPS                                          = 830
-        MARLIN["LULZBOT_LCD_TOOLHEAD_NAME"]              = C_STRING("MOARstruder")
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("MOARstruder")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["DEFAULT_ACCELERATION"]                   = 250
         MARLIN["DEFAULT_TRAVEL_ACCELERATION"]            = 250
@@ -950,30 +928,29 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["TOOLCHANGE_ZRAISE"]                      = 2
         MARLIN["TEMP_SENSOR_1"]                          = 5
         MARLIN["DISTINCT_E_FACTORS"]                     = True
-        MARLIN["LULZBOT_EXTRUDER_FAN_ON_PIN_6"]          = True # For backwards compatibility with TAZ 4
-        MARLIN["LULZBOT_NO_MOVE_ON_TOOLHEAD_CHANGE"]     = True
+        MARLIN["EXTRUDER_FAN_ON_PIN_6"]                  = True # For backwards compatibility with TAZ 4
 
     if TOOLHEAD in ["Javelin_DualExtruderV2"]:
-        TOOLHEAD_M115_TYPE                               = "DualExtruder v2"
-        TOOLHEAD_BLOCK_TYPE                              = "AO_Hexagon"
+        TOOLHEAD_TYPE                                    = "DualExtruder v2"
+        TOOLHEAD_BLOCK                                   = "AO_Hexagon"
         E_STEPS                                          = 830
         TOOLHEAD_WIPE_Y2_ADJ                             = 48
-        MARLIN["LULZBOT_LCD_TOOLHEAD_NAME"]              = C_STRING("Dual Extruder 2")
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("Dual Extruder 2")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_OPEN_ENDSTOP
 
     if TOOLHEAD in ["Longfin_FlexyDually"]:
-        TOOLHEAD_M115_TYPE                               = "FlexyDually v2"
-        TOOLHEAD_BLOCK_TYPE                              = "AO_Hexagon"
+        TOOLHEAD_TYPE                                    = "FlexyDually v2"
+        TOOLHEAD_BLOCK                                   = "AO_Hexagon"
         E_STEPS                                          = 830
         TOOLHEAD_WIPE_Y2_ADJ                             = 48
-        MARLIN["LULZBOT_LCD_TOOLHEAD_NAME"]              = C_STRING("FlexyDually v2")
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("FlexyDually v2")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_OPEN_ENDSTOP
 
     if TOOLHEAD in ["Yellowfin_DualExtruderV3"]:
-        TOOLHEAD_M115_TYPE                               = "DualExtruder v3"
-        TOOLHEAD_BLOCK_TYPE                              = "E3D_SOMEstruder_x2"
+        TOOLHEAD_TYPE                                    = "DualExtruder v3"
+        TOOLHEAD_BLOCK                                   = "E3D_SOMEstruder_x2"
         MOTOR_CURRENT_E0                                 = 875 # mA
         MOTOR_CURRENT_E1                                 = 875 # mA
         E_STEPS                                          = 760
@@ -989,7 +966,7 @@ def make_config(PRINTER, TOOLHEAD):
         # to run the calibration routine on the cube
         USE_CALIBRATION_CUBE                             = False
         CALIBRATE_ON_WASHER                              = False
-        MARLIN["LULZBOT_LCD_TOOLHEAD_NAME"]              = C_STRING("Dual Extruder 3")
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("Dual Extruder 3")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["EXTRUDERS"]                              = 2
         MARLIN["TEMP_SENSOR_1"]                          = 5
@@ -1005,9 +982,8 @@ def make_config(PRINTER, TOOLHEAD):
             MARLIN["Z_CLEARANCE_DEPLOY_PROBE"]           = 10
             MARLIN["Z_CLEARANCE_BETWEEN_PROBES"]         = 10
             MARLIN["X_MAX_ENDSTOP_INVERTING"]            = NORMALLY_CLOSED_ENDSTOP
-            MARLIN["LULZBOT_SWAP_EXTRUDERS"]             = True
-            MARLIN["LULZBOT_NO_MOVE_ON_TOOLHEAD_CHANGE"] = True
-            MARLIN["LULZBOT_EXTRUDER_FAN_ON_PIN_6"]      = True # For backwards compatibility with TAZ 4
+            MARLIN["SWAP_E0_AND_E1"]                     = True
+            MARLIN["EXTRUDER_FAN_ON_PIN_6"]              = True # For backwards compatibility with TAZ 4
 
 ############################# UNIVERSAL TOOLHEADS #############################
 
@@ -1019,44 +995,44 @@ def make_config(PRINTER, TOOLHEAD):
         MOTOR_CURRENT_E                                  = 960 # mA
 
     if TOOLHEAD in ["CecropiaSilk_SingleExtruderAeroV2"]:
-        TOOLHEAD_M115_TYPE                               = "SingleExtruderAeroV2"
-        TOOLHEAD_BLOCK_TYPE                              = "E3D_Titan_Aero_V6"
+        TOOLHEAD_TYPE                                    = "SingleExtruderAeroV2"
+        TOOLHEAD_BLOCK                                   = "E3D_Titan_Aero_V6"
         E_STEPS                                          = 420
-        MARLIN["LULZBOT_LCD_TOOLHEAD_NAME"]              = C_STRING("SE 0.5mm AeroV2")
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("SE 0.5mm AeroV2")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_CLOSED_ENDSTOP
 
     if TOOLHEAD in ["Goldenrod_HardenedExtruder"]:
-        TOOLHEAD_M115_TYPE                               = "HardenedExtruder"
-        TOOLHEAD_BLOCK_TYPE                              = "E3D_Titan_Aero_V6"
+        TOOLHEAD_TYPE                                    = "HardenedExtruder"
+        TOOLHEAD_BLOCK                                   = "E3D_Titan_Aero_V6"
         E_STEPS                                          = 420
-        MARLIN["LULZBOT_LCD_TOOLHEAD_NAME"]              = C_STRING("HE 0.5mm")
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("HE 0.5mm")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_CLOSED_ENDSTOP
 
     if TOOLHEAD in ["AchemonSphinx_SmallLayer"]:
-        TOOLHEAD_M115_TYPE                               = "SmallLayer"
-        TOOLHEAD_BLOCK_TYPE                              = "E3D_Titan_Aero_V6"
+        TOOLHEAD_TYPE                                    = "SmallLayer"
+        TOOLHEAD_BLOCK                                   = "E3D_Titan_Aero_V6"
         E_STEPS                                          = 420
         MANUAL_FEEDRATE_E                                = 0.7 # mm/sec
-        MARLIN["LULZBOT_LCD_TOOLHEAD_NAME"]              = C_STRING("SL 0.25mm Micro")
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("SL 0.25mm Micro")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_CLOSED_ENDSTOP
         MARLIN["NOZZLE_TO_PROBE_OFFSET"]                 = [0, 0, -1.24]
 
     if TOOLHEAD in ["BandedTiger_HardenedSteel"]:
-        TOOLHEAD_M115_TYPE                               = "HardenedSteel"
-        TOOLHEAD_BLOCK_TYPE                              = "E3D_Titan_Aero_Volcano"
+        TOOLHEAD_TYPE                                    = "HardenedSteel"
+        TOOLHEAD_BLOCK                                   = "E3D_Titan_Aero_Volcano"
         E_STEPS                                          = 420
-        MARLIN["LULZBOT_LCD_TOOLHEAD_NAME"]              = C_STRING("HS 0.8mm")
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("HS 0.8mm")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_CLOSED_ENDSTOP
 
     if TOOLHEAD in ["DingyCutworm_HardenedSteelPlus"]:
-        TOOLHEAD_M115_TYPE                               = "HardenedSteelPlus"
-        TOOLHEAD_BLOCK_TYPE                              = "E3D_Titan_Aero_Volcano"
+        TOOLHEAD_TYPE                                    = "HardenedSteelPlus"
+        TOOLHEAD_BLOCK                                   = "E3D_Titan_Aero_Volcano"
         E_STEPS                                          = 420
-        MARLIN["LULZBOT_LCD_TOOLHEAD_NAME"]              = C_STRING("HS+ 1.2mm")
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("HS+ 1.2mm")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_CLOSED_ENDSTOP
 
@@ -1085,8 +1061,8 @@ def make_config(PRINTER, TOOLHEAD):
 ############################## TAZ PRO TOOLHEADS ##############################
 
     if TOOLHEAD in ["Quiver_DualExtruder"]:
-        TOOLHEAD_M115_TYPE                               = "DualExtruder"
-        TOOLHEAD_BLOCK_TYPE                              = "E3D_Titan_Aero_V6"
+        TOOLHEAD_TYPE                                    = "DualExtruder"
+        TOOLHEAD_BLOCK                                   = "E3D_Titan_Aero_V6"
         MOTOR_CURRENT_E0                                 = 960 # mA
         MOTOR_CURRENT_E1                                 = 960 # mA
         E_STEPS                                          = 420
@@ -1099,7 +1075,7 @@ def make_config(PRINTER, TOOLHEAD):
         T1_OFFSET_X                                      = 44.576
         T1_OFFSET_Y                                      = 0.095
         T1_OFFSET_Z                                      = 0.005
-        MARLIN["LULZBOT_LCD_TOOLHEAD_NAME"]              = C_STRING("Quivering Aeros")
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("Quivering Aeros")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["EXTRUDERS"]                              = 2
         MARLIN["TOOLCHANGE_ZRAISE"]                      = 0
@@ -1114,12 +1090,12 @@ def make_config(PRINTER, TOOLHEAD):
 ############################### OTHER TOOLHEADS ###############################
 
     if TOOLHEAD in ["KangarooPaw_SingleExtruder"]:
-        TOOLHEAD_M115_TYPE                               = "SingleExtruder"
-        TOOLHEAD_BLOCK_TYPE                              = "None"
+        TOOLHEAD_TYPE                                    = "SingleExtruder"
+        TOOLHEAD_BLOCK                                   = "None"
         E_STEPS                                          = 9448.8
         MOTOR_CURRENT_E                                  = 350 # mA
         MANUAL_FEEDRATE_E                                = 1.7 # mm/sec
-        MARLIN["LULZBOT_LCD_TOOLHEAD_NAME"]              = C_STRING("Goostruder")
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("Goostruder")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["EXTRUDERS"]                              = 1
         MARLIN["Z_CLEARANCE_DEPLOY_PROBE"]               = 30
@@ -1177,31 +1153,31 @@ def make_config(PRINTER, TOOLHEAD):
 
     # Hotend variants
 
-    if TOOLHEAD_BLOCK_TYPE == "Moarstruder":
+    if TOOLHEAD_BLOCK == "Moarstruder":
         # LulzBot MOARstruder (40w)
         MARLIN["DEFAULT_Kp"]                             =  55.64
         MARLIN["DEFAULT_Ki"]                             =   6.79
         MARLIN["DEFAULT_Kd"]                             = 113.94
 
-    elif TOOLHEAD_BLOCK_TYPE == "E3D_SOMEstruder_x2":
+    elif TOOLHEAD_BLOCK == "E3D_SOMEstruder_x2":
         # Side-by-side LulzBot E3D SOMEstruder on Yellowfin Dual
         MARLIN["DEFAULT_Kp"]                             =  47.45
         MARLIN["DEFAULT_Ki"]                             =  4.83
         MARLIN["DEFAULT_Kd"]                             = 116.63
 
-    elif TOOLHEAD_BLOCK_TYPE == "AO_Hexagon":
+    elif TOOLHEAD_BLOCK == "AO_Hexagon":
         # LulzBot AO-Hexagon (30w)
         MARLIN["DEFAULT_Kp"]                             =  28.79
         MARLIN["DEFAULT_Ki"]                             =   1.91
         MARLIN["DEFAULT_Kd"]                             = 108.51
 
-    elif TOOLHEAD_BLOCK_TYPE == "E3D_Titan_Aero_V6":
+    elif TOOLHEAD_BLOCK == "E3D_Titan_Aero_V6":
         # E3D Titan Aero with LulzBot V6 block
         MARLIN["DEFAULT_Kp"]                             = 21.00
         MARLIN["DEFAULT_Ki"]                             =  1.78
         MARLIN["DEFAULT_Kd"]                             = 61.93
 
-    elif TOOLHEAD_BLOCK_TYPE == "E3D_Titan_Aero_Volcano":
+    elif TOOLHEAD_BLOCK == "E3D_Titan_Aero_Volcano":
         # E3D Titan Aero with Volcano block
         MARLIN["DEFAULT_Kp"]                             = 37.55
         MARLIN["DEFAULT_Ki"]                             = 5.39
@@ -1256,7 +1232,7 @@ def make_config(PRINTER, TOOLHEAD):
     if USE_EINSY_RETRO:
         # The TMC drivers need a bit more cooling
         MARLIN["CONTROLLERFAN_SPEED"]                    = 255
-        MARLIN["LULZBOT_CONTROLLERFAN_SPEED_WHEN_ONLY_Z_ACTIVE"] = 120
+        MARLIN["CONTROLLERFAN_SPEED_Z_ONLY"]             = 120
     elif IS_MINI:
         # The Mini fan runs rather loud at full speed
         MARLIN["CONTROLLERFAN_SPEED"]                    = 120
@@ -1294,7 +1270,7 @@ def make_config(PRINTER, TOOLHEAD):
         STANDARD_Y_MAX_POS                               = 276
         STANDARD_Y_MIN_POS                               = 0
 
-        STANDARD_X_BED_SIZE                              =  288
+        STANDARD_X_BED_SIZE                              = 288
         STANDARD_Y_BED_SIZE                              = 275
 
     elif PRINTER in ["Redgum_TAZWorkhorse", "RedgumArchim_Experimental"]:
@@ -1456,7 +1432,7 @@ def make_config(PRINTER, TOOLHEAD):
             "G90\n"                                      # Return to absolute mode
             "M906 Z960\n"                                # Restore default current
             "M211 S1\n"                                  # Turn soft endstops back on
-            "G28\n"                                      # Rehome
+            "G28 Z0\n"                                   # Home Axis
             "M117 Leveling done.\n"                      # Set LCD status
         )
 
@@ -1471,7 +1447,7 @@ def make_config(PRINTER, TOOLHEAD):
         AXIS_LEVELING_COMMANDS = ""
 
     if USE_Z_BELT:
-        MARLIN["LULZBOT_AXIS_LEVELING_COMMANDS"] = C_STRING(AXIS_LEVELING_COMMANDS)
+        MARLIN["AXIS_LEVELING_COMMANDS"]                 = C_STRING(AXIS_LEVELING_COMMANDS)
 
     elif USE_Z_SCREW:
         # The older Minis seem succeptible to noise in the probe lines.
@@ -1479,6 +1455,18 @@ def make_config(PRINTER, TOOLHEAD):
         # version of Marlin.
         MARLIN["ENDSTOP_NOISE_THRESHOLD"]                =  2
 
+######################### BIO-PRINTER STARTUP COMMANDS ########################
+
+    if PRINTER in ['KangarooPaw_Bio']:
+        MARLIN["AXIS_LEVELING_COMMANDS"]                 = C_STRING(AXIS_LEVELING_COMMANDS)
+
+        MARLIN["LULZBOT_PARK_AND_RELEASE_COMMANDS"]      = C_STRING(
+
+            "G0 X115 Z50 F6000\n"                        # Goto loading position
+            "M400\n"                                     # Wait for moves to finish
+            "M18 X Y"                                    # Unlock motors
+        )
+        
 ################ AUTO-CALIBRATION (BACKLASH AND NOZZLE OFFSET) ################
 
     if USE_CALIBRATION_CUBE or CALIBRATE_ON_WASHER:
@@ -1503,7 +1491,7 @@ def make_config(PRINTER, TOOLHEAD):
             "M117 Calibration data saved"                # Status message
         )
 
-        MARLIN["LULZBOT_CALIBRATION_COMMANDS"] = C_STRING(CALIBRATION_COMMANDS)
+        MARLIN["CALIBRATION_COMMANDS"]                   = C_STRING(CALIBRATION_COMMANDS)
 
         if IS_MINI:
             if CALIBRATE_ON_WASHER == "Front Left":
@@ -1568,7 +1556,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["FILAMENT_RUNOUT_DISTANCE_MM"]            = 14
         MARLIN["FILAMENT_MOTION_SENSOR"]                 = True
         MARLIN["ACTION_ON_FILAMENT_RUNOUT"]              = C_STRING("pause: filament_runout")
-        MARLIN["LULZBOT_RUNOUT_HANDLING_WORKAROUND"]     = True
+        MARLIN["CURA_LE_RUNOUT_HANDLING_WORKAROUND"]     = True
 
 ############################## MOTOR DRIVER TYPE ##############################
 
@@ -1621,6 +1609,8 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["Y_HYBRID_THRESHOLD"]                     = 72
         MARLIN["X_HYBRID_THRESHOLD"]                     = 72
 
+        MARLIN["CHOPPER_TIMING"]                         = [ 3, -2, 6 ]
+        
         def TMC_INIT(st):
             return (
                 "st.shaft({});".format(SHAFT_DIR) +
@@ -1707,10 +1697,9 @@ def make_config(PRINTER, TOOLHEAD):
 ###################### ADVANCED PAUSE / FILAMENT CHANGE #######################
 
     if USE_REPRAP_LCD_DISPLAY or USE_TOUCH_UI:
-        MARLIN["ADVANCED_PAUSE_FEATURE"]                 = True
         MARLIN["FILAMENT_CHANGE_FAST_LOAD_FEEDRATE"]     = MANUAL_FEEDRATE_E
         MARLIN["FILAMENT_CHANGE_FAST_LOAD_LENGTH"]       = 40
-        MARLIN["ADVANCED_PAUSE_PURGE_LENGTH"]            = 20
+        MARLIN["ADVANCED_PAUSE_PURGE_LENGTH"]            = 0 # Manual purge
         MARLIN["ADVANCED_PAUSE_PURGE_FEEDRATE"]          = MANUAL_FEEDRATE_E
         MARLIN["PAUSE_PARK_RETRACT_FEEDRATE"]            = 10 # mm/s
         MARLIN["FILAMENT_CHANGE_UNLOAD_LENGTH"]          = 80
@@ -1718,21 +1707,24 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["HOME_BEFORE_FILAMENT_CHANGE"]            = True
         MARLIN["PARK_HEAD_ON_PAUSE"]                     = True
 
-        # In Marlin 1.1.9, the filament unload sequence makes no sense
-        # All we want is a slow purge for the Aerostruder, followed by
-        # a retract.
-        MARLIN["LULZBOT_AERO_UNLOAD_WORKAROUND"]         = True
-        MARLIN["LULZBOT_AERO_UNLOAD_PURGE_LENGTH"]       = 6
-        MARLIN["LULZBOT_AERO_UNLOAD_PURGE_FEEDRATE"]     = MANUAL_FEEDRATE_E
+        # In order to prevent jams on the Aero toolheads,
+        # do a purge prior to unload
+        MARLIN["FILAMENT_UNLOAD_RETRACT_LENGTH"]         = 0
+        MARLIN["FILAMENT_UNLOAD_DELAY"]                  = 0
+        MARLIN["FILAMENT_UNLOAD_PURGE_LENGTH"]           = 6
 
-        # In Marlin 1.1.9, an unnecessary purge is happening after a resume from a pause.
-        MARLIN["LULZBOT_ADVANCED_PAUSE_PURGE_WORKAROUND"] = True
+    if PRINTER in ["KangarooPaw_Bio"]:
+        MARLIN["ADVANCED_PAUSE_FEATURE"]                  = False
+        MARLIN["NOZZLE_PARK_FEATURE"]                     = False
 
-    if IS_MINI:
-        MARLIN["NOZZLE_PARK_POINT"]                      = [  10, MARLIN["Y_MAX_POS"] - 10, 20 ]
     else:
-        # Match the purge location of the v3 dual so a single tray can be used.
-        MARLIN["NOZZLE_PARK_POINT"]                      = [ 100, MARLIN["Y_MAX_POS"] -  1, 20 ]
+        MARLIN["NOZZLE_PARK_FEATURE"]                     = True
+        MARLIN["ADVANCED_PAUSE_FEATURE"]                  = True
+        if IS_MINI:
+            MARLIN["NOZZLE_PARK_POINT"]                       = [  10, MARLIN["Y_MAX_POS"] - 10, 20 ]
+        else:
+            # Match the purge location of the v3 dual so a single tray can be used.
+            MARLIN["NOZZLE_PARK_POINT"]                       = [ 100, MARLIN["Y_MAX_POS"] -  1, 20 ]
 
     if MARLIN["SDSUPPORT"]:
         if PRINTER in ["KangarooPaw_Experimental"]:
@@ -1933,7 +1925,7 @@ def make_config(PRINTER, TOOLHEAD):
                 "M117 Probe successful\n"                # Status message
             )
 
-        MARLIN["LULZBOT_WIPE_SEQUENCE_COMMANDS"]         = C_STRING(WIPE_SEQUENCE_COMMANDS)
+        MARLIN["WIPE_SEQUENCE_COMMANDS"]                 = C_STRING(WIPE_SEQUENCE_COMMANDS)
         MARLIN["G29_FAILURE_COMMANDS"]                   = C_STRING(G29_FAILURE_COMMANDS)
         MARLIN["G29_RECOVER_COMMANDS"]                   = C_STRING(G29_RECOVER_COMMANDS)
         MARLIN["G29_SUCCESS_COMMANDS"]                   = C_STRING(G29_SUCCESS_COMMANDS)
@@ -1973,17 +1965,23 @@ def make_config(PRINTER, TOOLHEAD):
             MOTOR_CURRENT_Z                              = 1630 # mA
 
     elif IS_TAZ:
-        if USE_Z_BELT or USE_ARCHIM2:
+        if USE_ARCHIM2:
             # These values specify the maximum current, but actual
             # currents may be lower when used with COOLCONF
             MOTOR_CURRENT_X                              = 975 # mA
             MOTOR_CURRENT_Y                              = 975 # mA
             MOTOR_CURRENT_Z                              = 975 # mA
-
-        elif USE_Z_SCREW:
+        else:
+            # The RAMBO boards run a bit hot and should have their
+            # currents no higher than 950mA on X and Y.
             MOTOR_CURRENT_X                              = 950 # mA
             MOTOR_CURRENT_Y                              = 950 # mA
-            MOTOR_CURRENT_Z                              = 1275 if PRINTER == "Juniper_TAZ5" else 1075 # mA
+            if USE_Z_BELT:
+                MOTOR_CURRENT_Z                          = 975 # mA
+            elif PRINTER == "Juniper_TAZ5":
+                MOTOR_CURRENT_Z                          = 1275 # mA
+            elif USE_Z_SCREW:
+                MOTOR_CURRENT_Z                          = 1075 # mA
 
     if USE_EINSY_RETRO or USE_ARCHIM2:
         # Neither define LULZBOT_PWM_MOTOR_CURRENT nor LULZBOT_DIGIPOT_MOTOR_CURRENT,
@@ -2109,7 +2107,7 @@ def make_config(PRINTER, TOOLHEAD):
 
     if USE_TOUCH_UI:
         MANUAL_FEEDRATE_Z                                = 300
-        MARLIN["MAX_MANUAL_FEEDRATE"]                    = [300*60, 300*60, MANUAL_FEEDRATE_Z*60, MANUAL_FEEDRATE_E*60] # (mm/min)
+        MARLIN["MANUAL_FEEDRATE"]                        = [39*60, 39*60, 39*60, MANUAL_FEEDRATE_E*60] # (mm/min)
 
     if MARLIN["EXTRUDERS"] == 2 and ENABLED("DISTINCT_E_FACTORS") and not ENABLED("SWITCHING_EXTRUDER"):
         MARLIN["DEFAULT_AXIS_STEPS_PER_UNIT"]            = [XY_STEPS, XY_STEPS, Z_STEPS, E_STEPS, E_STEPS]
@@ -2128,24 +2126,7 @@ def make_config(PRINTER, TOOLHEAD):
 
     if USE_REPRAP_LCD_DISPLAY:
         MARLIN["REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER"] = True
-        MARLIN["LULZBOT_JUMP_TO_TOP_ON_MENU_BACK"] = True
-        # Marlin shows three extruders on a dual:
-        #   Extruder    - The active nozzle (varies)
-        #   Extruder 1  - The primary extruder
-        #   Extruder 2  - The secondary extruder
-        #
-        # The following causes the active nozzle to be
-        # hidden as seeing three nozzles may be
-        # confusing to users.
-        MARLIN["LULZBOT_HIDE_ACTIVE_NOZZLE_IN_MENU"]     = True
-        MARLIN["LULZBOT_HIDE_UNUSED_FANS_IN_MENU"]       = True
-        MARLIN["LULZBOT_HIDE_PREHEAT_IN_MENU"]           = True
-        MARLIN["LULZBOT_HIDE_INIT_EEPROM_IN_MENU"]       = True
-        MARLIN["LULZBOT_HIDE_BED_LEVELING_IN_MENU"]      = True
-        MARLIN["LULZBOT_ENHANCED_BOOTSCREEN"]            = True
-        MARLIN["LULZBOT_LCD_ZOFFSET_FORMAT"]             = 'ftostr52'
-        MARLIN["LULZBOT_DISABLE_KILL_BUTTON"]            = True
-        MARLIN["SHOW_CUSTOM_BOOTSCREEN"]                 = True
+        MARLIN["TURBO_BACK_MENU_ITEM"]                   = True
         MARLIN["XYZ_HOLLOW_FRAME"]                       = False
         MARLIN["MENU_HOLLOW_FRAME"]                      = False
         MARLIN["USE_SMALL_INFOFONT"]                     = True
@@ -2172,18 +2153,33 @@ def make_config(PRINTER, TOOLHEAD):
 
     if USE_TOUCH_UI:
         MARLIN["LULZBOT_TOUCH_UI"]                       = True
+        MARLIN["TOUCH_UI_USE_UTF8"]                      = True
+        MARLIN["TOUCH_UI_UTF8_COPYRIGHT"]                = True
+        MARLIN["TOUCH_UI_UTF8_SUPERSCRIPTS"]             = True
         MARLIN["SD_DETECT_INVERTED"]                     = False
         MARLIN["LCD_SET_PROGRESS_MANUALLY"]              = True
         MARLIN["SCROLL_LONG_FILENAMES"]                  = False if USE_LESS_MEMORY else True
-        MARLIN["LULZBOT_NO_PAUSE_FOR_REHEAT_WORKAROUND"] = True
-
+        MARLIN["NO_PAUSE_FOR_REHEAT"]                    = True
+        MARLIN["DEVELOPER_SCREENS"]                      = True
+        
+        # Virtual joystick functionality
+        MARLIN["JOYSTICK"]                               = True
+        MARLIN["JOY_X_PIN"]                              = -1
+        MARLIN["JOY_Y_PIN"]                              = -1
+        MARLIN["JOY_Z_PIN"]                              = -1
+        MARLIN["JOY_EN_PIN"]                             = -1
+        MARLIN["JOY_X_LIMITS"]                           = False
+        MARLIN["JOY_Y_LIMITS"]                           = False
+        MARLIN["JOY_Z_LIMITS"]                           = False
+        
     if ENABLED("LULZBOT_USE_BIOPRINTER_UI"):
-        MARLIN["LULZBOT_LCD_KEEPS_STATUS_AFTER_PRINT"]   = True
+        MARLIN["PRESERVE_LCD_MESSAGE_AFTER_PRINT"]       = True
 
     if ENABLED("USB_FLASH_DRIVE_SUPPORT"):
         MARLIN["SDSUPPORT"]                              = True
 
     if USE_REPRAP_LCD_DISPLAY or USE_TOUCH_UI:
+        MARLIN["SHOW_CUSTOM_BOOTSCREEN"]                 = True
         MARLIN["BABYSTEPPING"]                           = True
         MARLIN["BABYSTEP_XY"]                            = True
 
@@ -2194,7 +2190,7 @@ def make_config(PRINTER, TOOLHEAD):
 
 #################################### CLEAN UP ###################################
 
-    MARLIN["LULZBOT_TOOLHEAD_M115_TYPE"]                 = C_STRING(TOOLHEAD_M115_TYPE)
+    MARLIN["TOOLHEAD_TYPE"]                              = C_STRING(TOOLHEAD_TYPE)
 
     return MARLIN
 ############################## END OF CONFIGURATION #############################

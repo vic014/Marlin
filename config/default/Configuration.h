@@ -2208,10 +2208,11 @@
 // Allow servo angle to be edited and saved to EEPROM
 //#define EDITABLE_SERVO_ANGLES
 
-
 /**
  * Extra modifications to Marlin for LulzBot printers
  */
+//#define TOOLHEAD_NAME
+//#define TOOLHEAD_TYPE
 //#define WIPE_SEQUENCE_COMMANDS
 //#define AXIS_LEVELING_COMMANDS
 //#define CALIBRATION_COMMANDS
@@ -2220,4 +2221,17 @@
 //#define EXTRUDER_FAN_ON_PIN_6
 //#define ACTION_ON_FILAMENT_RUNOUT
 //#define ARCHIM2_SPI_FLASH_EEPROM_BACKUP_SIZE
+//#define END_G29_ON_BACK_LEFT_CORNER
+//#define USB_DEVICE_VENDOR_ID
+//#define USB_DEVICE_PRODUCT_ID
+//#define NO_PAUSE_FOR_REHEAT
+//#define CURA_LE_RUNOUT_HANDLING_WORKAROUND
+//#define PRESERVE_LCD_MESSAGE_AFTER_PRINT
+//#define E_MIN_PIN
+//#define E_MIN_PIN_INVERTING
+//#define E_MAX_POS
+//#define NO_TOOLHEAD_HEATER_GCODE
+//#define DEVELOPER_SCREENS
+//#define LULZBOT_USE_BIOPRINTER_UI
+//#define SWAP_E0_AND_E1
 
