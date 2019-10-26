@@ -608,7 +608,7 @@
 #if ENABLED(Z_STEPPER_AUTO_ALIGN)
   // Define probe X and Y positions for Z1, Z2 [, Z3]
   #if ENABLED(SX2)
-    #define Z_STEPPER_ALIGN_XY { {  50, 100 }, { 225,  100 } }
+    #define Z_STEPPER_ALIGN_XY { {  42, 100 }, { 225,  100 } }
   #else
     #define Z_STEPPER_ALIGN_XY { {  50, 200 }, { 350,  200 } }
   #endif

@@ -163,7 +163,12 @@
 #endif
 
 // Name displayed in the LCD "Ready" message and Info menu
-#define CUSTOM_MACHINE_NAME "TM3D SX4"
+#if ENABLED(SX2)
+    #define CUSTOM_MACHINE_NAME "TM3D SX2"
+  #else
+    #define CUSTOM_MACHINE_NAME "TM3D SX4"
+#endif
+
 
 // Printer's unique ID, used by some programs to differentiate between machines.
 // Choose your own or use a service like http://www.uuidgenerator.net/version4
@@ -1162,7 +1167,7 @@
 // The size of the print bed
 #if ENABLED(SX2)
   #define X_BED_SIZE 248
-  #define Y_BED_SIZE 230
+  #define Y_BED_SIZE 238
 #else
   #define X_BED_SIZE 398
   #define Y_BED_SIZE 390
