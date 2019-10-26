@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,13 +26,13 @@
 
 #include "../../gcode.h"
 #include "../../../feature/tmc_util.h"
-#include "../../../module/stepper_indirection.h"
+#include "../../../module/stepper/indirection.h"
 #include "../../../module/planner.h"
 #include "../../queue.h"
 
 #if ENABLED(MONITOR_DRIVER_STATUS)
 
-  #define M91x_USE(ST) (AXIS_DRIVER_TYPE(ST, TMC2130) || AXIS_DRIVER_TYPE(ST, TMC2160) || AXIS_DRIVER_TYPE(ST, TMC2208) || AXIS_DRIVER_TYPE(ST, TMC2660) || AXIS_DRIVER_TYPE(ST, TMC5130) || AXIS_DRIVER_TYPE(ST, TMC5160))
+  #define M91x_USE(ST) (AXIS_DRIVER_TYPE(ST, TMC2130) || AXIS_DRIVER_TYPE(ST, TMC2160) || AXIS_DRIVER_TYPE(ST, TMC2208) || AXIS_DRIVER_TYPE(ST, TMC2209) || AXIS_DRIVER_TYPE(ST, TMC2660) || AXIS_DRIVER_TYPE(ST, TMC5130) || AXIS_DRIVER_TYPE(ST, TMC5160))
   #define M91x_USE_E(N) (E_STEPPERS > N && M91x_USE(E##N))
 
   #define M91x_SOME_X (M91x_USE(X) || M91x_USE(X2))
@@ -41,7 +41,7 @@
   #define M91x_SOME_E (M91x_USE_E(0) || M91x_USE_E(1) || M91x_USE_E(2) || M91x_USE_E(3) || M91x_USE_E(4) || M91x_USE_E(5))
 
   #if !M91x_SOME_X && !M91x_SOME_Y && !M91x_SOME_Z && !M91x_SOME_E
-    #error "MONITOR_DRIVER_STATUS requires at least one TMC2130, TMC2208, or TMC2660."
+    #error "MONITOR_DRIVER_STATUS requires at least one TMC2130, 2160, 2208, 2209, 2660, 5130, or 5160."
   #endif
 
   /**
@@ -104,25 +104,25 @@
    */
   void GcodeSuite::M912() {
     #if M91x_SOME_X
-      const bool hasX = parser.seen(axis_codes[X_AXIS]);
+      const bool hasX = parser.seen(axis_codes.x);
     #else
       constexpr bool hasX = false;
     #endif
 
     #if M91x_SOME_Y
-      const bool hasY = parser.seen(axis_codes[Y_AXIS]);
+      const bool hasY = parser.seen(axis_codes.y);
     #else
       constexpr bool hasY = false;
     #endif
 
     #if M91x_SOME_Z
-      const bool hasZ = parser.seen(axis_codes[Z_AXIS]);
+      const bool hasZ = parser.seen(axis_codes.z);
     #else
       constexpr bool hasZ = false;
     #endif
 
     #if M91x_SOME_E
-      const bool hasE = parser.seen(axis_codes[E_AXIS]);
+      const bool hasE = parser.seen(axis_codes.e);
     #else
       constexpr bool hasE = false;
     #endif
@@ -130,7 +130,7 @@
     const bool hasNone = !hasX && !hasY && !hasZ && !hasE;
 
     #if M91x_SOME_X
-      const int8_t xval = int8_t(parser.byteval(axis_codes[X_AXIS], 0xFF));
+      const int8_t xval = int8_t(parser.byteval(axis_codes.x, 0xFF));
       #if M91x_USE(X)
         if (hasNone || xval == 1 || (hasX && xval < 0)) tmc_clear_otpw(stepperX);
       #endif
@@ -140,7 +140,7 @@
     #endif
 
     #if M91x_SOME_Y
-      const int8_t yval = int8_t(parser.byteval(axis_codes[Y_AXIS], 0xFF));
+      const int8_t yval = int8_t(parser.byteval(axis_codes.y, 0xFF));
       #if M91x_USE(Y)
         if (hasNone || yval == 1 || (hasY && yval < 0)) tmc_clear_otpw(stepperY);
       #endif
@@ -150,7 +150,7 @@
     #endif
 
     #if M91x_SOME_Z
-      const int8_t zval = int8_t(parser.byteval(axis_codes[Z_AXIS], 0xFF));
+      const int8_t zval = int8_t(parser.byteval(axis_codes.z, 0xFF));
       #if M91x_USE(Z)
         if (hasNone || zval == 1 || (hasZ && zval < 0)) tmc_clear_otpw(stepperZ);
       #endif
@@ -163,7 +163,7 @@
     #endif
 
     #if M91x_SOME_E
-      const int8_t eval = int8_t(parser.byteval(axis_codes[E_AXIS], 0xFF));
+      const int8_t eval = int8_t(parser.byteval(axis_codes.e, 0xFF));
       #if M91x_USE_E(0)
         if (hasNone || eval == 0 || (hasE && eval < 0)) tmc_clear_otpw(stepperE0);
       #endif
@@ -313,39 +313,39 @@
     bool report = true;
     const uint8_t index = parser.byteval('I');
     LOOP_XYZ(i) if (parser.seen(axis_codes[i])) {
-      const int8_t value = (int8_t)constrain(parser.value_int(), -64, 63);
+      const int16_t value = parser.value_int();
       report = false;
       switch (i) {
         #if X_SENSORLESS
           case X_AXIS:
             #if AXIS_HAS_STALLGUARD(X)
-              if (index < 2) stepperX.sgt(value);
+              if (index < 2) stepperX.homing_threshold(value);
             #endif
             #if AXIS_HAS_STALLGUARD(X2)
-              if (!(index & 1)) stepperX2.sgt(value);
+              if (!(index & 1)) stepperX2.homing_threshold(value);
             #endif
             break;
         #endif
         #if Y_SENSORLESS
           case Y_AXIS:
             #if AXIS_HAS_STALLGUARD(Y)
-              if (index < 2) stepperY.sgt(value);
+              if (index < 2) stepperY.homing_threshold(value);
             #endif
             #if AXIS_HAS_STALLGUARD(Y2)
-              if (!(index & 1)) stepperY2.sgt(value);
+              if (!(index & 1)) stepperY2.homing_threshold(value);
             #endif
             break;
         #endif
         #if Z_SENSORLESS
           case Z_AXIS:
             #if AXIS_HAS_STALLGUARD(Z)
-              if (index < 2) stepperZ.sgt(value);
+              if (index < 2) stepperZ.homing_threshold(value);
             #endif
             #if AXIS_HAS_STALLGUARD(Z2)
-              if (index == 0 || index == 2) stepperZ2.sgt(value);
+              if (index == 0 || index == 2) stepperZ2.homing_threshold(value);
             #endif
             #if AXIS_HAS_STALLGUARD(Z3)
-              if (index == 0 || index == 3) stepperZ3.sgt(value);
+              if (index == 0 || index == 3) stepperZ3.homing_threshold(value);
             #endif
             break;
         #endif

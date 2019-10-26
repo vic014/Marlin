@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -218,7 +218,7 @@ class TWIBus {
        *          If a string is passed, write it into the buffer first.
        */
       void reply(char str[]=nullptr);
-      inline void reply(const char str[]) { this->reply((char*)str); }
+      inline void reply(const char str[]) { reply((char*)str); }
 
     #endif
 
