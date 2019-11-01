@@ -144,7 +144,7 @@
 #if HAS_SPI_LCD || TOUCH_UI_ULTIPANEL
 
   #if !MB(MINIRAMBO_10A)
-    #define KILL_PIN       32
+    #define KILL_PIN       -1
   #endif
 
   #if ENABLED(ULTIPANEL) || TOUCH_UI_ULTIPANEL

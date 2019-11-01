@@ -205,7 +205,7 @@
 //
 #if HAS_SPI_LCD || TOUCH_UI_ULTIPANEL
 
-  #define KILL_PIN         80
+  #define KILL_PIN         -1
 
   #if ENABLED(ULTIPANEL) || TOUCH_UI_ULTIPANEL
 
