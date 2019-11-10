@@ -24,7 +24,9 @@ PRINTER_CHOICES = [
     "Gladiola_MiniLCD",
     "Hibiscus_Mini2",
     "Juniper_TAZ5",
+    "Juniper_TAZ5BLTouch",
     "Oliveoil_TAZ6",
+    "Oliveoil_TAZ6BLTouch",
     "Quiver_TAZPro",
     "Redgum_TAZWorkhorse",
     "Redgum_TAZWorkhorseArchim",
@@ -139,6 +141,7 @@ def make_config(PRINTER, TOOLHEAD):
     USE_MAX_ENDSTOPS                                     = False
     USE_LEGACY_XY_STEPS                                  = False
     USE_PRE_GLADIOLA_G29_WORKAROUND                      = False
+    USE_BLTOUCH                                          = False
 
     CALIBRATE_ON_WASHER                                  = False
     BED_WASHERS_PIN                                      = False
@@ -214,6 +217,20 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["BAUDRATE"]                               = 250000
         MARLIN["MACHINE_UUID"]                           = C_STRING("c3255c96-4097-4884-8ed0-ded2ff9bae61")
+        
+    if PRINTER == "Juniper_TAZ5BLTouch":
+        IS_TAZ                                           = True
+        TAZ_BED                                          = True
+        USE_Z_SCREW                                      = True
+        USE_LEGACY_XY_STEPS                              = True
+        USE_NORMALLY_OPEN_ENDSTOPS                       = True
+        USE_MIN_ENDSTOPS                                 = True
+        USE_REPRAP_LCD_DISPLAY                           = True
+        USE_BLTOUCH                                      = True
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 5")
+        MARLIN["BACKLASH_COMPENSATION"]                  = True
+        MARLIN["BAUDRATE"]                               = 250000
+        MARLIN["MACHINE_UUID"]                           = C_STRING("c3255c96-4097-4884-8ed0-ded2ff9bae61")
 
     if PRINTER == "Oliveoil_TAZ6":
         IS_TAZ                                           = True
@@ -227,6 +244,24 @@ def make_config(PRINTER, TOOLHEAD):
         USE_HOME_BUTTON                                  = True
         USE_REPRAP_LCD_DISPLAY                           = True
         BED_WASHERS_PIN                                  = 'SERVO0_PIN'
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 6")
+        MARLIN["BACKLASH_COMPENSATION"]                  = True
+        MARLIN["ENDSTOPS_ALWAYS_ON_DEFAULT"]             = True
+        MARLIN["BAUDRATE"]                               = 250000
+        MARLIN["MACHINE_UUID"]                           = C_STRING("845f003c-aebd-4e53-a6b9-7d0984fde609")
+        
+    if PRINTER == "Oliveoil_TAZ6BLTouch":
+        IS_TAZ                                           = True
+        TAZ_BED                                          = True
+        USE_Z_SCREW                                      = True
+        USE_AUTOLEVELING                                 = True
+        USE_LEGACY_XY_STEPS                              = True
+        USE_NORMALLY_CLOSED_ENDSTOPS                     = True
+        USE_MIN_ENDSTOPS                                 = True
+        USE_MAX_ENDSTOPS                                 = True
+        USE_HOME_BUTTON                                  = True
+        USE_REPRAP_LCD_DISPLAY                           = True
+        USE_BLTOUCH                                      = True
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 6")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["ENDSTOPS_ALWAYS_ON_DEFAULT"]             = True
@@ -667,7 +702,7 @@ def make_config(PRINTER, TOOLHEAD):
     NORMALLY_OPEN_ENDSTOP                                = 1
     NO_ENDSTOP                                           = 1
 
-    if BED_WASHERS_PIN:
+    if BED_WASHERS_PIN and not USE_BLTOUCH:
         MARLIN["Z_MIN_PROBE_PIN"]                        = BED_WASHERS_PIN
         MARLIN["Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN"]     = False
 
@@ -737,13 +772,13 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["Z_HOME_DIR"]                             =  1 # Home to top
         MARLIN["QUICK_HOME"]                             =  True
 
-    elif PRINTER in ['Juniper_TAZ5', 'Juniper_TAZ5Archim']:
+    elif "Juniper_TAZ5" in PRINTER:
         MARLIN["X_HOME_DIR"]                             = -1 # Home left
         MARLIN["Y_HOME_DIR"]                             = -1 # Home bed rear
         MARLIN["Z_HOME_DIR"]                             = -1 # Home towards bed
         MARLIN["QUICK_HOME"]                             =  True
 
-    elif PRINTER in ['Redgum_TAZWorkhorse', 'Redgum_TAZWorkhorseArchim']:
+    elif "Redgum_TAZWorkhorse" in PRINTER:
         MARLIN["X_HOME_DIR"]                             = -1 # Home left
         MARLIN["Y_HOME_DIR"]                             = -1 # Home bed backwards
         MARLIN["Z_HOME_DIR"]                             =  1 # Home to top
@@ -784,7 +819,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["Z_SAFE_HOMING_X_POINT"]                  = -19
         MARLIN["Z_SAFE_HOMING_Y_POINT"]                  = 258
         MARLIN["Z_HOMING_HEIGHT"]                        = 5
-    elif PRINTER in ["Juniper_TAZ5", "Juniper_TAZ5Archim"]:
+    elif "Juniper_TAZ5" in PRINTER:
         # TAZ 5 safe homing position so fan duct does not hit.
         MARLIN["Z_SAFE_HOMING"]                          = True
         MARLIN["Z_SAFE_HOMING_X_POINT"]                  = 10
@@ -806,7 +841,7 @@ def make_config(PRINTER, TOOLHEAD):
 
     # Enable NO_MOTION_BEFORE_HOMING on newer printers that have no MAX endstops,
     # but leave TAZ5 as is so we don't introduce a change for those users.
-    if not USE_MAX_ENDSTOPS and not PRINTER in ["Juniper_TAZ5", "KangarooPaw_Bio"]:
+    if not USE_MAX_ENDSTOPS and not "Juniper_TAZ5" in PRINTER and not "KangarooPaw_Bio" in PRINTER:
         MARLIN["NO_MOTION_BEFORE_HOMING"]                = True
 
     # If the printer uses dual Z endstops for X axis leveling,
@@ -1020,7 +1055,8 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["TOOLHEAD_NAME"]                          = C_STRING("SL 0.25mm Micro")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_CLOSED_ENDSTOP
-        MARLIN["NOZZLE_TO_PROBE_OFFSET"]                 = [0, 0, -1.24]
+        if not USE_BLTOUCH:
+          MARLIN["NOZZLE_TO_PROBE_OFFSET"]               = [0, 0, -1.24]
 
     if TOOLHEAD in ["BandedTiger_HardenedSteel"]:
         TOOLHEAD_TYPE                                    = "HardenedSteel"
@@ -1273,7 +1309,7 @@ def make_config(PRINTER, TOOLHEAD):
         STANDARD_X_BED_SIZE                              = 157
         STANDARD_Y_BED_SIZE                              = 157
 
-    elif PRINTER in ["Juniper_TAZ5", "Juniper_TAZ5Archim"]:
+    elif "Juniper_TAZ5" in PRINTER:
         STANDARD_X_MAX_POS                               = 298
         STANDARD_X_MIN_POS                               = 0
         STANDARD_Y_MAX_POS                               = 276
@@ -1282,7 +1318,7 @@ def make_config(PRINTER, TOOLHEAD):
         STANDARD_X_BED_SIZE                              = 288
         STANDARD_Y_BED_SIZE                              = 275
 
-    elif PRINTER in ["Redgum_TAZWorkhorse", "Redgum_TAZWorkhorseArchim"]:
+    elif "Redgum_TAZWorkhorse" in PRINTER:
         STANDARD_X_MAX_POS                               = 295
         STANDARD_X_MIN_POS                               = -50
         STANDARD_Y_MAX_POS                               = 308
@@ -1317,7 +1353,7 @@ def make_config(PRINTER, TOOLHEAD):
         STANDARD_Z_MIN_POS                               = 0
         STANDARD_Z_MAX_POS                               = 183
 
-    elif PRINTER in ["Juniper_TAZ5", "Juniper_TAZ5Archim"]:
+    elif "Juniper_TAZ5" in PRINTER:
         STANDARD_Z_MIN_POS                               = 0
         STANDARD_Z_MAX_POS                               = 250
 
@@ -1361,6 +1397,12 @@ def make_config(PRINTER, TOOLHEAD):
                 # endstops and shifts the coordinate system around.
                 USE_PRE_GLADIOLA_G29_WORKAROUND          = True
 
+        elif TAZ_BED and USE_BLTOUCH:
+            STANDARD_LEFT_PROBE_BED_POSITION             = 20
+            STANDARD_RIGHT_PROBE_BED_POSITION            = 260
+            STANDARD_BACK_PROBE_BED_POSITION             = 260
+            STANDARD_FRONT_PROBE_BED_POSITION            = 20
+            
         elif TAZ_BED:
             STANDARD_LEFT_PROBE_BED_POSITION             = -10
             STANDARD_RIGHT_PROBE_BED_POSITION            = 288
@@ -1368,8 +1410,12 @@ def make_config(PRINTER, TOOLHEAD):
             STANDARD_FRONT_PROBE_BED_POSITION            = -9
 
         MARLIN["RESTORE_LEVELING_AFTER_G28"]             = True
-        MARLIN["NOZZLE_CLEAN_FEATURE"]                   = True
-        MARLIN["AUTO_BED_LEVELING_LINEAR"]               = True
+        if not USE_BLTOUCH:
+          MARLIN["NOZZLE_CLEAN_FEATURE"]                 = True
+          MARLIN["AUTO_BED_LEVELING_LINEAR"]             = True
+        else:
+          MARLIN["AUTO_BED_LEVELING_BILINEAR"]           = True
+          
         MARLIN["FIX_MOUNTED_PROBE"]                      = True
 
         MARLIN["MULTIPLE_PROBING"]                       = 2
@@ -1378,9 +1424,12 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["XY_PROBE_SPEED"]                         = 6000
         MARLIN["Z_PROBE_SPEED_SLOW"]                     = 1*60
         MARLIN["Z_PROBE_SPEED_FAST"]                     = 20*60 if USE_Z_BELT else 8*60
-        MARLIN["Z_CLEARANCE_DEPLOY_PROBE"]               = 5
+        MARLIN["Z_CLEARANCE_DEPLOY_PROBE"]               = 15 if USE_BLTOUCH else 5
         MARLIN["Z_CLEARANCE_BETWEEN_PROBES"]             = 5
-        MARLIN["MIN_PROBE_EDGE"]                         = False
+        if not USE_BLTOUCH:
+          MARLIN["MIN_PROBE_EDGE"]                       = False
+        else:
+          MARLIN["MIN_PROBE_EDGE"]                       = 22
 
         # Avoid electrical interference when probing (this is a problem on some Minis)
         MARLIN["PROBING_FANS_OFF"]                       = True
@@ -1400,7 +1449,7 @@ def make_config(PRINTER, TOOLHEAD):
 
         # Adjustments for four point probing
 
-        if MARLIN["AUTO_BED_LEVELING_LINEAR"]:
+        if not USE_BLTOUCH:
             # Traditionally LulzBot printers have employed a four-point leveling
             # using a degenerate 2x2 grid. This is the traditional behavior.
             MARLIN["GRID_MAX_POINTS_X"]                  = 2
@@ -1417,6 +1466,11 @@ def make_config(PRINTER, TOOLHEAD):
                 GOTO_1ST_PROBE_POINT = "G0 X{} Y{}".format(LEFT_PROBE_BED_POSITION, FRONT_PROBE_BED_POSITION)
         else:
             GOTO_1ST_PROBE_POINT                          = ""
+            
+        # Adjustments for BLTouch
+        
+        if USE_BLTOUCH:
+          MARLIN["ENDSTOP_INTERRUPTS_FEATURE"]            = True
 
 ############################# X AXIS LEVELING #############################
 
@@ -1741,7 +1795,7 @@ def make_config(PRINTER, TOOLHEAD):
         elif IS_MINI:
             EVENT_GCODE_SD_STOP = "G28 Z\nG0 X80 Y190 F3000\nM117 Print aborted."
 
-        elif PRINTER in ["Juniper_TAZ5", "Juniper_TAZ5Archim"]:
+        elif "Juniper_TAZ5" in PRINTER:
             EVENT_GCODE_SD_STOP = "G0 X170 Y290 F3000\nM117 Print aborted."
 
         elif IS_TAZ:
@@ -1833,7 +1887,7 @@ def make_config(PRINTER, TOOLHEAD):
 
 ############################## REWIPE FUNCTIONALITY ##############################
 
-    if USE_AUTOLEVELING:
+    if USE_AUTOLEVELING and not USE_BLTOUCH:
 
         MARLIN["G29_RETRY_AND_RECOVER"]                  = True
         MARLIN["G29_MAX_RETRIES"]                        = 2
@@ -2056,7 +2110,9 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["DEFAULT_ZJERK"]                          = 0.4
 
         if not "NOZZLE_TO_PROBE_OFFSET" in MARLIN:
-            if USE_Z_BELT:
+            if USE_BLTOUCH:
+                MARLIN["NOZZLE_TO_PROBE_OFFSET"]         = [0, -22, -2.35]
+            elif USE_Z_BELT:
                 MARLIN["NOZZLE_TO_PROBE_OFFSET"]         = [0, 0, -1.1]
             else:
                 MARLIN["NOZZLE_TO_PROBE_OFFSET"]         = [0, 0, -1.375]
@@ -2071,7 +2127,9 @@ def make_config(PRINTER, TOOLHEAD):
             MARLIN["DEFAULT_TRAVEL_ACCELERATION"]        = 500
 
         if not "NOZZLE_TO_PROBE_OFFSET" in MARLIN:
-            if PRINTER == "Quiver_TAZPro":
+            if USE_BLTOUCH:
+                MARLIN["NOZZLE_TO_PROBE_OFFSET"]         = [0, -22, -2.35]
+            elif PRINTER == "Quiver_TAZPro":
                 MARLIN["NOZZLE_TO_PROBE_OFFSET"]         = [0, 0, -1.102]
             else:
                 MARLIN["NOZZLE_TO_PROBE_OFFSET"]         = [0, 0, -1.200]

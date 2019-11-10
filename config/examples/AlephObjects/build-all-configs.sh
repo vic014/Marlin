@@ -73,6 +73,7 @@ build_config Juniper_TAZ5                       BandedTiger_HardenedSteel
 build_config Juniper_TAZ5                       DingyCutworm_HardenedSteelPlus
 build_config Juniper_TAZ5                       Goldenrod_HardenedExtruder
 build_config Juniper_TAZ5Archim                 Tilapia_SingleExtruder
+build_config Juniper_TAZ5BLTouch                Tilapia_SingleExtruder
 
 build_config Oliveoil_TAZ6                      Tilapia_SingleExtruder
 build_config Oliveoil_TAZ6                      Kanyu_Flexystruder
@@ -87,6 +88,7 @@ build_config Oliveoil_TAZ6                      BandedTiger_HardenedSteel
 build_config Oliveoil_TAZ6                      DingyCutworm_HardenedSteelPlus
 build_config Oliveoil_TAZ6                      Goldenrod_HardenedExtruder
 build_config Oliveoil_TAZ6Archim                Tilapia_SingleExtruder
+build_config Oliveoil_TAZ6BLTouch               Tilapia_SingleExtruder
 
 build_config Quiver_TAZPro                      AchemonSphinx_SmallLayer
 build_config Quiver_TAZPro                      CecropiaSilk_SingleExtruderAeroV2
