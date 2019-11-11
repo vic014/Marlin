@@ -424,6 +424,14 @@ G29_TYPE GcodeSuite::G29() {
         );
       }
 
+      #if defined(LULZBOT_LEFT_PROBE_BED_POSITION)  || \
+          defined(LULZBOT_RIGHT_PROBE_BED_POSITION) || \
+          defined(LULZBOT_FRONT_PROBE_BED_POSITION) || \
+          defined(LULZBOT_BACK_PROBE_BED_POSITION)
+        probe_position_lf.set(LULZBOT_LEFT_PROBE_BED_POSITION,  LULZBOT_FRONT_PROBE_BED_POSITION);
+        probe_position_rb.set(LULZBOT_RIGHT_PROBE_BED_POSITION, LULZBOT_BACK_PROBE_BED_POSITION);
+      #endif
+          
       if (
         #if IS_SCARA || ENABLED(DELTA)
              !position_is_reachable_by_probe(probe_position_lf.x, 0)

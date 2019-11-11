@@ -2236,4 +2236,8 @@
 //#define DEVELOPER_SCREENS
 //#define LULZBOT_USE_BIOPRINTER_UI
 //#define SWAP_E0_AND_E1
+#define LULZBOT_LEFT_PROBE_BED_POSITION -10 // <-- changed
+#define LULZBOT_RIGHT_PROBE_BED_POSITION 288 // <-- changed
+#define LULZBOT_BACK_PROBE_BED_POSITION 291 // <-- changed
+#define LULZBOT_FRONT_PROBE_BED_POSITION -9 // <-- changed
 
