@@ -7,6 +7,7 @@
 #define BACKLASH_GCODE
 #define BACKLASH_SMOOTHING_MM 3
 #define BAUDRATE 250000
+//#define BLTOUCH
 #define BUFSIZE 5
 #define CALIBRATION_COMMANDS "M117 Starting Auto-Calibration\nT0\nG28\nG12\nM117 Calibrating...\nG425\nM500\nM117 Calibration data saved"
 #define CALIBRATION_GCODE

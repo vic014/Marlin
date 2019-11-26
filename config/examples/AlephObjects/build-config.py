@@ -141,7 +141,6 @@ def make_config(PRINTER, TOOLHEAD):
     USE_MAX_ENDSTOPS                                     = False
     USE_LEGACY_XY_STEPS                                  = False
     USE_PRE_GLADIOLA_G29_WORKAROUND                      = False
-    USE_BLTOUCH                                          = False
 
     CALIBRATE_ON_WASHER                                  = False
     BED_WASHERS_PIN                                      = False
@@ -169,6 +168,7 @@ def make_config(PRINTER, TOOLHEAD):
 
     MARLIN["EXTRUDERS"]                                  = 1
     MARLIN["SDSUPPORT"]                                  = False
+    MARLIN["BLTOUCH"]                                    = False
 
 ######################## PRINTER MODEL CHARACTERISTICS ########################
 
@@ -226,7 +226,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_NORMALLY_OPEN_ENDSTOPS                       = True
         USE_MIN_ENDSTOPS                                 = True
         USE_REPRAP_LCD_DISPLAY                           = True
-        USE_BLTOUCH                                      = True
+        MARLIN["BLTOUCH"]                                = True
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 5")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["BAUDRATE"]                               = 250000
@@ -261,7 +261,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_MAX_ENDSTOPS                                 = True
         USE_HOME_BUTTON                                  = True
         USE_REPRAP_LCD_DISPLAY                           = True
-        USE_BLTOUCH                                      = True
+        MARLIN["BLTOUCH"]                                = True
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 6")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["ENDSTOPS_ALWAYS_ON_DEFAULT"]             = True
@@ -702,7 +702,7 @@ def make_config(PRINTER, TOOLHEAD):
     NORMALLY_OPEN_ENDSTOP                                = 1
     NO_ENDSTOP                                           = 1
 
-    if BED_WASHERS_PIN and not USE_BLTOUCH:
+    if BED_WASHERS_PIN and not MARLIN["BLTOUCH"]:
         MARLIN["Z_MIN_PROBE_PIN"]                        = BED_WASHERS_PIN
         MARLIN["Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN"]     = False
 
@@ -1055,7 +1055,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["TOOLHEAD_NAME"]                          = C_STRING("SL 0.25mm Micro")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_CLOSED_ENDSTOP
-        if not USE_BLTOUCH:
+        if not MARLIN["BLTOUCH"]:
           MARLIN["NOZZLE_TO_PROBE_OFFSET"]               = [0, 0, -1.24]
 
     if TOOLHEAD in ["BandedTiger_HardenedSteel"]:
@@ -1397,7 +1397,7 @@ def make_config(PRINTER, TOOLHEAD):
                 # endstops and shifts the coordinate system around.
                 USE_PRE_GLADIOLA_G29_WORKAROUND          = True
 
-        elif TAZ_BED and USE_BLTOUCH:
+        elif TAZ_BED and MARLIN["BLTOUCH"]:
             STANDARD_LEFT_PROBE_BED_POSITION             = 20
             STANDARD_RIGHT_PROBE_BED_POSITION            = 260
             STANDARD_BACK_PROBE_BED_POSITION             = 260
@@ -1410,7 +1410,7 @@ def make_config(PRINTER, TOOLHEAD):
             STANDARD_FRONT_PROBE_BED_POSITION            = -9
 
         MARLIN["RESTORE_LEVELING_AFTER_G28"]             = True
-        if not USE_BLTOUCH:
+        if not MARLIN["BLTOUCH"]:
           MARLIN["NOZZLE_CLEAN_FEATURE"]                 = True
           MARLIN["AUTO_BED_LEVELING_LINEAR"]             = True
         else:
@@ -1424,9 +1424,9 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["XY_PROBE_SPEED"]                         = 6000
         MARLIN["Z_PROBE_SPEED_SLOW"]                     = 1*60
         MARLIN["Z_PROBE_SPEED_FAST"]                     = 20*60 if USE_Z_BELT else 8*60
-        MARLIN["Z_CLEARANCE_DEPLOY_PROBE"]               = 15 if USE_BLTOUCH else 5
+        MARLIN["Z_CLEARANCE_DEPLOY_PROBE"]               = 15 if MARLIN["BLTOUCH"] else 5
         MARLIN["Z_CLEARANCE_BETWEEN_PROBES"]             = 5
-        if not USE_BLTOUCH:
+        if not MARLIN["BLTOUCH"]:
           MARLIN["MIN_PROBE_EDGE"]                       = False
         else:
           MARLIN["MIN_PROBE_EDGE"]                       = 22
@@ -1455,7 +1455,7 @@ def make_config(PRINTER, TOOLHEAD):
 
         # Adjustments for four point probing
 
-        if not USE_BLTOUCH:
+        if not MARLIN["BLTOUCH"]:
             # Traditionally LulzBot printers have employed a four-point leveling
             # using a degenerate 2x2 grid. This is the traditional behavior.
             MARLIN["GRID_MAX_POINTS_X"]                  = 2
@@ -1475,8 +1475,8 @@ def make_config(PRINTER, TOOLHEAD):
             
         # Adjustments for BLTouch
         
-        if USE_BLTOUCH:
-          MARLIN["ENDSTOP_INTERRUPTS_FEATURE"]            = True
+        #if MARLIN["BLTOUCH"]:
+        #  MARLIN["ENDSTOP_INTERRUPTS_FEATURE"]            = True
 
 ############################# X AXIS LEVELING #############################
 
@@ -1633,16 +1633,7 @@ def make_config(PRINTER, TOOLHEAD):
     else:
         DRIVER_TYPE                                      = 'A4988'
 
-    # Workaround for E stepper not working on Archim 2.0
-    #   https://github.com/MarlinFirmware/Marlin/issues/13040
-    if USE_EINSY_RETRO:
-        # On AVR, it is okay to use the default (0) for TRINAMICS
-        MARLIN["MINIMUM_STEPPER_PULSE"]                  = 0
-    else:
-        # For the Archim, setting this to the default (0) for TRINAMICS causes
-        # the E stepper not to advance when LIN_ADVANCE is enabled, so force
-        # the stepper pulse to 1 to match the other drivers.
-        MARLIN["MINIMUM_STEPPER_PULSE"]                  = 1
+    MARLIN["MINIMUM_STEPPER_PULSE"]                      = 1
 
     MARLIN["X_DRIVER_TYPE"]                              =  DRIVER_TYPE
     MARLIN["Y_DRIVER_TYPE"]                              =  DRIVER_TYPE
@@ -1767,7 +1758,7 @@ def make_config(PRINTER, TOOLHEAD):
     if USE_REPRAP_LCD_DISPLAY or USE_TOUCH_UI:
         MARLIN["FILAMENT_CHANGE_FAST_LOAD_FEEDRATE"]     = MANUAL_FEEDRATE_E
         MARLIN["FILAMENT_CHANGE_FAST_LOAD_LENGTH"]       = 40
-        MARLIN["ADVANCED_PAUSE_PURGE_LENGTH"]            = 0 # Manual purge
+        #MARLIN["ADVANCED_PAUSE_PURGE_LENGTH"]            = 0 # Manual purge
         MARLIN["ADVANCED_PAUSE_PURGE_FEEDRATE"]          = MANUAL_FEEDRATE_E
         MARLIN["PAUSE_PARK_RETRACT_FEEDRATE"]            = 10 # mm/s
         MARLIN["FILAMENT_CHANGE_UNLOAD_LENGTH"]          = 80
@@ -1893,7 +1884,7 @@ def make_config(PRINTER, TOOLHEAD):
 
 ############################## REWIPE FUNCTIONALITY ##############################
 
-    if USE_AUTOLEVELING and not USE_BLTOUCH:
+    if USE_AUTOLEVELING and not MARLIN["BLTOUCH"]:
 
         MARLIN["G29_RETRY_AND_RECOVER"]                  = True
         MARLIN["G29_MAX_RETRIES"]                        = 2
@@ -2116,7 +2107,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["DEFAULT_ZJERK"]                          = 0.4
 
         if not "NOZZLE_TO_PROBE_OFFSET" in MARLIN:
-            if USE_BLTOUCH:
+            if MARLIN["BLTOUCH"]:
                 MARLIN["NOZZLE_TO_PROBE_OFFSET"]         = [0, -22, -2.35]
             elif USE_Z_BELT:
                 MARLIN["NOZZLE_TO_PROBE_OFFSET"]         = [0, 0, -1.1]
@@ -2133,7 +2124,7 @@ def make_config(PRINTER, TOOLHEAD):
             MARLIN["DEFAULT_TRAVEL_ACCELERATION"]        = 500
 
         if not "NOZZLE_TO_PROBE_OFFSET" in MARLIN:
-            if USE_BLTOUCH:
+            if MARLIN["BLTOUCH"]:
                 MARLIN["NOZZLE_TO_PROBE_OFFSET"]         = [0, -22, -2.35]
             elif PRINTER == "Quiver_TAZPro":
                 MARLIN["NOZZLE_TO_PROBE_OFFSET"]         = [0, 0, -1.102]
@@ -2223,7 +2214,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["STATUS_EXPIRE_SECONDS"]                  = 0
 
     if USE_TOUCH_UI:
-        MARLIN["LULZBOT_TOUCH_UI"]                       = True
+        MARLIN["TOUCH_UI_FTDI_EVE"]                       = True
         MARLIN["TOUCH_UI_USE_UTF8"]                      = True
         MARLIN["TOUCH_UI_UTF8_COPYRIGHT"]                = True
         MARLIN["TOUCH_UI_UTF8_SUPERSCRIPTS"]             = True

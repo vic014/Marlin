@@ -2,7 +2,6 @@
 #define ADVANCED_OK
 #define ADVANCED_PAUSE_FEATURE
 #define ADVANCED_PAUSE_PURGE_FEEDRATE 1.0
-#define ADVANCED_PAUSE_PURGE_LENGTH 0
 #define AUTO_BED_LEVELING_LINEAR
 #define AXIS_LEVELING_COMMANDS "M117 Leveling X Axis\nG0 X150 F9999\nG28 Z0\nM117 Leveling done."
 #define BABYSTEPPING
@@ -15,6 +14,7 @@
 #define BACKLASH_GCODE
 #define BACKLASH_SMOOTHING_MM 3
 #define BAUDRATE 250000
+//#define BLTOUCH
 #define BOOT_MARLIN_LOGO_SMALL
 #define BUFSIZE 5
 #define CALIBRATION_COMMANDS "M117 Starting Auto-Calibration\nT0\nG28\nM117 Leveling X Axis\nG0 X150 F9999\nG28 Z0\nM117 Leveling done.\nG12\nM117 Calibrating...\nG425\nM500\nM117 Calibration data saved"
