@@ -991,7 +991,7 @@ void prepare_move_to_destination() {
     NOLESS(destination[E_AXIS], 0);
     NOMORE(destination[E_AXIS], E_MAX_POS);
   #endif
-  
+
   #if EITHER(PREVENT_COLD_EXTRUSION, PREVENT_LENGTHY_EXTRUDE)
 
     if (!DEBUGGING(DRYRUN) && destination.e != current_position.e) {
