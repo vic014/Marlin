@@ -56,7 +56,7 @@ void AboutScreen::onRedraw(draw_mode_t) {
 
   #ifdef TOOLHEAD_NAME
     char about_str[
-      strlen_P(GET_TEXT(FIRMWARE_FOR_TOOLHEAD)) +
+      strlen_P(GET_TEXT(MSG_FIRMWARE_FOR_TOOLHEAD)) +
       strlen_P(TOOLHEAD_NAME) +
       strlen_P(GET_TEXT(MSG_ABOUT_TOUCH_PANEL_2)) + 1
     ];
