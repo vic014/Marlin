@@ -1181,7 +1181,7 @@
 #define Z_MIN_POS 0
 #define X_MAX_POS X_BED_SIZE
 #define Y_MAX_POS Y_BED_SIZE
-#if ENABLED(SX2)
+#if DISABLED(SX2)
   #define Z_MAX_POS 500
 #else
   #define Z_MAX_POS 250
