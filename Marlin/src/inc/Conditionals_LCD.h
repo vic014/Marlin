@@ -120,7 +120,7 @@
   #define DOGLCD
   #define IS_ULTIPANEL
   #define LED_COLORS_REDUCE_GREEN
-  #if HAS_POWER_SWITCH && EITHER(FYSETC_MINI_12864_2_0, FYSETC_MINI_12864_2_1)
+  #if ENABLED(PSU_CONTROL) && EITHER(FYSETC_MINI_12864_2_0, FYSETC_MINI_12864_2_1)
     #define LED_BACKLIGHT_TIMEOUT 10000
   #endif
 
@@ -290,7 +290,7 @@
 
 #ifndef STD_ENCODER_PULSES_PER_STEP
   #if ENABLED(TOUCH_BUTTONS)
-    #define STD_ENCODER_PULSES_PER_STEP 1
+    #define STD_ENCODER_PULSES_PER_STEP 2
   #else
     #define STD_ENCODER_PULSES_PER_STEP 5
   #endif
@@ -347,7 +347,7 @@
 #endif
 
 // Extensible UI serial touch screens. (See src/lcd/extensible_ui)
-#if ANY(MALYAN_LCD, DGUS_LCD, LULZBOT_TOUCH_UI)
+#if ANY(MALYAN_LCD, DGUS_LCD, TOUCH_UI_FTDI_EVE)
   #define IS_EXTUI
   #define EXTENSIBLE_UI
 #endif
@@ -416,7 +416,6 @@
 #if EITHER(SINGLENOZZLE, MIXING_EXTRUDER)         // One hotend, one thermistor, no XY offset
   #undef HOTENDS
   #define HOTENDS       1
-  #undef TEMP_SENSOR_1_AS_REDUNDANT
   #undef HOTEND_OFFSET_X
   #undef HOTEND_OFFSET_Y
 #endif
