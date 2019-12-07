@@ -4,6 +4,7 @@
 //#define ABL_UBL // Defaults to Bilinear
 //#define RunoutSensor // Tinymachines Lerdge Sensor
 #define RELOCATE_LED // Since the bltouch by default removed the LED, set this if you simply moved them off the hotend
+//#define E3DHermeaExtruder
 
 /**
  * Marlin 3D Printer Firmware
@@ -413,7 +414,11 @@
  *   998 : Dummy Table that ALWAYS reads 25°C or the temperature defined below.
  *   999 : Dummy Table that ALWAYS reads 100°C or the temperature defined below.
  */
-#define TEMP_SENSOR_0 1
+#if ENABLED(E3DHermeaExtruder)
+  #define TEMP_SENSOR_0 5
+#else
+  #define TEMP_SENSOR_0 1
+#endif
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
@@ -748,7 +753,12 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80.121, 80.121, 399.778, 445 }
+#if ENABLED(E3DHermeaExtruder)
+  #define eSteps 409
+#else
+  #define eSteps 445
+#endif
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80.121, 80.121, 399.778, eSteps }
 
 /**
  * Default Max Feed Rate (mm/s)
@@ -1061,7 +1071,11 @@
   // @section extruder
 
   // For direct drive extruder v9 set to true, for geared extruder set to false.
-  #define INVERT_E0_DIR true
+  #if ENABLED(E3DHermeaExtruder)
+    #define INVERT_E0_DIR false
+  #else
+    #define INVERT_E0_DIR true
+  #endif
   #define INVERT_E1_DIR true
   #define INVERT_E2_DIR true
   #define INVERT_E3_DIR true
@@ -1075,7 +1089,11 @@
   // @section extruder
 
   // For direct drive extruder v9 set to true, for geared extruder set to false.
-  #define INVERT_E0_DIR false
+  #if ENABLED(E3DHermeaExtruder)
+    #define INVERT_E0_DIR true
+  #else
+    #define INVERT_E0_DIR false
+  #endif
   #define INVERT_E1_DIR false
   #define INVERT_E2_DIR false
   #define INVERT_E3_DIR false
