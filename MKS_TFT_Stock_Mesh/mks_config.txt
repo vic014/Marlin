@@ -50,7 +50,7 @@
 #set PB1 signal (high level:1; low level:0)
 >cfg_PB1_trigger_Level:0
 
-#set error range of Z-axis on breakpoints recovery 
+#set error range of Z-axis on breakpoints recovery
 >cfg_breakpoint_z_error:0.2
 
 #---------------------------------------------------------------------------
@@ -71,7 +71,7 @@
 It will auto heat up if the current temp doesn't reach the target.
 >cfg_filament_load_limit_temperature:200
 
-#The length of Load filament before unloader filament. 
+#The length of Load filament before unloader filament.
 >cfg_unload_retract_length:5
 
 #The speed of load filament  before unloader filament.
@@ -102,7 +102,7 @@ It will auto heat up if the current temp doesn't reach the target.
 >cfg_leveling_xy_speed:5000
 
 #---------------------------------------------------------------------------
- 
+
 #############  WIFI Function  ##########################################
 
 #wifi model(MKS WIFI TFT:0;  MKS HLK-WIFI:1)
@@ -142,7 +142,7 @@ It will auto heat up if the current temp doesn't reach the target.
 >function_btn1_cmd:M84;
 
 
-#set number of  "More" button 
+#set number of  "More" button
 >moreitem_pic_cnt:7
 
 #edit command for 1~7 "More" button,each command must be separated by semicolon ";"
@@ -166,7 +166,7 @@ It will auto heat up if the current temp doesn't reach the target.
 #command setting on button1~6
 >morefunc1_cmd:M290 Z0.025; M500;
 >morefunc2_cmd:M290 Z-0.025; M500;
->morefunc3_cmd:M290 Z0.01; M500;
+>morefunc3_cmd:M290 Z-0.01; M500;
 >morefunc4_cmd:M290 Z0.01; M500;
 >morefunc5_cmd:G28;
 >morefunc6_cmd:G28;
@@ -192,7 +192,7 @@ It will auto heat up if the current temp doesn't reach the target.
 #the color of file text
 >cfg_filename_color:0xFFFFFF
 
-#the color of background in printing 
+#the color of background in printing
 >cfg_printingstat_word_background_color:0x000000
 
 #the color of text in printing status
