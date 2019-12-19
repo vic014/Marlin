@@ -24,20 +24,24 @@ PRINTER_CHOICES = [
     "Gladiola_MiniLCD",
     "Hibiscus_Mini2",
     "Juniper_TAZ5",
+    "Juniper_TAZ5Archim",
     "Juniper_TAZ5BLTouch",
+    "Juniper_TAZ5ArchimBLTouch",
     "Oliveoil_TAZ6",
+    "Oliveoil_TAZ6Archim",
     "Oliveoil_TAZ6BLTouch",
+    "Oliveoil_TAZ6ArchimBLTouch",
     "Quiver_TAZPro",
     "Redgum_TAZWorkhorse",
     "Redgum_TAZWorkhorseArchim",
-    "Juniper_TAZ5Archim",
+    "Redgum_TAZWorkhorseBLTouch",
+    "Redgum_TAZWorkhorseArchimBLTouch",
     "Hibiscus_Mini2TouchSD",
     "Hibiscus_Mini2TouchUSB",
     "KangarooPaw_Bio",
     "Gladiola_MiniTouchUSB",
     "Gladiola_MiniEinsyLCD",
     "Gladiola_MiniEinsyTouchUSB",
-    "Oliveoil_TAZ6Archim",
     "Hibiscus_TouchDemo"
 ]
 
@@ -129,9 +133,13 @@ def make_config(PRINTER, TOOLHEAD):
     USE_Z_BELT                                           = False
     USE_Z_SCREW                                          = False
     USE_NORMALLY_CLOSED_ENDSTOPS                         = False
+    USE_NORMALLY_OPEN_ENDSTOPS                           = False
     USE_HOME_BUTTON                                      = False
-    USE_REPRAP_LCD_DISPLAY                               = False
-    USE_TOUCH_UI                                         = False
+    USE_REPRAP_LCD_DISPLAY                               = ("LCD"      in PRINTER or
+                                                            "Mini2"    in PRINTER or
+                                                            "TAZ"      in PRINTER) 
+    USE_TOUCH_UI                                         = ("TouchSD"  in PRINTER or
+                                                            "TouchUSB" in PRINTER)
     USE_CALIBRATION_CUBE                                 = False
     USE_DUAL_Z_ENDSTOPS                                  = False
     USE_TWO_PIECE_BED                                    = False
@@ -168,11 +176,11 @@ def make_config(PRINTER, TOOLHEAD):
 
     MARLIN["EXTRUDERS"]                                  = 1
     MARLIN["SDSUPPORT"]                                  = False
-    MARLIN["BLTOUCH"]                                    = False
+    MARLIN["BLTOUCH"]                                    = "BLTouch" in PRINTER
 
 ######################## PRINTER MODEL CHARACTERISTICS ########################
 
-    if PRINTER == "Gladiola_Mini":
+    if "Gladiola_Mini" in PRINTER:
         IS_MINI                                          = True
         MINI_BED                                         = True
         USE_Z_SCREW                                      = True
@@ -188,51 +196,19 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["BAUDRATE"]                               = 250000
         MARLIN["MACHINE_UUID"]                           = C_STRING("351487b6-ca9a-4c1a-8765-d668b1da6585")
 
-    if PRINTER == "Gladiola_MiniLCD":
-        IS_MINI                                          = True
-        MINI_BED                                         = True
-        USE_Z_SCREW                                      = True
-        USE_AUTOLEVELING                                 = True
-        USE_LEGACY_XY_STEPS                              = True
-        USE_NORMALLY_OPEN_ENDSTOPS                       = True
-        USE_MIN_ENDSTOPS                                 = True
-        USE_MAX_ENDSTOPS                                 = True
-        USE_REPRAP_LCD_DISPLAY                           = True
-        CALIBRATE_ON_WASHER                              = "Back Right"
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("Mini")
-        MARLIN["BACKLASH_COMPENSATION"]                  = True
-        MARLIN["ENDSTOPS_ALWAYS_ON_DEFAULT"]             = True
-        MARLIN["BAUDRATE"]                               = 250000
-        MARLIN["MACHINE_UUID"]                           = C_STRING("083f68f1-028e-494c-98e1-f2e0dfaee9a5")
-
-    if PRINTER == "Juniper_TAZ5":
+    if "Juniper_TAZ5" in PRINTER:
         IS_TAZ                                           = True
         TAZ_BED                                          = True
         USE_Z_SCREW                                      = True
         USE_LEGACY_XY_STEPS                              = True
         USE_NORMALLY_OPEN_ENDSTOPS                       = True
         USE_MIN_ENDSTOPS                                 = True
-        USE_REPRAP_LCD_DISPLAY                           = True
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 5")
-        MARLIN["BACKLASH_COMPENSATION"]                  = True
-        MARLIN["BAUDRATE"]                               = 250000
-        MARLIN["MACHINE_UUID"]                           = C_STRING("c3255c96-4097-4884-8ed0-ded2ff9bae61")
-        
-    if PRINTER == "Juniper_TAZ5BLTouch":
-        IS_TAZ                                           = True
-        TAZ_BED                                          = True
-        USE_Z_SCREW                                      = True
-        USE_LEGACY_XY_STEPS                              = True
-        USE_NORMALLY_OPEN_ENDSTOPS                       = True
-        USE_MIN_ENDSTOPS                                 = True
-        USE_REPRAP_LCD_DISPLAY                           = True
-        MARLIN["BLTOUCH"]                                = True
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 5")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["BAUDRATE"]                               = 250000
         MARLIN["MACHINE_UUID"]                           = C_STRING("c3255c96-4097-4884-8ed0-ded2ff9bae61")
 
-    if PRINTER == "Oliveoil_TAZ6":
+    if "Oliveoil_TAZ6" in PRINTER:
         IS_TAZ                                           = True
         TAZ_BED                                          = True
         USE_Z_SCREW                                      = True
@@ -242,7 +218,6 @@ def make_config(PRINTER, TOOLHEAD):
         USE_MIN_ENDSTOPS                                 = True
         USE_MAX_ENDSTOPS                                 = True
         USE_HOME_BUTTON                                  = True
-        USE_REPRAP_LCD_DISPLAY                           = True
         BED_WASHERS_PIN                                  = 'SERVO0_PIN'
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 6")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
@@ -250,32 +225,13 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["BAUDRATE"]                               = 250000
         MARLIN["MACHINE_UUID"]                           = C_STRING("845f003c-aebd-4e53-a6b9-7d0984fde609")
         
-    if PRINTER == "Oliveoil_TAZ6BLTouch":
-        IS_TAZ                                           = True
-        TAZ_BED                                          = True
-        USE_Z_SCREW                                      = True
-        USE_AUTOLEVELING                                 = True
-        USE_LEGACY_XY_STEPS                              = True
-        USE_NORMALLY_CLOSED_ENDSTOPS                     = True
-        USE_MIN_ENDSTOPS                                 = True
-        USE_MAX_ENDSTOPS                                 = True
-        USE_HOME_BUTTON                                  = True
-        USE_REPRAP_LCD_DISPLAY                           = True
-        MARLIN["BLTOUCH"]                                = True
-        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 6")
-        MARLIN["BACKLASH_COMPENSATION"]                  = True
-        MARLIN["ENDSTOPS_ALWAYS_ON_DEFAULT"]             = True
-        MARLIN["BAUDRATE"]                               = 250000
-        MARLIN["MACHINE_UUID"]                           = C_STRING("845f003c-aebd-4e53-a6b9-7d0984fde609")
-
-    if PRINTER == "Hibiscus_Mini2":
+    if "Hibiscus_Mini2" in PRINTER:
         IS_MINI                                          = True
         MINI_BED                                         = True
         USE_TWO_PIECE_BED                                = True
         USE_Z_BELT                                       = True
         USE_AUTOLEVELING                                 = True
         USE_NORMALLY_CLOSED_ENDSTOPS                     = True
-        USE_REPRAP_LCD_DISPLAY                           = True
         USE_EINSY_RETRO                                  = True
         USE_EXPERIMENTAL_FEATURES                        = True
         CALIBRATE_ON_WASHER                              = "Back Right"
@@ -291,7 +247,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["MACHINE_UUID"]                           = C_STRING("e5502411-d46d-421d-ba3a-a20126d7930f")
         MARLIN["LIGHTWEIGHT_UI"]                         = True
 
-    if PRINTER == "Quiver_TAZPro":
+    if "Quiver_TAZPro" in PRINTER:
         IS_TAZ                                           = True
         TAZ_BED                                          = True
         USE_TWO_PIECE_BED                                = True
@@ -301,6 +257,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_NORMALLY_CLOSED_ENDSTOPS                     = True
         USE_DUAL_Z_ENDSTOPS                              = True
         USE_TOUCH_UI                                     = True
+        USE_REPRAP_LCD_DISPLAY                           = False
         USE_ARCHIM2                                      = True
         USE_EXPERIMENTAL_FEATURES                        = True
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ Pro")
@@ -326,7 +283,7 @@ def make_config(PRINTER, TOOLHEAD):
 
     # Unsupported or unreleased experimental configurations. Use at your own risk.
 
-    if PRINTER == "Redgum_TAZWorkhorse":
+    if "Redgum_TAZWorkhorse" in PRINTER:
         IS_TAZ                                           = True
         TAZ_BED                                          = True
         USE_TWO_PIECE_BED                                = True
@@ -336,7 +293,6 @@ def make_config(PRINTER, TOOLHEAD):
         USE_NORMALLY_CLOSED_ENDSTOPS                     = True
         USE_MIN_ENDSTOPS                                 = True
         USE_DUAL_Z_ENDSTOPS                              = True
-        USE_REPRAP_LCD_DISPLAY                           = True
         USE_EXPERIMENTAL_FEATURES                        = True
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ Workhorse")
         MARLIN["LIGHTWEIGHT_UI"]                         = True
@@ -346,14 +302,13 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["MACHINE_UUID"]                           = C_STRING("5ee798fb-4062-4d35-8224-5e846ffb45a5")
         MARLIN["SDSUPPORT"]                              = True
 
-    if PRINTER == "Juniper_TAZ5Archim":
+    if "Juniper_TAZ5Archim" in PRINTER:
         IS_TAZ                                           = True
         TAZ_BED                                          = True
         USE_Z_SCREW                                      = True
         USE_LEGACY_XY_STEPS                              = True
         USE_NORMALLY_OPEN_ENDSTOPS                       = True
         USE_MIN_ENDSTOPS                                 = True
-        USE_REPRAP_LCD_DISPLAY                           = True
         USE_ARCHIM2                                      = True
         USE_EXPERIMENTAL_FEATURES                        = True
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 5")
@@ -363,8 +318,9 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["BAUDRATE"]                               = 250000
         MARLIN["MACHINE_UUID"]                           = C_STRING("c3255c96-4097-4884-8ed0-ded2ff9bae61")
+        MARLIN["FILAMENT_RUNOUT_SENSOR"]                 = True
 
-    if PRINTER == "Redgum_TAZWorkhorseArchim":
+    if "Redgum_TAZWorkhorseArchim" in PRINTER:
         IS_TAZ                                           = True
         TAZ_BED                                          = True
         USE_TWO_PIECE_BED                                = True
@@ -374,7 +330,6 @@ def make_config(PRINTER, TOOLHEAD):
         USE_NORMALLY_CLOSED_ENDSTOPS                     = True
         USE_MIN_ENDSTOPS                                 = True
         USE_DUAL_Z_ENDSTOPS                              = True
-        USE_REPRAP_LCD_DISPLAY                           = True
         USE_ARCHIM2                                      = True
         USE_EXPERIMENTAL_FEATURES                        = True
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ Workhorse")
@@ -385,8 +340,9 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["PRINTCOUNTER"]                           = True
         MARLIN["MACHINE_UUID"]                           = C_STRING("fd546ced-5941-44e4-8d17-5d494bfc2ca3")
         MARLIN["SDSUPPORT"]                              = True
+        MARLIN["FILAMENT_RUNOUT_SENSOR"]                 = True
 
-    if PRINTER == "Hibiscus_Mini2TouchSD":
+    if "Hibiscus_Mini2TouchSD" in PRINTER:
         # Use a 480x272 display and SD adapter
         IS_MINI                                          = True
         MINI_BED                                         = True
@@ -395,6 +351,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_AUTOLEVELING                                 = True
         USE_NORMALLY_CLOSED_ENDSTOPS                     = True
         USE_TOUCH_UI                                     = True
+        USE_REPRAP_LCD_DISPLAY                           = False
         USE_EINSY_RETRO                                  = True
         USE_EXPERIMENTAL_FEATURES                        = True
         USE_LESS_MEMORY                                  = True
@@ -414,7 +371,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["AO_EXP1_PINMAP"]                         = True
         MARLIN["SDSUPPORT"]                              = True
 
-    if PRINTER == "Hibiscus_Mini2TouchUSB":
+    if "Hibiscus_Mini2TouchUSB" in PRINTER:
         # Use a 480x272 display and USB flashdrive
         IS_MINI                                          = True
         MINI_BED                                         = True
@@ -423,6 +380,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_AUTOLEVELING                                 = True
         USE_NORMALLY_CLOSED_ENDSTOPS                     = True
         USE_TOUCH_UI                                     = True
+        USE_REPRAP_LCD_DISPLAY                           = False
         USE_EINSY_RETRO                                  = True
         USE_EXPERIMENTAL_FEATURES                        = True
         USE_LESS_MEMORY                                  = True
@@ -444,7 +402,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["USB_FLASH_DRIVE_SUPPORT"]                = True
         MARLIN["USE_UHS3_USB"]                           = True
 
-    if PRINTER == "KangarooPaw_Bio":
+    if "KangarooPaw_Bio" in PRINTER:
         # Kangaroo Paw uses a 480x272 display and SD card
         IS_MINI                                          = True
         MINI_BED                                         = True
@@ -452,6 +410,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_AUTOLEVELING                                 = False
         USE_NORMALLY_CLOSED_ENDSTOPS                     = True
         USE_TOUCH_UI                                     = True
+        USE_REPRAP_LCD_DISPLAY                           = False
         USE_EINSY_RETRO                                  = True
         USE_EXPERIMENTAL_FEATURES                        = True
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("Bio")
@@ -473,7 +432,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["AO_EXP1_PINMAP"]                         = True
         MARLIN["SDSUPPORT"]                              = True
 
-    if PRINTER == "Gladiola_MiniTouchUSB":
+    if "Gladiola_MiniTouchUSB" in PRINTER:
         # Unsupported Mini with 480x272 Touch LCD and USB
         IS_MINI                                          = True
         MINI_BED                                         = True
@@ -484,6 +443,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_MIN_ENDSTOPS                                 = True
         USE_MAX_ENDSTOPS                                 = True
         USE_TOUCH_UI                                     = True
+        USE_REPRAP_LCD_DISPLAY                           = False
         USE_LESS_MEMORY                                  = True
         CALIBRATE_ON_WASHER                              = "Back Right"
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("Mini")
@@ -500,7 +460,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["USB_FLASH_DRIVE_SUPPORT"]                = True
         MARLIN["USE_UHS3_USB"]                           = True
 
-    if PRINTER == "Gladiola_MiniEinsyLCD":
+    if "Gladiola_MiniEinsyLCD" in PRINTER:
         # Unsupported Mini with Einsy Retro.
         IS_MINI                                          = True
         MINI_BED                                         = True
@@ -509,7 +469,6 @@ def make_config(PRINTER, TOOLHEAD):
         USE_NORMALLY_OPEN_ENDSTOPS                       = True
         USE_MIN_ENDSTOPS                                 = True
         USE_MAX_ENDSTOPS                                 = False
-        USE_REPRAP_LCD_DISPLAY                           = True
         USE_EINSY_RETRO                                  = True
         USE_EXPERIMENTAL_FEATURES                        = True
         CALIBRATE_ON_WASHER                              = "Back Right"
@@ -524,7 +483,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["MACHINE_UUID"]                           = C_STRING("b68ff322-3328-4543-bd93-bb8d8eb0c891")
         MARLIN["LIGHTWEIGHT_UI"]                         = True
 
-    if PRINTER == "Gladiola_MiniEinsyTouchUSB":
+    if "Gladiola_MiniEinsyTouchUSB" in PRINTER:
         # Unsupported Mini with Einsy Retro and 480x272 Touch LCD and USB
         IS_MINI                                          = True
         MINI_BED                                         = True
@@ -534,6 +493,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_MIN_ENDSTOPS                                 = True
         USE_MAX_ENDSTOPS                                 = False
         USE_TOUCH_UI                                     = True
+        USE_REPRAP_LCD_DISPLAY                           = False
         USE_EINSY_RETRO                                  = True
         USE_LESS_MEMORY                                  = True
         CALIBRATE_ON_WASHER                              = "Back Right"
@@ -560,7 +520,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["USB_FLASH_DRIVE_SUPPORT"]                = True
         MARLIN["USE_UHS3_USB"]                           = True
 
-    if PRINTER == "Oliveoil_TAZ6Archim":
+    if "Oliveoil_TAZ6Archim" in PRINTER:
         # Unsupported TAZ 6 with Archim 2.
         IS_TAZ                                           = True
         TAZ_BED                                          = True
@@ -570,13 +530,13 @@ def make_config(PRINTER, TOOLHEAD):
         USE_MIN_ENDSTOPS                                 = True
         USE_MAX_ENDSTOPS                                 = True
         USE_HOME_BUTTON                                  = True
-        USE_REPRAP_LCD_DISPLAY                           = True
         USE_ARCHIM2                                      = True
         USE_EXPERIMENTAL_FEATURES                        = True
         # Specify pin for bed washers. If commented out,
         # bed washers will use Z_MIN pin (i.e. bed washers
         # and homing button wired together)
         BED_WASHERS_PIN                                  = 'SERVO0_PIN'
+        MARLIN["FILAMENT_RUNOUT_SENSOR"]                 = True
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 6")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["ENDSTOPS_ALWAYS_ON_DEFAULT"]             = True
@@ -588,8 +548,8 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["PRINTCOUNTER"]                           = True
         MARLIN["MACHINE_UUID"]                           = C_STRING("a07987e3-7ca7-48e1-b7a4-cc2c45ff2742")
         MARLIN["SDSUPPORT"]                              = True
-
-    if PRINTER == "Hibiscus_TouchDemo":
+        
+    if "Hibiscus_TouchDemo" in PRINTER:
         # Test stand with Einsy Retro and FT800 Touch LCD
         IS_MINI                                          = True
         MINI_BED                                         = True
@@ -599,6 +559,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_MIN_ENDSTOPS                                 = True
         USE_MAX_ENDSTOPS                                 = True
         USE_TOUCH_UI                                     = True
+        USE_REPRAP_LCD_DISPLAY                           = False
         USE_EINSY_RETRO                                  = True
         USE_EXPERIMENTAL_FEATURES                        = True
         CALIBRATE_ON_WASHER                              = "Back Right"
@@ -876,7 +837,7 @@ def make_config(PRINTER, TOOLHEAD):
 
     MANUAL_FEEDRATE_E                                    = 1.0 # mm/sec
     MARLIN["DEFAULT_EJERK"]                              = 10.0
-    MARLIN["NUM_SERVOS"]                                 = 0
+    MARLIN["NUM_SERVOS"]                                 = 1 if MARLIN["BLTOUCH"] else 0
 
 ################################ MINI TOOLHEADS ###############################
 
@@ -1413,10 +1374,9 @@ def make_config(PRINTER, TOOLHEAD):
         if not MARLIN["BLTOUCH"]:
           MARLIN["NOZZLE_CLEAN_FEATURE"]                 = True
           MARLIN["AUTO_BED_LEVELING_LINEAR"]             = True
+          MARLIN["FIX_MOUNTED_PROBE"]                    = True
         else:
           MARLIN["AUTO_BED_LEVELING_BILINEAR"]           = True
-          
-        MARLIN["FIX_MOUNTED_PROBE"]                      = True
 
         MARLIN["MULTIPLE_PROBING"]                       = 2
         MARLIN["Z_PROBE_OFFSET_RANGE_MIN"]               = -2

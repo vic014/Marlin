@@ -9,22 +9,28 @@ Many of the following combinations of electronics and toolheads have been tried 
 Printer Chassis and Electronics (your pick!)                                  | Toolhead (your pick!)
 ------------------------------------------------------------------------------|---------------------------
 Mini with original electronics with or w/o B&W display and SD card  :factory: | Single Extruder for Mini :factory:
-Mini with Einsy Retro with or w/o B&W display                                 | Flexystruder for Mini
-Mini with original electronics, Color Touch Screen and SD card                | Aerostruder for Mini 2 :factory:
-Mini with Einsy Retro and Color Touch Screen and SD card                      | Single Extruder for TAZ :factory:
-Mini 2 with original electronics, B&W display and SD card           :factory: | Flexystruder for TAZ
-Mini 2 with original electronics, Color Touch Screen and SD card              | MOARstruder for TAZ
+Mini with Einsy Retro with or w/o B&W display                                 | Flexystruder for Mini :raising_hand:
+Mini with original electronics, Color Touch Screen and SD card :raising_hand: | Aerostruder for Mini 2 :factory:
+Mini with Einsy Retro and Color Touch Screen and SD card       :raising_hand: | Single Extruder for TAZ :factory:
+Mini 2 with original electronics, B&W display and SD card           :factory: | Flexystruder for TAZ :raising_hand:
+Mini 2 with original electronics, Color Touch Screen and SD or USB            | MOARstruder for TAZ :raising_hand:
 Bio with original electronics, Color Touch Screen and SD card       :factory: | Goostruder for Bio :factory:
-TAZ 5 with original electronics                                     :factory: | FlexyDually for TAZ
-TAZ 5 with Archim 2.0 upgrade                                                 | DualExtruder V2 for TAZ
-TAZ 6 with original electronics                                     :factory: | DualExtruder V3 for TAZ
-TAZ 6 with Archim 2.0 upgrade                                                 | Universal Adapter for Mini
-TAZ Workhorse with original electronics                             :factory: | Universal Adapter for TAZ
-TAZ Workhorse with original electronics and Filament Sensor                   | Universal SL 0.25mm
-TAZ Workhorse with Archim 2.0 and Filament Sensor                             | Universal SE 0.5mm :factory:
-TAZ Pro with Color Touch Screen, USB Flashdrive and Filament Sensor :factory: | Universal HS 0.8mm
+TAZ 5 with original electronics                                     :factory: | FlexyDually for TAZ :raising_hand:
+TAZ 5 with original electronics and BLTouch                                   | DualExtruder V2 for TAZ :raising_hand:
+TAZ 5 with Archim 2.0 upgrade and Filament Sensor                             | DualExtruder V3 for TAZ
+TAZ 5 with Archim 2.0 upgrade, Filament Sensor and BLTouch                    | Universal Adapter for Mini :raising_hand:
+TAZ 6 with original electronics                                     :factory: | Universal Adapter for TAZ :raising_hand:
+TAZ 6 with original electronics and BLTouch                                   | Universal SL 0.25mm :raising_hand:
+TAZ 6 with Archim 2.0 upgrade and Filament Sensor                             | Universal SE 0.5mm :factory:
+TAZ 6 with Archim 2.0 upgrade, Filament Sensor and BLTouch                    | Universal HS 0.8mm :raising_hand:
+TAZ Workhorse with original electronics                             :factory: | Universal HS+ 1.2mm :raising_hand:
+TAZ Workhorse with original electronics and BLTouch                           | 
+TAZ Workhorse with Archim 2.0 and Filament Sensor                             | 
+TAZ Workhorse with Archim 2.0 upgrade, Filament Sensor and BLTouch            |
+TAZ Pro with Color Touch Screen, USB Flashdrive and Filament Sensor :factory: | 
 
 :factory: = Standard/stock configuration
+:raising_hand: = No longer being provided as binaries; available upon request
 
 ## How can you contribute to *Drunken Octopus*?
 
