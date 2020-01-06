@@ -1374,9 +1374,10 @@ def make_config(PRINTER, TOOLHEAD):
         if not MARLIN["BLTOUCH"]:
           MARLIN["NOZZLE_CLEAN_FEATURE"]                 = True
           MARLIN["AUTO_BED_LEVELING_LINEAR"]             = True
-          MARLIN["FIX_MOUNTED_PROBE"]                    = True
+          MARLIN["NOZZLE_AS_PROBE"]                      = True
         else:
           MARLIN["AUTO_BED_LEVELING_BILINEAR"]           = True
+          MARLIN["FIX_MOUNTED_PROBE"]                    = True
 
         MARLIN["MULTIPLE_PROBING"]                       = 2
         MARLIN["Z_PROBE_OFFSET_RANGE_MIN"]               = -2
@@ -1401,10 +1402,10 @@ def make_config(PRINTER, TOOLHEAD):
         FRONT_PROBE_BED_POSITION = max(STANDARD_FRONT_PROBE_BED_POSITION + TOOLHEAD_FRONT_PROBE_ADJ, MARLIN["Y_MIN_POS"])
 
         # Lulzbot Hack until probing is fixed in upstream Marlin
-        MARLIN["LULZBOT_LEFT_PROBE_BED_POSITION"]  = LEFT_PROBE_BED_POSITION
-        MARLIN["LULZBOT_RIGHT_PROBE_BED_POSITION"] = RIGHT_PROBE_BED_POSITION
-        MARLIN["LULZBOT_FRONT_PROBE_BED_POSITION"] = FRONT_PROBE_BED_POSITION
-        MARLIN["LULZBOT_BACK_PROBE_BED_POSITION"]  = BACK_PROBE_BED_POSITION
+        #MARLIN["LULZBOT_LEFT_PROBE_BED_POSITION"]       = LEFT_PROBE_BED_POSITION
+        #MARLIN["LULZBOT_RIGHT_PROBE_BED_POSITION"]      = RIGHT_PROBE_BED_POSITION
+        #MARLIN["LULZBOT_FRONT_PROBE_BED_POSITION"]      = FRONT_PROBE_BED_POSITION
+        #MARLIN["LULZBOT_BACK_PROBE_BED_POSITION"]       = BACK_PROBE_BED_POSITION
          
         # Make sure Marlin allows probe points outside of the bed area
 
@@ -1728,8 +1729,8 @@ def make_config(PRINTER, TOOLHEAD):
 
         # In order to prevent jams on the Aero toolheads,
         # do a purge prior to unload
-        MARLIN["FILAMENT_UNLOAD_RETRACT_LENGTH"]         = 0
-        MARLIN["FILAMENT_UNLOAD_DELAY"]                  = 0
+        MARLIN["FILAMENT_UNLOAD_PURGE_RETRACT"]          = 0
+        MARLIN["FILAMENT_UNLOAD_PURGE_DELAY"]            = 0
         MARLIN["FILAMENT_UNLOAD_PURGE_LENGTH"]           = 6
 
     if PRINTER in ["KangarooPaw_Bio"]:
