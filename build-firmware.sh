@@ -99,6 +99,8 @@ get_config_info() {
   parent=`dirname $config`
   printer=`basename $parent`
   toolhead=`basename $config`
+  parent=`dirname $parent`
+  group=`basename $parent`
   fw_hash=`git rev-parse --verify HEAD --short`
   fw_version=`./version.sh`
   fw_filename=Marlin_${printer}_${toolhead}_${fw_version}_${fw_hash}
@@ -188,21 +190,21 @@ build_firmware() {
 
   # Copy builds to build directory
 
-  mkdir -p build/$printer/$toolhead
+  mkdir -p build/$group/$printer/$toolhead
   if [ $motherboard_name = "BOARD_ARCHIM2" ]; then
-    mv Marlin/applet/Marlin.bin build/$printer/$toolhead/$fw_filename.bin
+    mv Marlin/applet/Marlin.bin build/$group/$printer/$toolhead/$fw_filename.bin
   else
-    mv Marlin/applet/Marlin.hex build/$printer/$toolhead/$fw_filename.hex
+    mv Marlin/applet/Marlin.hex build/$group/$printer/$toolhead/$fw_filename.hex
   fi
-  chmod a-x build/$printer/$toolhead/*
+  chmod a-x build/$group/$printer/$toolhead/*
 
   if [ $GENERATE_CONFIG ]; then
-    cp $config/* build/$printer/$toolhead
+    cp $config/* build/$group/$printer/$toolhead
   fi
   
   if [ ! $FULLNAMES ]; then
     # Shorten firmware name (removing the code names)
-    rename 's/Marlin_(.+)_(.+)_(.+)_(.+)_(.+)_(.+)/Marlin_$2_$4_$5_$6/' build/$printer/$toolhead/*
+    rename 's/Marlin_(.+)_(.+)_(.+)_(.+)_(.+)_(.+)/Marlin_$2_$4_$5_$6/' build/$group/$printer/$toolhead/*
   fi
 }
 
@@ -324,10 +326,7 @@ mkdir  build
 case $# in
   2)
     # If the user specified a printer and toolhead, try finding the config files
-    CONFIG_DIRS="config/examples/AlephObjects/$1/$2"
-    if [ ! -f "$CONFIG_DIRS/Configuration.h" ]; then
-      CONFIG_DIRS="config/examples/AlephObjects/EXPERIMENTAL/$1/$2"
-    fi
+    CONFIG_DIRS=`ls -1 config/examples/AlephObjects/*/$1/$2`
     ;;
   1)
     # If the user specified a configuration file, use that.
