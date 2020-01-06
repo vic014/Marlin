@@ -130,6 +130,18 @@ namespace ExtUI {
     void onMeshUpdate(const int8_t, const int8_t, const float) {
     }
   #endif
+  
+  #if ENABLED(POWER_LOSS_RECOVERY)
+    void onPowerLossResume() {
+      // Called on resume from power-loss
+    }
+  #endif
+
+  #if HAS_PID_HEATING
+    void onPidTuning(const result_t) {
+      // Called for temperature PID tuning result
+    }
+  #endif
 }
 
 #endif // TOUCH_UI_FTDI_EVE

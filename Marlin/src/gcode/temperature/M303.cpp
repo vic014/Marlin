@@ -54,7 +54,7 @@ void GcodeSuite::M303() {
   if (!WITHIN(e, SI, EI)) {
     SERIAL_ECHOLNPGM(MSG_PID_BAD_EXTRUDER_NUM);
     #if ENABLED(EXTENSIBLE_UI)
-      ExtUI::OnPidTuning(ExtUI::result_t::PID_BAD_EXTRUDER_NUM);
+      ExtUI::onPidTuning(ExtUI::result_t::PID_BAD_EXTRUDER_NUM);
     #endif
     return;
   }
