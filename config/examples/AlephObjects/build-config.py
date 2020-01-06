@@ -1377,7 +1377,6 @@ def make_config(PRINTER, TOOLHEAD):
           MARLIN["NOZZLE_AS_PROBE"]                      = True
         else:
           MARLIN["AUTO_BED_LEVELING_BILINEAR"]           = True
-          MARLIN["FIX_MOUNTED_PROBE"]                    = True
 
         MARLIN["MULTIPLE_PROBING"]                       = 2
         MARLIN["Z_PROBE_OFFSET_RANGE_MIN"]               = -2
