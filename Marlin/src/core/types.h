@@ -97,6 +97,7 @@ typedef float feedRate_t;
 #define _LS(N)  (N = (T)(uint32_t(N) << v))
 #define _RS(N)  (N = (T)(uint32_t(N) >> v))
 #define FI FORCE_INLINE
+#define SWAP(x, y) do { typeof(x) SWAP = x; x = y; y = SWAP; } while (0)
 
 // Forward declarations
 template<typename T> struct XYval;
