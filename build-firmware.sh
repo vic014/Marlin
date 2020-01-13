@@ -326,7 +326,7 @@ mkdir  build
 case $# in
   2)
     # If the user specified a printer and toolhead, try finding the config files
-    CONFIG_DIRS=`ls -1 config/examples/AlephObjects/*/$1/$2`
+    CONFIG_DIRS=`ls -d -1 config/examples/AlephObjects/*/$1/$2`
     ;;
   1)
     # If the user specified a configuration file, use that.
