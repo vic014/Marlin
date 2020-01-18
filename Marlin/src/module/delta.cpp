@@ -35,7 +35,7 @@
 #include "planner.h"
 #include "endstops.h"
 #include "../lcd/ultralcd.h"
-#include "../Marlin.h"
+#include "../MarlinCore.h"
 
 #if HAS_BED_PROBE
   #include "probe.h"
@@ -86,19 +86,23 @@ void recalc_delta_settings() {
  * Get a safe radius for calibration
  */
 
-#if ENABLED(DELTA_AUTO_CALIBRATION)
-  float calibration_radius_factor = 1;
-#endif
+#if EITHER(DELTA_AUTO_CALIBRATION, DELTA_CALIBRATION_MENU)
 
-float delta_calibration_radius() {
-  return FLOOR((DELTA_PRINTABLE_RADIUS - (
-    #if HAS_BED_PROBE
-      _MAX(HYPOT(probe_offset.x, probe_offset.y), MIN_PROBE_EDGE)
-    #else
-      MIN_PROBE_EDGE
-    #endif
-  )) * calibration_radius_factor);
-}
+  #if ENABLED(DELTA_AUTO_CALIBRATION)
+    float calibration_radius_factor = 1;
+  #endif
+
+  float delta_calibration_radius() {
+    return calibration_radius_factor * (
+      #if HAS_BED_PROBE
+        FLOOR((DELTA_PRINTABLE_RADIUS) - _MAX(HYPOT(probe_offset_xy.x, probe_offset_xy.y), MIN_PROBE_EDGE))
+      #else
+        DELTA_PRINTABLE_RADIUS
+      #endif
+    );
+  }
+
+#endif
 
 /**
  * Delta Inverse Kinematics
@@ -117,7 +121,7 @@ float delta_calibration_radius() {
  */
 
 #define DELTA_DEBUG(VAR) do { \
-    SERIAL_ECHOLNPAIR("Cartesian X", VAR.x, " Y", VAR.y, " Z", VAR.z);   \
+    SERIAL_ECHOLNPAIR_P(PSTR("Cartesian X"), VAR.x, SP_Y_STR, VAR.y, SP_Z_STR, VAR.z); \
     SERIAL_ECHOLNPAIR("Delta A", delta.a, " B", delta.b, " C", delta.c); \
   }while(0)
 
