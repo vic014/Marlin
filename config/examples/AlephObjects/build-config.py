@@ -32,10 +32,12 @@ PRINTER_CHOICES = [
     "Oliveoil_TAZ6BLTouch",
     "Oliveoil_TAZ6ArchimBLTouch",
     "Quiver_TAZPro",
+    "Quiver_TAZProBLTouch",
     "Redgum_TAZWorkhorse",
     "Redgum_TAZWorkhorseArchim",
     "Redgum_TAZWorkhorseBLTouch",
     "Redgum_TAZWorkhorseArchimBLTouch",
+    "Redgum_TAZWorkhorseArchimTouchUSBBLTouch",
     "Hibiscus_Mini2TouchSD",
     "Hibiscus_Mini2TouchUSB",
     "KangarooPaw_Bio",
@@ -217,7 +219,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_NORMALLY_CLOSED_ENDSTOPS                     = True
         USE_MIN_ENDSTOPS                                 = True
         USE_MAX_ENDSTOPS                                 = True
-        USE_HOME_BUTTON                                  = True
+        USE_HOME_BUTTON                                  = False if MARLIN["BLTOUCH"] else True
         BED_WASHERS_PIN                                  = 'SERVO0_PIN'
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 6")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
@@ -341,6 +343,36 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["MACHINE_UUID"]                           = C_STRING("fd546ced-5941-44e4-8d17-5d494bfc2ca3")
         MARLIN["SDSUPPORT"]                              = True
         MARLIN["FILAMENT_RUNOUT_SENSOR"]                 = True
+
+    if "Redgum_TAZWorkhorseArchimTouchUSB" in PRINTER:
+        IS_TAZ                                           = True
+        TAZ_BED                                          = True
+        USE_TWO_PIECE_BED                                = True
+        USE_Z_BELT                                       = True
+        USE_AUTOLEVELING                                 = True
+        #USE_CALIBRATION_CUBE                            = True
+        USE_NORMALLY_CLOSED_ENDSTOPS                     = True
+        USE_MIN_ENDSTOPS                                 = True
+        USE_DUAL_Z_ENDSTOPS                              = True
+        USE_ARCHIM2                                      = True
+        USE_TOUCH_UI                                     = True
+        USE_REPRAP_LCD_DISPLAY                           = False
+        USE_EXPERIMENTAL_FEATURES                        = True
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ Workhorse")
+        MARLIN["BACKLASH_COMPENSATION"]                  = True
+        MARLIN["BAUDRATE"]                               = 250000
+        MARLIN["PRINTCOUNTER"]                           = True
+        MARLIN["MACHINE_UUID"]                           = C_STRING("fd546ced-5941-44e4-8d17-5d494bfc2ca3")
+        MARLIN["USB_FLASH_DRIVE_SUPPORT"]                = True
+        MARLIN["SDSUPPORT"]                              = True
+        MARLIN["FILAMENT_RUNOUT_SENSOR"]                 = True
+        MARLIN["USE_UHS3_USB"]                           = False
+        MARLIN["ARCHIM2_SPI_FLASH_EEPROM_BACKUP_SIZE"]   = 1000
+        # Touch LCD configuration
+        MARLIN["TOUCH_UI_PORTRAIT"]                      = True
+        MARLIN["TOUCH_UI_800x480"]                       = True
+        MARLIN["LCD_ALEPHOBJECTS_CLCD_UI"]               = True
+        MARLIN["AO_EXP2_PINMAP"]                         = True
 
     if "Hibiscus_Mini2TouchSD" in PRINTER:
         # Use a 480x272 display and SD adapter
@@ -529,7 +561,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_NORMALLY_CLOSED_ENDSTOPS                     = True
         USE_MIN_ENDSTOPS                                 = True
         USE_MAX_ENDSTOPS                                 = True
-        USE_HOME_BUTTON                                  = True
+        USE_HOME_BUTTON                                  = False if MARLIN["BLTOUCH"] else True
         USE_ARCHIM2                                      = True
         USE_EXPERIMENTAL_FEATURES                        = True
         # Specify pin for bed washers. If commented out,
@@ -677,7 +709,7 @@ def make_config(PRINTER, TOOLHEAD):
 
     MARLIN["USE_XMAX_PLUG"]                              = USE_MAX_ENDSTOPS
     MARLIN["USE_YMAX_PLUG"]                              = USE_MAX_ENDSTOPS or IS_MINI
-    MARLIN["USE_ZMAX_PLUG"]                              = USE_MAX_ENDSTOPS or IS_MINI or (IS_TAZ and not USE_HOME_BUTTON)
+    MARLIN["USE_ZMAX_PLUG"]                              = USE_MAX_ENDSTOPS or IS_MINI or (IS_TAZ and not USE_HOME_BUTTON and not MARLIN["BLTOUCH"])
 
     if PRINTER in ["KangarooPaw_Bio"]:
         MARLIN["USE_XMAX_PLUG"]                          = True
@@ -717,7 +749,7 @@ def make_config(PRINTER, TOOLHEAD):
 
 ########################## HOMING & AXIS DIRECTIONS ###########################
 
-    if PRINTER in ['Redgum_TAZWorkhorse', 'Redgum_TAZWorkhorseArchim']:
+    if 'Redgum_TAZWorkhorse' in PRINTER:
         MARLIN["INVERT_X_DIR"]                           = 'true'
     else:
         MARLIN["INVERT_X_DIR"]                           = 'false'
@@ -730,32 +762,27 @@ def make_config(PRINTER, TOOLHEAD):
     if IS_MINI:
         MARLIN["X_HOME_DIR"]                             = -1 # Home left
         MARLIN["Y_HOME_DIR"]                             =  1 # Home bed forward
-        MARLIN["Z_HOME_DIR"]                             =  1 # Home to top
         MARLIN["QUICK_HOME"]                             =  True
 
     elif "Juniper_TAZ5" in PRINTER:
         MARLIN["X_HOME_DIR"]                             = -1 # Home left
         MARLIN["Y_HOME_DIR"]                             = -1 # Home bed rear
-        MARLIN["Z_HOME_DIR"]                             = -1 # Home towards bed
         MARLIN["QUICK_HOME"]                             =  True
 
     elif "Redgum_TAZWorkhorse" in PRINTER:
         MARLIN["X_HOME_DIR"]                             = -1 # Home left
         MARLIN["Y_HOME_DIR"]                             = -1 # Home bed backwards
-        MARLIN["Z_HOME_DIR"]                             =  1 # Home to top
         MARLIN["QUICK_HOME"]                             =  True
 
-    elif IS_TAZ and not USE_HOME_BUTTON:
+    elif IS_TAZ:
         MARLIN["X_HOME_DIR"]                             = -1 # Home left
         MARLIN["Y_HOME_DIR"]                             =  1 # Home bed forward
-        MARLIN["Z_HOME_DIR"]                             =  1 # Home to top
         MARLIN["QUICK_HOME"]                             =  True
-
-    elif IS_TAZ and USE_HOME_BUTTON:
-        MARLIN["X_HOME_DIR"]                             = -1 # Home left
-        MARLIN["Y_HOME_DIR"]                             =  1 # Home bed forward
+        
+    if USE_HOME_BUTTON or MARLIN["BLTOUCH"] or "Juniper_TAZ5" in PRINTER:
         MARLIN["Z_HOME_DIR"]                             = -1 # Home towards bed
-        MARLIN["QUICK_HOME"]                             =  True
+    else:
+        MARLIN["Z_HOME_DIR"]                             = 1 # Home to top
 
     if MINI_BED and USE_Z_BELT:
         MARLIN["HOMING_FEEDRATE_XY"]                     = 50*60 # mm/m
@@ -774,8 +801,9 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["HOMING_FEEDRATE_Z"]                      = 3*60  # mm/m
 
     # Only the TAZ 6 has a Z-homing button
-
-    if USE_HOME_BUTTON:
+    if MARLIN["BLTOUCH"]:
+        MARLIN["Z_SAFE_HOMING"]                          = True
+    elif USE_HOME_BUTTON:
         MARLIN["Z_SAFE_HOMING"]                          = True
         MARLIN["Z_SAFE_HOMING_X_POINT"]                  = -19
         MARLIN["Z_SAFE_HOMING_Y_POINT"]                  = 258
@@ -1051,14 +1079,11 @@ def make_config(PRINTER, TOOLHEAD):
         ADAPTER_X_OFFSET                                 = 0
         ADAPTER_Y_OFFSET                                 = -2.0 if IS_TAZ else -7.2
 
-    if not TOOLHEAD_IS_UNIVERSAL and PRINTER in [
-      "Quiver_TAZPro",
-      "Redgum_TAZWorkhorse",
-      "Redgum_TAZWorkhorseArchim",
-      "Hibiscus_Mini2",
-      "Hibiscus_Mini2TouchSD",
-      "Hibiscus_Mini2TouchUSB"
-    ]:
+    if not TOOLHEAD_IS_UNIVERSAL and (
+        "Redgum_TAZWorkhorse" in PRINTER or
+        "Quiver_TAZPro" in PRINTER or
+        "Hibiscus_Mini2" in PRINTER
+    ):
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NO_ENDSTOP
         MARLIN["NO_MOTION_BEFORE_HOMING"]                = True
         ADAPTER_X_OFFSET                                 = 29
@@ -1377,8 +1402,15 @@ def make_config(PRINTER, TOOLHEAD):
           MARLIN["NOZZLE_AS_PROBE"]                      = True
         else:
           MARLIN["AUTO_BED_LEVELING_BILINEAR"]           = True
+          MARLIN["Z_SERVO_ANGLES"]                       = [10,90]
 
-        MARLIN["MULTIPLE_PROBING"]                       = 2
+        if not MARLIN["BLTOUCH"]:
+            MARLIN["MULTIPLE_PROBING"]                   = 2
+            MARLIN["Z_PROBE_SPEED_SLOW"]                 = 1*60
+            MARLIN["Z_PROBE_SPEED_FAST"]                 = 20*60 if USE_Z_BELT else 8*60
+        else:
+            MARLIN["Z_PROBE_SPEED_SLOW"]                 = 5*60
+        
         MARLIN["Z_PROBE_OFFSET_RANGE_MIN"]               = -2
         MARLIN["Z_PROBE_OFFSET_RANGE_MAX"]               = 5
         MARLIN["XY_PROBE_SPEED"]                         = 6000

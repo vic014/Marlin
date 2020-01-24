@@ -132,7 +132,7 @@ compile_firmware() {
 # Records the md5sum of the compiled firmware to the checksum file
 #
 record_checksum() {
-  cat Marlin/applet/Marlin.hex Marlin/applet/Marlin.bin | md5sum  | sed "s/-/${printer}_${toolhead}/g" >> ${1}-${fw_version}-${fw_hash}.txt
+  cat Marlin/applet/marlin.hex Marlin/applet/marlin.bin | md5sum  | sed "s/-/${printer}_${toolhead}/g" >> ${1}-${fw_version}-${fw_hash}.txt
 }
 
 ####
@@ -192,9 +192,9 @@ build_firmware() {
 
   mkdir -p build/$group/$printer/$toolhead
   if [ $motherboard_name = "BOARD_ARCHIM2" ]; then
-    mv Marlin/applet/Marlin.bin build/$group/$printer/$toolhead/$fw_filename.bin
+    mv Marlin/applet/marlin.bin build/$group/$printer/$toolhead/$fw_filename.bin
   else
-    mv Marlin/applet/Marlin.hex build/$group/$printer/$toolhead/$fw_filename.hex
+    mv Marlin/applet/marlin.hex build/$group/$printer/$toolhead/$fw_filename.hex
   fi
   chmod a-x build/$group/$printer/$toolhead/*
 
