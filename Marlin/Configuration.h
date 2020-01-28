@@ -37,6 +37,7 @@
 //#define FilamentSensor // Standard older TM3D runout sensor
 //#define lerdgeFilSensor // Newer inverted logic TM3D Runout Sensor
 
+//#define AUTO_CALIBRATE // Conductive block and grounding to heater block for automatic hotend calibration
 
 //////////////////////////////////DO not edit below here unless you know what youre doing!  //////////////////////////////////
 
@@ -1374,13 +1375,13 @@
   // Gradually reduce leveling correction until a set height is reached,
   // at which point movement will be level to the machine's XY plane.
   // The height can be set with M420 Z<height>
-  #define ENABLE_LEVELING_FADE_HEIGHT
+  //#define ENABLE_LEVELING_FADE_HEIGHT
 
   // For Cartesian machines, instead of dividing moves on mesh boundaries,
   // split up moves into short segments like a Delta. This follows the
   // contours of the bed more closely than edge-to-edge straight moves.
-  //#define SEGMENT_LEVELED_MOVES
-  //#define LEVELED_SEGMENT_LENGTH 5.0 // (mm) Length of all segments (except the last one)
+  #define SEGMENT_LEVELED_MOVES
+  #define LEVELED_SEGMENT_LENGTH 5.0 // (mm) Length of all segments (except the last one)
 
   /**
    * Enable the G26 Mesh Validation Pattern tool.
