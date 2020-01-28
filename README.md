@@ -40,6 +40,7 @@ See the [FAQ] for information on the following topics:
 - Will *Drunken Octopus* damage my printer?
 - What if I want my printer to remain sober?
 - Will *Drunken Octopus* binaries and pre-build configuration files be provided?
+- What pins are used when upgrading a TAZ to an Archim 2.0?
 - How do I compile *Drunken Octopus* from source?
 - Where can I find parts to upgrade my printer?
 

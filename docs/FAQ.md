@@ -80,6 +80,18 @@ Patreon supporters will receive firmware or configuration files for modified pri
 
 Source code for building everything will always be available to anyone!
 
+## What pin are used when upgrading a TAZ to an Archim 2.0?
+
+| Feature                | Port  | Arduino Pin | Archim Pin | Description                  |
+|------------------------|-------|-------------|------------|------------------------------|
+| NEOPIXEL_PIN           | PB5   | 94          | J20 Pin 5  | Unused                       |
+| -                      | PB0   | 95          | J20 Pin 6  | Unused                       |
+| -                      | PB3   | 103         | J20 Pin 7  | Unused                       |
+| FIL_RUNOUT_PIN         | PB15  | 66          | J20 Pin 15 | Filament Runout 1            |
+| FIL_RUNOUT2_PIN        | PB16  | 67          | J20 Pin 16 | Filament Runout 2            |
+| SERVO1_PIN             | PB13  | 21          | J20 Pin 19 | Unused                       |
+| SERVO0_PIN             | PB12  | 20          | J20 Pin 20 | Bed Washers or BLTouch Servo |
+
 ## How do I compile *Drunken Octopus* from source?
 
 **Windows 10:** If you are using Windows 10, one of the easiest ways to build the firmware is using *Windows Subsystem for Linux (WSL)*. Simply follow [this guide] to set up WSL and get yourself an Ubuntu shell, then proceed with the steps for Linux.
