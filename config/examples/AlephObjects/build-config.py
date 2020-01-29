@@ -1380,31 +1380,38 @@ def make_config(PRINTER, TOOLHEAD):
 
 ########################### AUTOLEVELING / BED PROBE ##########################
 
-    # Auto-leveling was introduced on the Mini and TAZ 6.
-    # Define probe parameters related to bed leveling,
-    # e.g. the washers on the bed. These are confusingly
-    # named Z_MIN_PROBE in Marlin. The Z-Home switch
-    # is called Z_MIN_ENDSTOP
-
     if USE_AUTOLEVELING:
 
         MARLIN["RESTORE_LEVELING_AFTER_G28"]             = True
 
         if MARLIN["BLTOUCH"]:
             # BLTouch Auto-Leveling
+            MARLIN["Z_HOMING_HEIGHT"]                    = 10
             MARLIN["Z_PROBE_SPEED_SLOW"]                 = 5*60
             MARLIN["Z_CLEARANCE_DEPLOY_PROBE"]           = 15
-            MARLIN["MIN_PROBE_EDGE"]                     = 22
+            MARLIN["Z_CLEARANCE_BETWEEN_PROBES"]         = 5
+            MARLIN["Z_SERVO_ANGLES"]                     = [10,90]
+            if USE_REPRAP_LCD_DISPLAY or USE_TOUCH_UI:
+                MARLIN["AUTO_BED_LEVELING_UBL"]          = True
+            else:
+                MARLIN["AUTO_BED_LEVELING_BILINEAR"]     = True
             MARLIN["GRID_MAX_POINTS_X"]                  = 4
             MARLIN["GRID_MAX_POINTS_Y"]                  = 4
-            MARLIN["Z_HOMING_HEIGHT"]                    = 10
-            MARLIN["AUTO_BED_LEVELING_BILINEAR"]         = True
-            MARLIN["Z_SERVO_ANGLES"]                     = [10,90]
+            MARLIN["MIN_PROBE_EDGE"]                     = 22
+            #MARLIN["ENDSTOP_INTERRUPTS_FEATURE"]         = True if USE_ARCHIM2 or USE_EINSY_RETRO or IS_MINI else False
+            MARLIN["PROBING_FANS_OFF"]                   = True
+            MARLIN["PROBING_STEPPERS_OFF"]               = True
             GOTO_1ST_PROBE_POINT                         = ""
 
         else:
             # LulzBot Conductive Probing
             
+            # Auto-leveling was introduced on the Mini and TAZ 6.
+            # Define probe parameters related to bed leveling,
+            # e.g. the washers on the bed. These are confusingly
+            # named Z_MIN_PROBE in Marlin. The Z-Home switch
+            # is called Z_MIN_ENDSTOP
+    
             if MINI_BED:
                 STANDARD_LEFT_PROBE_BED_POSITION             = -3
                 STANDARD_RIGHT_PROBE_BED_POSITION            = 163
