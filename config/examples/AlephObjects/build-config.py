@@ -64,7 +64,8 @@ TOOLHEAD_CHOICES = [
     "Yellowfin_DualExtruderV3",
     "Angelfish_Aerostruder",
     "Quiver_DualExtruder",
-    "KangarooPaw_SingleExtruder"
+    "KangarooPaw_SingleExtruder",
+    "E3D_Hermera"
 ]
 
 usage = (
@@ -107,7 +108,8 @@ LulzBot printers.'''
 #  26. TRINAMIC SENSORLESS HOMING
 #  27. ADVANCED PAUSE / FILAMENT CHANGE
 #  28. WIPER PAD
-#  29. REWIPE FUNCTIONALITY
+#  29. CLEAN NOZZLE
+#  30. PROBE REWIPE
 #  30. BACKLASH COMPENSATION
 #  31. MOTOR CURRENTS
 #  32. ACCELERATION, FEEDRATES AND XYZ MOTOR STEPS
@@ -1132,6 +1134,15 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["Z_CLEARANCE_DEPLOY_PROBE"]               = 30
         MARLIN["Z_CLEARANCE_BETWEEN_PROBES"]             = 30
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_CLOSED_ENDSTOP
+        
+    if TOOLHEAD in ["E3D_Hermera"]:
+        TOOLHEAD_TYPE                                    = "Hermera"
+        TOOLHEAD_BLOCK                                   = "E3D_Hermera_V6"
+        E_STEPS                                          = 400
+        MOTOR_CURRENT_E                                  = 960 # mA
+        MARLIN["TOOLHEAD_NAME"]                          = C_STRING("E3D Hermera")
+        #         16 chars max                                       ^^^^^^^^^^^^^^^
+        MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_CLOSED_ENDSTOP
 
 ############################# TEMPERATURE SETTINGS ############################
 
@@ -1207,6 +1218,12 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["DEFAULT_Kp"]                             = 21.00
         MARLIN["DEFAULT_Ki"]                             =  1.78
         MARLIN["DEFAULT_Kd"]                             = 61.93
+        
+    elif TOOLHEAD_BLOCK == "E3D_Hermera_V6":
+        # E3D Hermera with LulzBot V6 block
+        MARLIN["DEFAULT_Kp"]                             = 25.2
+        MARLIN["DEFAULT_Ki"]                             =  1.9
+        MARLIN["DEFAULT_Kd"]                             = 84.17
 
     elif TOOLHEAD_BLOCK == "E3D_Titan_Aero_Volcano":
         # E3D Titan Aero with Volcano block
@@ -1370,88 +1387,82 @@ def make_config(PRINTER, TOOLHEAD):
     # is called Z_MIN_ENDSTOP
 
     if USE_AUTOLEVELING:
-        if MINI_BED:
-            STANDARD_LEFT_PROBE_BED_POSITION             = -3
-            STANDARD_RIGHT_PROBE_BED_POSITION            = 163
-            STANDARD_BACK_PROBE_BED_POSITION             = 168
-            STANDARD_FRONT_PROBE_BED_POSITION            = -4
-
-            if USE_Z_SCREW:
-                # The Gladiola has the probe points spaced further apart than
-                # earlier models. Since Gladiola FW has to work on earlier
-                # printers, we need to add a workaround because G29 hits the
-                # endstops and shifts the coordinate system around.
-                USE_PRE_GLADIOLA_G29_WORKAROUND          = True
-
-        elif TAZ_BED and MARLIN["BLTOUCH"]:
-            STANDARD_LEFT_PROBE_BED_POSITION             = 20
-            STANDARD_RIGHT_PROBE_BED_POSITION            = 260
-            STANDARD_BACK_PROBE_BED_POSITION             = 260
-            STANDARD_FRONT_PROBE_BED_POSITION            = 20
-            
-        elif TAZ_BED:
-            STANDARD_LEFT_PROBE_BED_POSITION             = -10
-            STANDARD_RIGHT_PROBE_BED_POSITION            = 288
-            STANDARD_BACK_PROBE_BED_POSITION             = 291
-            STANDARD_FRONT_PROBE_BED_POSITION            = -9
 
         MARLIN["RESTORE_LEVELING_AFTER_G28"]             = True
-        if not MARLIN["BLTOUCH"]:
-          MARLIN["NOZZLE_CLEAN_FEATURE"]                 = True
-          MARLIN["AUTO_BED_LEVELING_LINEAR"]             = True
-          MARLIN["NOZZLE_AS_PROBE"]                      = True
-        else:
-          MARLIN["AUTO_BED_LEVELING_BILINEAR"]           = True
-          MARLIN["Z_SERVO_ANGLES"]                       = [10,90]
 
-        if not MARLIN["BLTOUCH"]:
+        if MARLIN["BLTOUCH"]:
+            # BLTouch Auto-Leveling
+            MARLIN["Z_PROBE_SPEED_SLOW"]                 = 5*60
+            MARLIN["Z_CLEARANCE_DEPLOY_PROBE"]           = 15
+            MARLIN["MIN_PROBE_EDGE"]                     = 22
+            MARLIN["GRID_MAX_POINTS_X"]                  = 4
+            MARLIN["GRID_MAX_POINTS_Y"]                  = 4
+            MARLIN["Z_HOMING_HEIGHT"]                    = 10
+            MARLIN["AUTO_BED_LEVELING_BILINEAR"]         = True
+            MARLIN["Z_SERVO_ANGLES"]                     = [10,90]
+            GOTO_1ST_PROBE_POINT                         = ""
+
+        else:
+            # LulzBot Conductive Probing
+            
+            if MINI_BED:
+                STANDARD_LEFT_PROBE_BED_POSITION             = -3
+                STANDARD_RIGHT_PROBE_BED_POSITION            = 163
+                STANDARD_BACK_PROBE_BED_POSITION             = 168
+                STANDARD_FRONT_PROBE_BED_POSITION            = -4
+
+                if USE_Z_SCREW:
+                    # The Gladiola has the probe points spaced further apart than
+                    # earlier models. Since Gladiola FW has to work on earlier
+                    # printers, we need to add a workaround because G29 hits the
+                    # endstops and shifts the coordinate system around.
+                    USE_PRE_GLADIOLA_G29_WORKAROUND          = True
+
+            elif TAZ_BED and MARLIN["BLTOUCH"]:
+                STANDARD_LEFT_PROBE_BED_POSITION             = 20
+                STANDARD_RIGHT_PROBE_BED_POSITION            = 260
+                STANDARD_BACK_PROBE_BED_POSITION             = 260
+                STANDARD_FRONT_PROBE_BED_POSITION            = 20
+                
+            elif TAZ_BED:
+                STANDARD_LEFT_PROBE_BED_POSITION             = -10
+                STANDARD_RIGHT_PROBE_BED_POSITION            = 288
+                STANDARD_BACK_PROBE_BED_POSITION             = 291
+                STANDARD_FRONT_PROBE_BED_POSITION            = -9
+            
+            MARLIN["AUTO_BED_LEVELING_LINEAR"]             = True
+            MARLIN["NOZZLE_AS_PROBE"]                      = True
+          
             MARLIN["MULTIPLE_PROBING"]                   = 2
             MARLIN["Z_PROBE_SPEED_SLOW"]                 = 1*60
             MARLIN["Z_PROBE_SPEED_FAST"]                 = 20*60 if USE_Z_BELT else 8*60
-        else:
-            MARLIN["Z_PROBE_SPEED_SLOW"]                 = 5*60
-        
-        MARLIN["Z_PROBE_OFFSET_RANGE_MIN"]               = -2
-        MARLIN["Z_PROBE_OFFSET_RANGE_MAX"]               = 5
-        MARLIN["XY_PROBE_SPEED"]                         = 6000
-        MARLIN["Z_PROBE_SPEED_SLOW"]                     = 1*60
-        MARLIN["Z_PROBE_SPEED_FAST"]                     = 20*60 if USE_Z_BELT else 8*60
-        MARLIN["Z_CLEARANCE_DEPLOY_PROBE"]               = 15 if MARLIN["BLTOUCH"] else 5
-        MARLIN["Z_CLEARANCE_BETWEEN_PROBES"]             = 5
-        if not MARLIN["BLTOUCH"]:
-          MARLIN["MIN_PROBE_EDGE"]                       = False
-        else:
-          MARLIN["MIN_PROBE_EDGE"]                       = 22
+            MARLIN["Z_PROBE_OFFSET_RANGE_MIN"]           = -2
+            MARLIN["Z_PROBE_OFFSET_RANGE_MAX"]           = 5
+            MARLIN["Z_CLEARANCE_DEPLOY_PROBE"]           = 5
+            MARLIN["MIN_PROBE_EDGE"]                     = False
+            MARLIN["XY_PROBE_SPEED"]                     = 6000
+            MARLIN["Z_CLEARANCE_BETWEEN_PROBES"]         = 5
 
-        # Avoid electrical interference when probing (this is a problem on some Minis)
-        MARLIN["PROBING_FANS_OFF"]                       = True
-        MARLIN["PROBING_STEPPERS_OFF"]                   = True
+            # Avoid electrical interference when probing (this is a problem on some Minis)
+            MARLIN["PROBING_FANS_OFF"]                   = True
+            MARLIN["PROBING_STEPPERS_OFF"]               = True
 
-        LEFT_PROBE_BED_POSITION  = max(STANDARD_LEFT_PROBE_BED_POSITION  + TOOLHEAD_LEFT_PROBE_ADJ,  MARLIN["X_MIN_POS"])
-        RIGHT_PROBE_BED_POSITION = min(STANDARD_RIGHT_PROBE_BED_POSITION + TOOLHEAD_RIGHT_PROBE_ADJ, MARLIN["X_MAX_POS"])
-        BACK_PROBE_BED_POSITION  = min(STANDARD_BACK_PROBE_BED_POSITION  + TOOLHEAD_BACK_PROBE_ADJ,  MARLIN["Y_MAX_POS"])
-        FRONT_PROBE_BED_POSITION = max(STANDARD_FRONT_PROBE_BED_POSITION + TOOLHEAD_FRONT_PROBE_ADJ, MARLIN["Y_MIN_POS"])
+            LEFT_PROBE_BED_POSITION  = max(STANDARD_LEFT_PROBE_BED_POSITION  + TOOLHEAD_LEFT_PROBE_ADJ,  MARLIN["X_MIN_POS"])
+            RIGHT_PROBE_BED_POSITION = min(STANDARD_RIGHT_PROBE_BED_POSITION + TOOLHEAD_RIGHT_PROBE_ADJ, MARLIN["X_MAX_POS"])
+            BACK_PROBE_BED_POSITION  = min(STANDARD_BACK_PROBE_BED_POSITION  + TOOLHEAD_BACK_PROBE_ADJ,  MARLIN["Y_MAX_POS"])
+            FRONT_PROBE_BED_POSITION = max(STANDARD_FRONT_PROBE_BED_POSITION + TOOLHEAD_FRONT_PROBE_ADJ, MARLIN["Y_MIN_POS"])
+             
+            # Make sure Marlin allows probe points outside of the bed area
 
-        # Lulzbot Hack until probing is fixed in upstream Marlin
-        #MARLIN["LULZBOT_LEFT_PROBE_BED_POSITION"]       = LEFT_PROBE_BED_POSITION
-        #MARLIN["LULZBOT_RIGHT_PROBE_BED_POSITION"]      = RIGHT_PROBE_BED_POSITION
-        #MARLIN["LULZBOT_FRONT_PROBE_BED_POSITION"]      = FRONT_PROBE_BED_POSITION
-        #MARLIN["LULZBOT_BACK_PROBE_BED_POSITION"]       = BACK_PROBE_BED_POSITION
-         
-        # Make sure Marlin allows probe points outside of the bed area
+            MARLIN["MIN_PROBE_EDGE_LEFT"]                = LEFT_PROBE_BED_POSITION
+            MARLIN["MIN_PROBE_EDGE_RIGHT"]               = STANDARD_X_BED_SIZE - RIGHT_PROBE_BED_POSITION
+            MARLIN["MIN_PROBE_EDGE_BACK"]                = STANDARD_Y_BED_SIZE - BACK_PROBE_BED_POSITION
+            MARLIN["MIN_PROBE_EDGE_FRONT"]               = FRONT_PROBE_BED_POSITION
 
-        MARLIN["MIN_PROBE_EDGE_LEFT"]                    = LEFT_PROBE_BED_POSITION
-        MARLIN["MIN_PROBE_EDGE_RIGHT"]                   = STANDARD_X_BED_SIZE - RIGHT_PROBE_BED_POSITION
-        MARLIN["MIN_PROBE_EDGE_BACK"]                    = STANDARD_Y_BED_SIZE - BACK_PROBE_BED_POSITION
-        MARLIN["MIN_PROBE_EDGE_FRONT"]                   = FRONT_PROBE_BED_POSITION
-
-        # Adjustments for four point probing
-
-        if not MARLIN["BLTOUCH"]:
-            # Traditionally LulzBot printers have employed a four-point leveling
-            # using a degenerate 2x2 grid. This is the traditional behavior.
-            MARLIN["GRID_MAX_POINTS_X"]                  = 2
-            MARLIN["GRID_MAX_POINTS_Y"]                  = 2
+            # Traditionally LulzBot printers have employed a four-point
+            # leveling using a 2x2 grid.
+            MARLIN["GRID_MAX_POINTS_X"]              = 2
+            MARLIN["GRID_MAX_POINTS_Y"]              = 2
             if IS_MINI:
                 # We can't control the order of probe points exactly, but
                 # this makes the probe start closer to the wiper pad.
@@ -1462,14 +1473,7 @@ def make_config(PRINTER, TOOLHEAD):
                 # probing on the washer underneath the wiper pad.
                 MARLIN["END_G29_ON_BACK_LEFT_CORNER"] = True
                 GOTO_1ST_PROBE_POINT = "G0 X{} Y{}".format(LEFT_PROBE_BED_POSITION, FRONT_PROBE_BED_POSITION)
-        else:
-            GOTO_1ST_PROBE_POINT                          = ""
             
-        # Adjustments for BLTouch
-        
-        #if MARLIN["BLTOUCH"]:
-        #  MARLIN["ENDSTOP_INTERRUPTS_FEATURE"]            = True
-
 ############################# X AXIS LEVELING #############################
 
     if PRINTER == "KangarooPaw_Bio":
@@ -1497,7 +1501,7 @@ def make_config(PRINTER, TOOLHEAD):
             "M117 Leveling done.\n"                      # Set LCD status
         )
 
-    elif USE_Z_BELT and IS_TAZ:
+    elif USE_Z_BELT and IS_TAZ and not MARLIN["BLTOUCH"]:
         AXIS_LEVELING_COMMANDS = (
             "M117 Leveling X Axis\n"                     # Set LCD status
             + XLEVEL_POS +                               # Center axis
@@ -1529,7 +1533,7 @@ def make_config(PRINTER, TOOLHEAD):
         
 ################ AUTO-CALIBRATION (BACKLASH AND NOZZLE OFFSET) ################
 
-    if USE_CALIBRATION_CUBE or CALIBRATE_ON_WASHER:
+    if (USE_CALIBRATION_CUBE or CALIBRATE_ON_WASHER) and not MARLIN["BLTOUCH"]:
         MARLIN["CALIBRATION_GCODE"]                      = True
         MARLIN["CALIBRATION_REPORTING"]                  = True
 
@@ -1874,22 +1878,11 @@ def make_config(PRINTER, TOOLHEAD):
             MARLIN["NOZZLE_CLEAN_START_POINT"]           = [LEFT_WIPE_X1, LEFT_WIPE_Y1, LEFT_WIPE_Z]
             MARLIN["NOZZLE_CLEAN_END_POINT"]             = [LEFT_WIPE_X2, LEFT_WIPE_Y2, LEFT_WIPE_Z]
 
-############################## REWIPE FUNCTIONALITY ##############################
+################################# CLEAN NOZZLE ################################
 
-    if USE_AUTOLEVELING and not MARLIN["BLTOUCH"]:
-
-        MARLIN["G29_RETRY_AND_RECOVER"]                  = True
-        MARLIN["G29_MAX_RETRIES"]                        = 2
-        MARLIN["G29_HALT_ON_FAILURE"]                    = True
-
-        MARLIN["NOZZLE_CLEAN_GOBACK"]                    = False
-
-        # Limit on pushing into the bed
-        if IS_TAZ:
-            MARLIN["Z_PROBE_LOW_POINT"]                  = -2
-        elif IS_MINI:
-            MARLIN["Z_PROBE_LOW_POINT"]                  = -5
-
+    if USE_AUTOLEVELING:
+        MARLIN["NOZZLE_CLEAN_FEATURE"]                   = True
+        
         if MARLIN["EXTRUDERS"] == 1:
             WIPE_HEAT_TEMP                               = "M104 S170\n" # Preheat to wipe temp
             WIPE_WAIT_TEMP                               = "M109 R170\n" # Wait for wipe temp
@@ -1929,6 +1922,21 @@ def make_config(PRINTER, TOOLHEAD):
               WIPE_DONE_TEMP +                           # Drop to probe temp
             "M107\n"                                     # Turn off fan
         )
+        
+################################# PROBE REWIPE ################################
+    
+    if USE_AUTOLEVELING and not MARLIN["BLTOUCH"]:
+        MARLIN["G29_RETRY_AND_RECOVER"]                  = True
+        MARLIN["G29_MAX_RETRIES"]                        = 2
+        MARLIN["G29_HALT_ON_FAILURE"]                    = True
+
+        MARLIN["NOZZLE_CLEAN_GOBACK"]                    = False
+
+        # Limit on pushing into the bed
+        if IS_TAZ:
+            MARLIN["Z_PROBE_LOW_POINT"]                  = -2
+        elif IS_MINI:
+            MARLIN["Z_PROBE_LOW_POINT"]                  = -5
 
         if USE_Z_BELT:
             G29_RECOVER_COMMANDS = (
@@ -1980,8 +1988,6 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["G29_FAILURE_COMMANDS"]                   = C_STRING(G29_FAILURE_COMMANDS)
         MARLIN["G29_RECOVER_COMMANDS"]                   = C_STRING(G29_RECOVER_COMMANDS)
         MARLIN["G29_SUCCESS_COMMANDS"]                   = C_STRING(G29_SUCCESS_COMMANDS)
-    else:
-        MARLIN["Z_PROBE_LOW_POINT"]                      = 0
 
 ############################ BACKLASH COMPENSATION ############################
 

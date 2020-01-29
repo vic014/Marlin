@@ -97,9 +97,6 @@ build_config accessory Quiver_TAZPro                             BandedTiger_Har
 build_config accessory Quiver_TAZPro                             DingyCutworm_HardenedSteelPlus
 build_config accessory Quiver_TAZPro                             Goldenrod_HardenedExtruder
 build_config standard  Quiver_TAZPro                             Quiver_DualExtruder
-                                                                 
-build_config custom    Quiver_TAZProBLTouch                      Goldenrod_HardenedExtruder
-build_config custom    Redgum_TAZWorkhorseArchimTouchUSBBLTouch  Goldenrod_HardenedExtruder
 
 build_config standard  Redgum_TAZWorkhorse                       Goldenrod_HardenedExtruder
 build_config accessory Redgum_TAZWorkhorse                       CecropiaSilk_SingleExtruderAeroV2
@@ -110,6 +107,7 @@ build_config accessory Redgum_TAZWorkhorse                       Yellowfin_DualE
 build_config custom    Redgum_TAZWorkhorseArchim                 Goldenrod_HardenedExtruder
 build_config custom    Redgum_TAZWorkhorseBLTouch                Goldenrod_HardenedExtruder
 build_config custom    Redgum_TAZWorkhorseArchimBLTouch          Goldenrod_HardenedExtruder
+build_config custom    Redgum_TAZWorkhorseArchimTouchUSBBLTouch  E3D_Hermera
                                                                  
 build_config standard  KangarooPaw_Bio                           KangarooPaw_SingleExtruder
 build_config custom    Hibiscus_TouchDemo                        Gladiola_SingleExtruder
