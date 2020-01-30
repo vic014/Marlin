@@ -1367,6 +1367,11 @@ def make_config(PRINTER, TOOLHEAD):
     elif IS_TAZ and USE_Z_BELT:
         STANDARD_Z_MIN_POS                               = -2
         STANDARD_Z_MAX_POS                               = 299
+        
+    if MARLIN["BLTOUCH"]:
+        # If using BLTouch, then set the Z_MIN_POS to zero
+        STANDARD_Z_MAX_POS -= STANDARD_Z_MIN_POS
+        STANDARD_Z_MIN_POS -= STANDARD_Z_MIN_POS
 
     MARLIN["X_MAX_POS"] = STANDARD_X_MAX_POS + TOOLHEAD_X_MAX_ADJ + ADAPTER_X_OFFSET
     MARLIN["X_MIN_POS"] = STANDARD_X_MIN_POS + TOOLHEAD_X_MIN_ADJ + ADAPTER_X_OFFSET
