@@ -138,10 +138,26 @@ namespace ExtUI {
   #endif
 
   #if HAS_PID_HEATING
-    void onPidTuning(const result_t) {
+    void OnPidTuning(const result_t rst) {
       // Called for temperature PID tuning result
+      SERIAL_ECHOLNPAIR("OnPidTuning:", rst);
+      switch (rst) {
+        case PID_BAD_EXTRUDER_NUM:
+          StatusScreen::setStatusMessage(MSG_PID_BAD_EXTRUDER_NUM);
+          break;
+        case PID_TEMP_TOO_HIGH:
+          StatusScreen::setStatusMessage(MSG_PID_TEMP_TOO_HIGH);
+          break;
+        case PID_TUNING_TIMEOUT:
+          StatusScreen::setStatusMessage(MSG_PID_TIMEOUT);
+          break;
+        case PID_DONE:
+          StatusScreen::setStatusMessage(MSG_PID_AUTOTUNE_FINISHED);
+          break;
+      }
+      GOTO_SCREEN(StatusScreen);
     }
-  #endif
+  #endif // HAS_PID_HEATING
 }
 
 #endif // TOUCH_UI_FTDI_EVE

@@ -14,6 +14,15 @@
 # FOR A PARTICULAR PURPOSE.  See the GNU AGPL for more details.
 #
 
+fetch_default_config() {
+    CONF_URL=https://raw.githubusercontent.com/MarlinFirmware/Configurations/master/config/default
+    CONF_DIR=../../default
+    (wget $CONF_URL/Configuration.h -O $CONF_DIR/Configuration.h &&
+    wget $CONF_URL/Configuration_adv.h -O $CONF_DIR/Configuration_adv.h &&
+    cat  $CONF_DIR/Configuration_Lulzbot.h >> $CONF_DIR/Configuration.h) ||
+    exit 1
+}
+
 build_config() {
   group=$1
   printer_name=$2
@@ -22,6 +31,8 @@ build_config() {
   echo ${group}/${printer_name}/${toolhead_name}
   ./build-config.py $printer_name $toolhead_name -D ${group}/${printer_name}/${toolhead_name} --summary
 }
+
+fetch_default_config || (echo Unable to retrieve new configuration files; exit 1)
 
 build_config standard  Gladiola_Mini                             Gladiola_SingleExtruder
 build_config accessory Gladiola_Mini                             Finch_Aerostruder

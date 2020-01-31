@@ -45,6 +45,10 @@ MarlinUI ui;
   #endif
 #endif
 
+#if LCD_HAS_WAIT_FOR_MOVE
+  bool MarlinUI::wait_for_move; // = false
+#endif
+
 #if HAS_SPI_LCD
   #if ENABLED(STATUS_MESSAGE_SCROLLING)
     uint8_t MarlinUI::status_scroll_offset; // = 0
@@ -94,10 +98,6 @@ MarlinUI ui;
 #include "../module/temperature.h"
 #include "../module/planner.h"
 #include "../module/motion.h"
-
-#if ENABLED(POWER_LOSS_RECOVERY)
-  #include "../feature/power_loss_recovery.h"
-#endif
 
 #if ENABLED(AUTO_BED_LEVELING_UBL)
   #include "../feature/bedlevel/bedlevel.h"
@@ -777,13 +777,12 @@ void MarlinUI::update() {
     static bool wait_for_unclick; // = false
 
     #if ENABLED(TOUCH_BUTTONS)
-
       if (touch_buttons) {
         RESET_STATUS_TIMEOUT();
-        if (buttons & (EN_A | EN_B)) {                    // Menu arrows, in priority
+        if (touch_buttons & (EN_A | EN_B)) {              // Menu arrows, in priority
           if (ELAPSED(ms, next_button_update_ms)) {
             encoderDiff = (ENCODER_STEPS_PER_MENU_ITEM) * (ENCODER_PULSES_PER_STEP) * encoderDirection;
-            if (buttons & EN_A) encoderDiff *= -1;
+            if (touch_buttons & EN_A) encoderDiff *= -1;
             #if ENABLED(AUTO_BED_LEVELING_UBL)
               if (external_control) ubl.encoder_diff = encoderDiff;
             #endif
@@ -1246,7 +1245,11 @@ void MarlinUI::update() {
             | slow_buttons
           #endif
           #if ENABLED(TOUCH_BUTTONS) && HAS_ENCODER_ACTION
-            | touch_buttons
+            | (touch_buttons
+              #if HAS_ENCODER_WHEEL
+                & (~(EN_A | EN_B))
+              #endif
+            )
           #endif
         );
 
@@ -1277,7 +1280,7 @@ void MarlinUI::update() {
 
     } // next_button_update_ms
 
-    #if HAS_ENCODER_WHEEL && DISABLED(TOUCH_BUTTONS)
+    #if HAS_ENCODER_WHEEL
       static uint8_t lastEncoderBits;
 
       #define encrot0 0
@@ -1517,10 +1520,6 @@ void MarlinUI::update() {
   void MarlinUI::pause_print() {
     #if HAS_LCD_MENU
       synchronize(GET_TEXT(MSG_PAUSE_PRINT));
-    #endif
-
-    #if ENABLED(POWER_LOSS_RECOVERY)
-      if (recovery.enabled) recovery.save(true, false);
     #endif
 
     #if ENABLED(HOST_PROMPT_SUPPORT)

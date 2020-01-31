@@ -1277,6 +1277,7 @@ def make_config(PRINTER, TOOLHEAD):
     MARLIN["SOFT_PWM_SCALE"]                             = 4
     
     MARLIN["ADAPTIVE_FAN_SLOWING"]                       = True
+    MARLIN["NO_FAN_SLOWING_IN_PID_TUNING"]               = True
 
     MARLIN["USE_CONTROLLER_FAN"]                         = True
     if USE_EINSY_RETRO:
@@ -2215,6 +2216,9 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["STATUS_MESSAGE_SCROLLING"]               = True
         MARLIN["BABYSTEP_ZPROBE_GFX_OVERLAY"]            = True
         MARLIN["SDSUPPORT"]                              = True
+        MARLIN["INDIVIDUAL_AXIS_HOMING_MENU"]            = True
+        MARLIN["PID_EDIT_MENU"]                          = True
+        MARLIN["PID_AUTOTUNE_MENU"]                      = True
         # Enable the games as easter eggs :)
         MARLIN["GAMES_EASTER_EGG"]                       = True
         MARLIN["MARLIN_BRICKOUT"]                        = True
@@ -2257,6 +2261,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["SHOW_CUSTOM_BOOTSCREEN"]                 = True
         MARLIN["BABYSTEPPING"]                           = True
         MARLIN["BABYSTEP_XY"]                            = True
+        MARLIN["BABYSTEP_ALWAYS_AVAILABLE"]              = True
 
         if USE_AUTOLEVELING:
             MARLIN["BABYSTEP_ZPROBE_OFFSET"]             = True
