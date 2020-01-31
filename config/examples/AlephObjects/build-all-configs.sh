@@ -98,6 +98,8 @@ build_config accessory Quiver_TAZPro                             DingyCutworm_Ha
 build_config accessory Quiver_TAZPro                             Goldenrod_HardenedExtruder
 build_config standard  Quiver_TAZPro                             Quiver_DualExtruder
 
+build_config custom    Quiver_TAZProBLTouch                      E3D_Hermera
+
 build_config standard  Redgum_TAZWorkhorse                       Goldenrod_HardenedExtruder
 build_config accessory Redgum_TAZWorkhorse                       CecropiaSilk_SingleExtruderAeroV2
 build_config accessory Redgum_TAZWorkhorse                       AchemonSphinx_SmallLayer

@@ -639,7 +639,6 @@ def make_config(PRINTER, TOOLHEAD):
         USE_STATUS_LED                                   = False
 
         MARLIN["GCODE_MACROS"]                           = True
-        MARLIN["ADAPTIVE_FAN_SLOWING"]                   = True
     else:
         USE_STATUS_LED                                   = False
 
@@ -1072,7 +1071,8 @@ def make_config(PRINTER, TOOLHEAD):
         "BandedTiger_HardenedSteel",
         "DingyCutworm_HardenedSteelPlus",
         "Quiver_DualExtruder",
-        "KangarooPaw_SingleExtruder"
+        "KangarooPaw_SingleExtruder",
+        "E3D_Hermera"
     ]
 
     if TOOLHEAD_IS_UNIVERSAL and USE_Z_SCREW:
@@ -1275,6 +1275,8 @@ def make_config(PRINTER, TOOLHEAD):
     MARLIN["FAN_KICKSTART_TIME"]                         = 100
     MARLIN["FAN_MIN_PWM"]                                = 70
     MARLIN["SOFT_PWM_SCALE"]                             = 4
+    
+    MARLIN["ADAPTIVE_FAN_SLOWING"]                       = True
 
     MARLIN["USE_CONTROLLER_FAN"]                         = True
     if USE_EINSY_RETRO:
@@ -1402,8 +1404,9 @@ def make_config(PRINTER, TOOLHEAD):
                 MARLIN["AUTO_BED_LEVELING_BILINEAR"]     = True
             MARLIN["GRID_MAX_POINTS_X"]                  = 4
             MARLIN["GRID_MAX_POINTS_Y"]                  = 4
-            MARLIN["MIN_PROBE_EDGE"]                     = 22
-            #MARLIN["ENDSTOP_INTERRUPTS_FEATURE"]         = True if USE_ARCHIM2 or USE_EINSY_RETRO or IS_MINI else False
+            MARLIN["MIN_PROBE_EDGE"]                     = 0
+            #MARLIN["MESH_INSET"]                        = 0
+            #MARLIN["ENDSTOP_INTERRUPTS_FEATURE"]        = True if USE_ARCHIM2 or USE_EINSY_RETRO or IS_MINI else False
             MARLIN["PROBING_FANS_OFF"]                   = True
             MARLIN["PROBING_STEPPERS_OFF"]               = True
             GOTO_1ST_PROBE_POINT                         = ""
