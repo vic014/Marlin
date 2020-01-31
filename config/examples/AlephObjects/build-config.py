@@ -1403,8 +1403,8 @@ def make_config(PRINTER, TOOLHEAD):
                 MARLIN["AUTO_BED_LEVELING_UBL"]          = True
             else:
                 MARLIN["AUTO_BED_LEVELING_BILINEAR"]     = True
-            MARLIN["GRID_MAX_POINTS_X"]                  = 4
-            MARLIN["GRID_MAX_POINTS_Y"]                  = 4
+            MARLIN["GRID_MAX_POINTS_X"]                  = 5
+            MARLIN["GRID_MAX_POINTS_Y"]                  = 5
             MARLIN["MIN_PROBE_EDGE"]                     = 0
             #MARLIN["MESH_INSET"]                        = 0
             #MARLIN["ENDSTOP_INTERRUPTS_FEATURE"]        = True if USE_ARCHIM2 or USE_EINSY_RETRO or IS_MINI else False
@@ -2219,6 +2219,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["INDIVIDUAL_AXIS_HOMING_MENU"]            = True
         MARLIN["PID_EDIT_MENU"]                          = True
         MARLIN["PID_AUTOTUNE_MENU"]                      = True
+        MARLIN["HOST_PROMPT_SUPPORT"]                    = True
         # Enable the games as easter eggs :)
         MARLIN["GAMES_EASTER_EGG"]                       = True
         MARLIN["MARLIN_BRICKOUT"]                        = True

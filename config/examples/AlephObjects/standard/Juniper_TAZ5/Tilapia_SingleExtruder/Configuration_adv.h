@@ -2841,7 +2841,7 @@
  */
 #define HOST_ACTION_COMMANDS // <-- changed
 #if ENABLED(HOST_ACTION_COMMANDS)
-  //#define HOST_PROMPT_SUPPORT
+  #define HOST_PROMPT_SUPPORT // <-- changed
 #endif
 
 /**
