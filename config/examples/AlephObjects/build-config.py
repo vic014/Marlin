@@ -323,6 +323,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["BAUDRATE"]                               = 250000
         MARLIN["MACHINE_UUID"]                           = C_STRING("c3255c96-4097-4884-8ed0-ded2ff9bae61")
         MARLIN["FILAMENT_RUNOUT_SENSOR"]                 = True
+        MARLIN["FILAMENT_RUNOUT_ENABLE_DEFAULT"]         = False
 
     if "Redgum_TAZWorkhorseArchim" in PRINTER:
         IS_TAZ                                           = True
@@ -345,6 +346,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["MACHINE_UUID"]                           = C_STRING("fd546ced-5941-44e4-8d17-5d494bfc2ca3")
         MARLIN["SDSUPPORT"]                              = True
         MARLIN["FILAMENT_RUNOUT_SENSOR"]                 = True
+        MARLIN["FILAMENT_RUNOUT_ENABLE_DEFAULT"]         = False
 
     if "Redgum_TAZWorkhorseArchimTouchUSB" in PRINTER:
         IS_TAZ                                           = True
@@ -368,6 +370,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["USB_FLASH_DRIVE_SUPPORT"]                = True
         MARLIN["SDSUPPORT"]                              = True
         MARLIN["FILAMENT_RUNOUT_SENSOR"]                 = True
+        MARLIN["FILAMENT_RUNOUT_ENABLE_DEFAULT"]         = False
         MARLIN["USE_UHS3_USB"]                           = False
         MARLIN["ARCHIM2_SPI_FLASH_EEPROM_BACKUP_SIZE"]   = 1000
         # Touch LCD configuration
@@ -571,6 +574,7 @@ def make_config(PRINTER, TOOLHEAD):
         # and homing button wired together)
         BED_WASHERS_PIN                                  = 'SERVO0_PIN'
         MARLIN["FILAMENT_RUNOUT_SENSOR"]                 = True
+        MARLIN["FILAMENT_RUNOUT_ENABLE_DEFAULT"]         = False
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 6")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["ENDSTOPS_ALWAYS_ON_DEFAULT"]             = True
@@ -1388,7 +1392,7 @@ def make_config(PRINTER, TOOLHEAD):
 
 ########################### AUTOLEVELING / BED PROBE ##########################
 
-    if USE_AUTOLEVELING:
+    if USE_AUTOLEVELING or MARLIN["BLTOUCH"]:
 
         MARLIN["RESTORE_LEVELING_AFTER_G28"]             = True
 

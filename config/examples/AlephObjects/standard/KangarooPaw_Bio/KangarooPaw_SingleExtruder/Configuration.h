@@ -2271,4 +2271,5 @@
 #define DEVELOPER_SCREENS // <-- changed
 #define LULZBOT_USE_BIOPRINTER_UI // <-- changed
 //#define SWAP_E0_AND_E1
+//#define FILAMENT_RUNOUT_ENABLE_DEFAULT
 
