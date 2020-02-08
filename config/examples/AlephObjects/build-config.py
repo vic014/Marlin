@@ -2311,7 +2311,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["BABYSTEP_XY"]                            = True
         MARLIN["BABYSTEP_ALWAYS_AVAILABLE"]              = True
 
-        if USE_AUTOLEVELING:
+        if USE_AUTOLEVELING or MARLIN["BLTOUCH"]:
             MARLIN["BABYSTEP_ZPROBE_OFFSET"]             = True
             if MARLIN["EXTRUDERS"] > 1:
                 MARLIN["BABYSTEP_HOTEND_Z_OFFSET"]       = True
