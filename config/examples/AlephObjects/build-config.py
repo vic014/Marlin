@@ -32,7 +32,7 @@ PRINTER_CHOICES = [
     "Oliveoil_TAZ6BLTouch",
     "Oliveoil_TAZ6ArchimBLTouch",
     "Quiver_TAZPro",
-    "Quiver_TAZProBLTouch",
+    "Experimental_BLTouch",
     "Redgum_TAZWorkhorse",
     "Redgum_TAZWorkhorseArchim",
     "Redgum_TAZWorkhorseBLTouch",
@@ -586,6 +586,40 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["PRINTCOUNTER"]                           = True
         MARLIN["MACHINE_UUID"]                           = C_STRING("a07987e3-7ca7-48e1-b7a4-cc2c45ff2742")
         MARLIN["SDSUPPORT"]                              = True
+
+    if "Experimental_BLTouch" in PRINTER:
+        IS_TAZ                                           = True
+        TAZ_BED                                          = True
+        USE_TWO_PIECE_BED                                = True
+        USE_Z_BELT                                       = True
+        USE_AUTOLEVELING                                 = True
+        USE_CALIBRATION_CUBE                             = True
+        USE_NORMALLY_CLOSED_ENDSTOPS                     = True
+        USE_DUAL_Z_ENDSTOPS                              = True
+        USE_TOUCH_UI                                     = True
+        USE_REPRAP_LCD_DISPLAY                           = False
+        USE_ARCHIM2                                      = True
+        USE_EXPERIMENTAL_FEATURES                        = True
+        MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ Pro")
+        MARLIN["BACKLASH_COMPENSATION"]                  = True
+        MARLIN["SENSORLESS_HOMING"]                      = True
+        MARLIN["STEALTHCHOP_XY"]                         = False
+        MARLIN["STEALTHCHOP_Z"]                          = True
+        MARLIN["STEALTHCHOP_E"]                          = True
+        MARLIN["HYBRID_THRESHOLD"]                       = True
+        MARLIN["BAUDRATE"]                               = 250000
+        MARLIN["PRINTCOUNTER"]                           = True
+        MARLIN["MACHINE_UUID"]                           = C_STRING("a952577d-8722-483a-999d-acdc9e772b7b")
+        MARLIN["USB_FLASH_DRIVE_SUPPORT"]                = True
+        MARLIN["SDSUPPORT"]                              = True
+        MARLIN["FILAMENT_RUNOUT_SENSOR"]                 = True
+        MARLIN["USE_UHS3_USB"]                           = False
+        MARLIN["ARCHIM2_SPI_FLASH_EEPROM_BACKUP_SIZE"]   = 1000
+        # Touch LCD configuration
+        MARLIN["TOUCH_UI_PORTRAIT"]                      = True
+        MARLIN["TOUCH_UI_800x480"]                       = True
+        MARLIN["LCD_ALEPHOBJECTS_CLCD_UI"]               = True
+        MARLIN["AO_EXP2_PINMAP"]                         = True
         
     if "Hibiscus_TouchDemo" in PRINTER:
         # Test stand with Einsy Retro and FT800 Touch LCD
@@ -1333,6 +1367,15 @@ def make_config(PRINTER, TOOLHEAD):
         STANDARD_X_MIN_POS                               = -50
         STANDARD_Y_MAX_POS                               = 308
         STANDARD_Y_MIN_POS                               = -17
+
+        STANDARD_X_BED_SIZE                              = 280
+        STANDARD_Y_BED_SIZE                              = 280
+
+    elif "Experimental_BLTouch" in PRINTER:
+        STANDARD_X_MAX_POS                               = 320
+        STANDARD_X_MIN_POS                               = -6
+        STANDARD_Y_MAX_POS                               = 313
+        STANDARD_Y_MIN_POS                               = -27
 
         STANDARD_X_BED_SIZE                              = 280
         STANDARD_Y_BED_SIZE                              = 280
