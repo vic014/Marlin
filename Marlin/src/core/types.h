@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -43,11 +43,7 @@ enum AxisEnum : uint8_t {
   E_AXIS   = 3,
   X_HEAD   = 4, Y_HEAD = 5, Z_HEAD = 6,
   E0_AXIS  = 3,
-  E1_AXIS  = 4,
-  E2_AXIS  = 5,
-  E3_AXIS  = 6,
-  E4_AXIS  = 7,
-  E5_AXIS  = 8,
+  E1_AXIS, E2_AXIS, E3_AXIS, E4_AXIS, E5_AXIS, E6_AXIS, E7_AXIS,
   ALL_AXES = 0xFE, NO_AXIS = 0xFF
 };
 
@@ -97,7 +93,6 @@ typedef float feedRate_t;
 #define _LS(N)  (N = (T)(uint32_t(N) << v))
 #define _RS(N)  (N = (T)(uint32_t(N) >> v))
 #define FI FORCE_INLINE
-#define SWAP(x, y) do { typeof(x) SWAP = x; x = y; y = SWAP; } while (0)
 
 // Forward declarations
 template<typename T> struct XYval;

@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -238,12 +238,12 @@ inline int check_for_free_memory_corruption(PGM_P const title) {
     SERIAL_ECHOLNPGM("\nMemory Corruption detected in free memory area.");
 
   if (block_cnt == 0)       // Make sure the special case of no free blocks shows up as an
-    block_cnt = -1;         // error to the calling code!
+    block_cnt = -1;         //  error to the calling code!
 
   SERIAL_ECHOPGM(" return=");
   if (block_cnt == 1) {
-    SERIAL_CHAR('0');       // if the block_cnt is 1, nothing has broken up the free memory
-    SERIAL_EOL();             // area and it is appropriate to say 'no corruption'.
+    SERIAL_CHAR('0');       // If the block_cnt is 1, nothing has broken up the free memory
+    SERIAL_EOL();           //  area and it is appropriate to say 'no corruption'.
     return 0;
   }
   SERIAL_ECHOLNPGM("true");
