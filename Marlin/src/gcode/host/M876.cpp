@@ -31,9 +31,7 @@
  * M876: Handle Prompt Response
  */
 void GcodeSuite::M876() {
-
   if (parser.seenval('S')) host_response_handler((uint8_t)parser.value_int());
-
 }
 
 #endif // HOST_PROMPT_SUPPORT && !EMERGENCY_PARSER
