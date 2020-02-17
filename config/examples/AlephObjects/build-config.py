@@ -630,6 +630,9 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["TOUCH_UI_800x480"]                       = True
         MARLIN["LCD_ALEPHOBJECTS_CLCD_UI"]               = True
         MARLIN["AO_EXP2_PINMAP"]                         = True
+        # Put filament sensor on X_MAX
+        MARLIN["USE_YMAX_PLUG"]                          = False
+        MARLIN["FIL_RUNOUT_PIN"]                         = 15 # Archim2 Y-Max
         
     if "Hibiscus_TouchDemo" in PRINTER:
         # Test stand with Einsy Retro and FT800 Touch LCD
@@ -817,7 +820,7 @@ def make_config(PRINTER, TOOLHEAD):
 
     elif "Redgum_TAZWorkhorse" in PRINTER:
         MARLIN["X_HOME_DIR"]                             = -1 # Home left
-        MARLIN["Y_HOME_DIR"]                             = -1 # Home bed backwards
+        MARLIN["Y_HOME_DIR"]                             = -1 # Home bed rear
         MARLIN["QUICK_HOME"]                             =  True
 
     elif IS_TAZ:
