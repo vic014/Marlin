@@ -57,6 +57,7 @@
 #define G29_RECOVER_COMMANDS "M121\nG0 Z10\nG28 X0 Y0\nG12\nM109 R160\nM400\nM117 Probing bed"
 #define G29_RETRY_AND_RECOVER
 #define G29_SUCCESS_COMMANDS "M117 Probe successful"
+#define GCODE_MACROS
 #define GRID_MAX_POINTS_X 2
 #define GRID_MAX_POINTS_Y 2
 #define HEATER_0_MAXTEMP 305
@@ -116,6 +117,7 @@
 #define SOURCE_CODE_URL "https://github.com/marciot/drunken-octopus-marlin"
 #define SPI_SPEED SPI_FULL_SPEED
 #define STRING_CONFIG_H_AUTHOR "(Drunken Octopus Marlin)"
+#define S_CURVE_ACCELERATION
 #define TEMP_BED_HYSTERESIS 5
 #define TEMP_BED_RESIDENCY_TIME 1
 #define TEMP_BED_WINDOW 5

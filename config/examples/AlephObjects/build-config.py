@@ -153,6 +153,7 @@ def make_config(PRINTER, TOOLHEAD):
     USE_MAX_ENDSTOPS                                     = False
     USE_LEGACY_XY_STEPS                                  = False
     USE_PRE_GLADIOLA_G29_WORKAROUND                      = False
+    USE_STATUS_LED                                       = False
 
     CALIBRATE_ON_WASHER                                  = False
     BED_WASHERS_PIN                                      = False
@@ -194,6 +195,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_MIN_ENDSTOPS                                 = True
         USE_MAX_ENDSTOPS                                 = True
         CALIBRATE_ON_WASHER                              = "Back Right"
+        USE_EXPERIMENTAL_FEATURES                        = True
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("Mini")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["ENDSTOPS_ALWAYS_ON_DEFAULT"]             = True
@@ -207,6 +209,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_LEGACY_XY_STEPS                              = True
         USE_NORMALLY_OPEN_ENDSTOPS                       = True
         USE_MIN_ENDSTOPS                                 = True
+        USE_EXPERIMENTAL_FEATURES                        = True
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 5")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["BAUDRATE"]                               = 250000
@@ -221,6 +224,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_NORMALLY_CLOSED_ENDSTOPS                     = True
         USE_MIN_ENDSTOPS                                 = True
         USE_MAX_ENDSTOPS                                 = True
+        USE_EXPERIMENTAL_FEATURES                        = True
         USE_HOME_BUTTON                                  = False if MARLIN["BLTOUCH"] else True
         BED_WASHERS_PIN                                  = 'SERVO0_PIN'
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 6")
@@ -277,6 +281,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["USB_FLASH_DRIVE_SUPPORT"]                = True
         MARLIN["SDSUPPORT"]                              = True
         MARLIN["FILAMENT_RUNOUT_SENSOR"]                 = True
+        MARLIN["FILAMENT_MOTION_SENSOR"]                 = True
         MARLIN["USE_UHS3_USB"]                           = False
         MARLIN["ARCHIM2_SPI_FLASH_EEPROM_BACKUP_SIZE"]   = 1000
         # Touch LCD configuration
@@ -323,6 +328,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["BAUDRATE"]                               = 250000
         MARLIN["MACHINE_UUID"]                           = C_STRING("c3255c96-4097-4884-8ed0-ded2ff9bae61")
         MARLIN["FILAMENT_RUNOUT_SENSOR"]                 = True
+        MARLIN["FILAMENT_MOTION_SENSOR"]                 = False
 
     if "Redgum_TAZWorkhorseArchim" in PRINTER:
         IS_TAZ                                           = True
@@ -345,6 +351,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["MACHINE_UUID"]                           = C_STRING("fd546ced-5941-44e4-8d17-5d494bfc2ca3")
         MARLIN["SDSUPPORT"]                              = True
         MARLIN["FILAMENT_RUNOUT_SENSOR"]                 = True
+        MARLIN["FILAMENT_MOTION_SENSOR"]                 = False
 
     if "Redgum_TAZWorkhorseArchimTouchUSB" in PRINTER:
         IS_TAZ                                           = True
@@ -368,6 +375,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["USB_FLASH_DRIVE_SUPPORT"]                = True
         MARLIN["SDSUPPORT"]                              = True
         MARLIN["FILAMENT_RUNOUT_SENSOR"]                 = True
+        MARLIN["FILAMENT_MOTION_SENSOR"]                 = False
         MARLIN["USE_UHS3_USB"]                           = False
         MARLIN["ARCHIM2_SPI_FLASH_EEPROM_BACKUP_SIZE"]   = 1000
         # Touch LCD configuration
@@ -571,6 +579,7 @@ def make_config(PRINTER, TOOLHEAD):
         # and homing button wired together)
         BED_WASHERS_PIN                                  = 'SERVO0_PIN'
         MARLIN["FILAMENT_RUNOUT_SENSOR"]                 = True
+        MARLIN["FILAMENT_MOTION_SENSOR"]                 = False
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("TAZ 6")
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["ENDSTOPS_ALWAYS_ON_DEFAULT"]             = True
@@ -609,6 +618,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["USB_FLASH_DRIVE_SUPPORT"]                = True
         MARLIN["SDSUPPORT"]                              = True
         MARLIN["FILAMENT_RUNOUT_SENSOR"]                 = True
+        MARLIN["FILAMENT_MOTION_SENSOR"]                 = False
         MARLIN["USE_UHS3_USB"]                           = False
         MARLIN["ARCHIM2_SPI_FLASH_EEPROM_BACKUP_SIZE"]   = 1000
         # Touch LCD configuration
@@ -670,11 +680,8 @@ def make_config(PRINTER, TOOLHEAD):
 ############################ EXPERIMENTAL FEATURES ############################
 
     if USE_EXPERIMENTAL_FEATURES and not USE_LESS_MEMORY:
-        USE_STATUS_LED                                   = False
-
         MARLIN["GCODE_MACROS"]                           = True
-    else:
-        USE_STATUS_LED                                   = False
+        MARLIN["S_CURVE_ACCELERATION"]                   = True
 
     if USE_STATUS_LED:
         MARLIN["NEOPIXEL_RGBW_LED"]                      = True
@@ -1677,7 +1684,6 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["NUM_RUNOUT_SENSORS"]                     = MARLIN["EXTRUDERS"]
         MARLIN["FILAMENT_RUNOUT_SCRIPT"]                 = C_STRING("M25\n")
         MARLIN["FILAMENT_RUNOUT_DISTANCE_MM"]            = 14
-        MARLIN["FILAMENT_MOTION_SENSOR"]                 = True
         MARLIN["ACTION_ON_FILAMENT_RUNOUT"]              = C_STRING("pause: filament_runout")
         MARLIN["CURA_LE_RUNOUT_HANDLING_WORKAROUND"]     = True
 
@@ -2258,6 +2264,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["SCROLL_LONG_FILENAMES"]                  = True
         MARLIN["STATUS_MESSAGE_SCROLLING"]               = True
         MARLIN["BABYSTEP_ZPROBE_GFX_OVERLAY"]            = True
+        MARLIN["DOUBLECLICK_FOR_Z_BABYSTEPPING"]         = True
         MARLIN["SDSUPPORT"]                              = True
         MARLIN["INDIVIDUAL_AXIS_HOMING_MENU"]            = True
         MARLIN["PID_EDIT_MENU"]                          = True
@@ -2306,6 +2313,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["BABYSTEPPING"]                           = True
         MARLIN["BABYSTEP_XY"]                            = True
         MARLIN["BABYSTEP_ALWAYS_AVAILABLE"]              = True
+        MARLIN["BABYSTEP_MULTIPLICATOR_Z"]               = 10
 
         if USE_AUTOLEVELING:
             MARLIN["BABYSTEP_ZPROBE_OFFSET"]             = True
