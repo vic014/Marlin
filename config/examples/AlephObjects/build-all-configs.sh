@@ -101,6 +101,9 @@ build_config custom    Oliveoil_TAZ6ArchimBLTouch                Tilapia_SingleE
 build_config custom    Oliveoil_TAZ6Archim                       Angelfish_Aerostruder
 build_config custom    Oliveoil_TAZ6BLTouch                      Angelfish_Aerostruder
 build_config custom    Oliveoil_TAZ6ArchimBLTouch                Angelfish_Aerostruder
+build_config custom    Oliveoil_TAZ6Archim                       E3D_Hermera
+build_config custom    Oliveoil_TAZ6BLTouch                      E3D_Hermera
+build_config custom    Oliveoil_TAZ6ArchimBLTouch                E3D_Hermera
                                                                  
 build_config accessory Quiver_TAZPro                             AchemonSphinx_SmallLayer
 build_config accessory Quiver_TAZPro                             CecropiaSilk_SingleExtruderAeroV2
@@ -115,9 +118,13 @@ build_config accessory Redgum_TAZWorkhorse                       AchemonSphinx_S
 build_config accessory Redgum_TAZWorkhorse                       BandedTiger_HardenedSteel
 build_config accessory Redgum_TAZWorkhorse                       DingyCutworm_HardenedSteelPlus
 build_config accessory Redgum_TAZWorkhorse                       Yellowfin_DualExtruderV3
+build_config accessory Redgum_TAZWorkhorse                       E3D_Hermera
 build_config custom    Redgum_TAZWorkhorseArchim                 Goldenrod_HardenedExtruder
 build_config custom    Redgum_TAZWorkhorseBLTouch                Goldenrod_HardenedExtruder
 build_config custom    Redgum_TAZWorkhorseArchimBLTouch          Goldenrod_HardenedExtruder
+build_config custom    Redgum_TAZWorkhorseArchim                 E3D_Hermera
+build_config custom    Redgum_TAZWorkhorseBLTouch                E3D_Hermera
+build_config custom    Redgum_TAZWorkhorseArchimBLTouch          E3D_Hermera
 build_config custom    Redgum_TAZWorkhorseArchimTouchUSBBLTouch  E3D_Hermera
                                                                  
 build_config standard  KangarooPaw_Bio                           KangarooPaw_SingleExtruder
