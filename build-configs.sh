@@ -14,4 +14,4 @@
 #
 
 cd config/examples/AlephObjects
-./build-all-configs.sh
+./build-all-configs.sh $1

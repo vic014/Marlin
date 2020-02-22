@@ -15,7 +15,7 @@
 #
 
 fetch_default_config() {
-    CONF_URL=https://raw.githubusercontent.com/MarlinFirmware/Configurations/master/config/default
+    CONF_URL=https://raw.githubusercontent.com/MarlinFirmware/Configurations/bugfix-2.0.x/config/default
     CONF_DIR=../../default
     (wget $CONF_URL/Configuration.h -O $CONF_DIR/Configuration.h &&
     wget $CONF_URL/Configuration_adv.h -O $CONF_DIR/Configuration_adv.h &&
@@ -32,7 +32,15 @@ build_config() {
   ./build-config.py $printer_name $toolhead_name -D ${group}/${printer_name}/${toolhead_name} --summary
 }
 
-fetch_default_config || (echo Unable to retrieve new configuration files; exit 1)
+if [ "$1" = "upgrade" ]; then
+  fetch_default_config || (echo Unable to retrieve new configuration files; exit 1)
+else
+  echo
+  echo
+  echo Using pre-existing config files. To update, use "./build-configs.sh upgrade"
+  echo
+  echo
+fi
 
 build_config standard  Gladiola_Mini                             Gladiola_SingleExtruder
 build_config accessory Gladiola_Mini                             Finch_Aerostruder
@@ -95,6 +103,7 @@ build_config accessory Oliveoil_TAZ6                             AchemonSphinx_S
 build_config accessory Oliveoil_TAZ6                             BandedTiger_HardenedSteel
 build_config accessory Oliveoil_TAZ6                             DingyCutworm_HardenedSteelPlus
 build_config accessory Oliveoil_TAZ6                             Goldenrod_HardenedExtruder
+build_config custom    Oliveoil_TAZ6Archim                       Opah_Moarstruder
 build_config custom    Oliveoil_TAZ6Archim                       Tilapia_SingleExtruder
 build_config custom    Oliveoil_TAZ6BLTouch                      Tilapia_SingleExtruder
 build_config custom    Oliveoil_TAZ6ArchimBLTouch                Tilapia_SingleExtruder
