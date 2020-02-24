@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-# Portions (c) 2019 Aleph Objects, Inc., 2019
-# Portions (c) 2019 Marcio Teixeira 2019
+# Portions (C) 2020, Marcio Teixeira
+# Portions (C) 2019, AlephObjects, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -1453,6 +1453,7 @@ def make_config(PRINTER, TOOLHEAD):
             # BLTouch Auto-Leveling
             MARLIN["Z_HOMING_HEIGHT"]                    = 10
             MARLIN["Z_PROBE_SPEED_SLOW"]                 = 5*60
+            MARLIN["XY_PROBE_SPEED"]                     = 300*60
             MARLIN["Z_CLEARANCE_DEPLOY_PROBE"]           = 15
             MARLIN["Z_CLEARANCE_BETWEEN_PROBES"]         = 5
             MARLIN["Z_SERVO_ANGLES"]                     = [10,90]
@@ -1836,9 +1837,14 @@ def make_config(PRINTER, TOOLHEAD):
 
         # In order to prevent jams on the Aero toolheads,
         # do a purge prior to unload
-        MARLIN["FILAMENT_UNLOAD_PURGE_RETRACT"]          = 0
-        MARLIN["FILAMENT_UNLOAD_PURGE_DELAY"]            = 0
-        MARLIN["FILAMENT_UNLOAD_PURGE_LENGTH"]           = 6
+        if "Aero" in TOOLHEAD_BLOCK:
+            MARLIN["FILAMENT_UNLOAD_PURGE_RETRACT"]      = 0
+            MARLIN["FILAMENT_UNLOAD_PURGE_DELAY"]        = 0
+            MARLIN["FILAMENT_UNLOAD_PURGE_LENGTH"]       = 6
+        else:
+            MARLIN["FILAMENT_UNLOAD_PURGE_RETRACT"]      = 0
+            MARLIN["FILAMENT_UNLOAD_PURGE_DELAY"]        = 0
+            MARLIN["FILAMENT_UNLOAD_PURGE_LENGTH"]       = 0
 
     if PRINTER in ["KangarooPaw_Bio"]:
         MARLIN["ADVANCED_PAUSE_FEATURE"]                 = False

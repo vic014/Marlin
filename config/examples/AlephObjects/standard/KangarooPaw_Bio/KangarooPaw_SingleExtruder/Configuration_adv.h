@@ -1876,7 +1876,7 @@
                                                   // Filament Unload does a Retract, Delay, and Purge first:
   #define FILAMENT_UNLOAD_PURGE_RETRACT       0 // <-- changed:  (mm) Unload initial retract length.
   #define FILAMENT_UNLOAD_PURGE_DELAY       0 // <-- changed:  (ms) Delay for the filament to cool after retract.
-  #define FILAMENT_UNLOAD_PURGE_LENGTH         6 // <-- changed:  (mm) An unretract is done, then this length is purged.
+  #define FILAMENT_UNLOAD_PURGE_LENGTH         0 // <-- changed:  (mm) An unretract is done, then this length is purged.
   #define FILAMENT_UNLOAD_PURGE_FEEDRATE      25  // (mm/s) feedrate to purge before unload
 
   #define PAUSE_PARK_NOZZLE_TIMEOUT           300 // <-- changed:  (seconds) Time limit before the nozzle is turned off for safety.

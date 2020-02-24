@@ -1,8 +1,8 @@
 #!/bin/sh
 
 ####
-# Portions copyright (C) 2019, AlephObjects, Inc.
-# Portions copyright (C) 2019, Marcio Teixeira
+# Portions (C) 2020, Marcio Teixeira
+# Portions (C) 2019, AlephObjects, Inc.
 #
 #
 # The bash script in this page is free software: you can
