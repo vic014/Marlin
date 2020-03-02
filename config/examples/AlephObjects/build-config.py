@@ -1382,10 +1382,10 @@ def make_config(PRINTER, TOOLHEAD):
         STANDARD_Y_BED_SIZE                              = 280
 
     elif "Experimental_BLTouch" in PRINTER:
-        STANDARD_X_MAX_POS                               = 320
-        STANDARD_X_MIN_POS                               = -6
-        STANDARD_Y_MAX_POS                               = 313
-        STANDARD_Y_MIN_POS                               = -27
+        STANDARD_X_MAX_POS                               = 326
+        STANDARD_X_MIN_POS                               = -37
+        STANDARD_Y_MAX_POS                               = 325
+        STANDARD_Y_MIN_POS                               = -1
 
         STANDARD_X_BED_SIZE                              = 280
         STANDARD_Y_BED_SIZE                              = 280
