@@ -1,7 +1,7 @@
 /**
  * Marlin 3D Printer Firmware
  *
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  * Copyright (c) 2016 Bob Cousins bobcousins42@googlemail.com
  * Copyright (c) 2015-2016 Nico Tonnhofer wurstnase.reprap@gmail.com
  * Copyright (c) 2016 Victor Perez victor_pv@hotmail.com
@@ -24,29 +24,15 @@
 
 #include "../../inc/MarlinConfig.h"
 
-#if ENABLED(EEPROM_SETTINGS) && ANY(FLASH_EEPROM_EMULATION, SRAM_EEPROM_EMULATION, SPI_EEPROM, I2C_EEPROM)
+#if EITHER(USE_REAL_EEPROM, SRAM_EEPROM_EMULATION)
 
 #include "../shared/persistent_store_api.h"
 
-#if ENABLED(FLASH_EEPROM_EMULATION)
-  #include <EEPROM.h>
-  static bool eeprom_data_written = false;
-#endif
-
 bool PersistentStore::access_start() {
-  #if ENABLED(FLASH_EEPROM_EMULATION)
-    eeprom_buffer_fill();
-  #endif
   return true;
 }
 
 bool PersistentStore::access_finish() {
-  #if ENABLED(FLASH_EEPROM_EMULATION)
-    if (eeprom_data_written) {
-      eeprom_buffer_flush();
-      eeprom_data_written = false;
-    }
-  #endif
   return true;
 }
 
@@ -55,19 +41,17 @@ bool PersistentStore::write_data(int &pos, const uint8_t *value, size_t size, ui
     uint8_t v = *value;
 
     // Save to either external EEPROM, program flash or Backup SRAM
-    #if EITHER(SPI_EEPROM, I2C_EEPROM)
+    #if USE_REAL_EEPROM
       // EEPROM has only ~100,000 write cycles,
       // so only write bytes that have changed!
       uint8_t * const p = (uint8_t * const)pos;
       if (v != eeprom_read_byte(p)) {
         eeprom_write_byte(p, v);
         if (eeprom_read_byte(p) != v) {
-          SERIAL_ECHO_MSG(MSG_ERR_EEPROM_WRITE);
+          SERIAL_ECHO_MSG(STR_ERR_EEPROM_WRITE);
           return true;
         }
       }
-    #elif ENABLED(FLASH_EEPROM_EMULATION)
-      eeprom_buffered_write_byte(pos, v);
     #else
       *(__IO uint8_t *)(BKPSRAM_BASE + (uint8_t * const)pos) = v;
     #endif
@@ -76,9 +60,6 @@ bool PersistentStore::write_data(int &pos, const uint8_t *value, size_t size, ui
     pos++;
     value++;
   };
-  #if ENABLED(FLASH_EEPROM_EMULATION)
-    eeprom_data_written = true;
-  #endif
 
   return false;
 }
@@ -87,10 +68,8 @@ bool PersistentStore::read_data(int &pos, uint8_t* value, size_t size, uint16_t 
   do {
     // Read from either external EEPROM, program flash or Backup SRAM
     const uint8_t c = (
-      #if EITHER(SPI_EEPROM, I2C_EEPROM)
+      #if USE_REAL_EEPROM
         eeprom_read_byte((uint8_t*)pos)
-      #elif ENABLED(FLASH_EEPROM_EMULATION)
-        eeprom_buffered_read_byte(pos)
       #else
         (*(__IO uint8_t *)(BKPSRAM_BASE + ((uint8_t*)pos)))
       #endif
@@ -106,13 +85,13 @@ bool PersistentStore::read_data(int &pos, uint8_t* value, size_t size, uint16_t 
 
 size_t PersistentStore::capacity() {
   return (
-    #if ENABLED(SRAM_EEPROM_EMULATION)
-      4096 // 4kB
-    #else
+    #if USE_REAL_EEPROM
       E2END + 1
+    #else
+      4096 // 4kB
     #endif
   );
 }
 
-#endif // EEPROM_SETTINGS && (FLASH_EEPROM_EMULATION || SRAM_EEPROM_EMULATION || SPI_EEPROM || I2C_EEPROM)
+#endif // USE_REAL_EEPROM || SRAM_EEPROM_EMULATION
 #endif // ARDUINO_ARCH_STM32 && !STM32GENERIC

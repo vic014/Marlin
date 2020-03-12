@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -31,7 +31,7 @@
  * M30 <filename>: Delete SD Card file
  */
 void GcodeSuite::M30() {
-  if (card.isDetected()) {
+  if (card.isMounted()) {
     card.closefile();
     card.removeFile(parser.string_arg);
   }

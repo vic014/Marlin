@@ -1,7 +1,7 @@
 /**
  * Marlin 3D Printer Firmware
  *
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  * Copyright (c) 2016 Bob Cousins bobcousins42@googlemail.com
  * Copyright (c) 2015-2016 Nico Tonnhofer wurstnase.reprap@gmail.com
  * Copyright (c) 2017 Victor Perez
@@ -28,11 +28,15 @@
 #include "../../inc/MarlinConfig.h"
 #include "../shared/Delay.h"
 
+#if HAS_TMC_SW_SERIAL
+  #include "SoftwareSerial.h"
+#endif
+
 #if ENABLED(SRAM_EEPROM_EMULATION)
   #if STM32F7xx
-    #include "stm32f7xx_ll_pwr.h"
+    #include <stm32f7xx_ll_pwr.h>
   #elif STM32F4xx
-    #include "stm32f4xx_ll_pwr.h"
+    #include <stm32f4xx_ll_pwr.h>
   #else
     #error "SRAM_EEPROM_EMULATION is currently only supported for STM32F4xx and STM32F7xx"
   #endif
@@ -60,7 +64,7 @@ uint16_t HAL_adc_result;
 #endif
 
 // HAL initialization task
-void HAL_init(void) {
+void HAL_init() {
   FastIO_init();
 
   #if ENABLED(SDSUPPORT)
@@ -82,16 +86,36 @@ void HAL_init(void) {
   // Wait until backup regulator is initialized
   while (!LL_PWR_IsActiveFlag_BRR());
   #endif // EEPROM_EMULATED_SRAM
+
+  #if HAS_TMC_SW_SERIAL
+    SoftwareSerial::setInterruptPriority(SWSERIAL_TIMER_IRQ_PRIO, 0);
+  #endif
 }
 
-void HAL_clear_reset_source(void) { __HAL_RCC_CLEAR_RESET_FLAGS(); }
+void HAL_clear_reset_source() { __HAL_RCC_CLEAR_RESET_FLAGS(); }
 
-uint8_t HAL_get_reset_source(void) {
-  if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST) != RESET) return RST_WATCHDOG;
-  if (__HAL_RCC_GET_FLAG(RCC_FLAG_SFTRST) != RESET)  return RST_SOFTWARE;
-  if (__HAL_RCC_GET_FLAG(RCC_FLAG_PINRST) != RESET)  return RST_EXTERNAL;
-  if (__HAL_RCC_GET_FLAG(RCC_FLAG_PORRST) != RESET)  return RST_POWER_ON;
-  return 0;
+uint8_t HAL_get_reset_source() {
+  return
+    #ifdef RCC_FLAG_IWDGRST // Some sources may not exist...
+      RESET != __HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST)  ? RST_WATCHDOG :
+    #endif
+    #ifdef RCC_FLAG_IWDG1RST
+      RESET != __HAL_RCC_GET_FLAG(RCC_FLAG_IWDG1RST) ? RST_WATCHDOG :
+    #endif
+    #ifdef RCC_FLAG_IWDG2RST
+      RESET != __HAL_RCC_GET_FLAG(RCC_FLAG_IWDG2RST) ? RST_WATCHDOG :
+    #endif
+    #ifdef RCC_FLAG_SFTRST
+      RESET != __HAL_RCC_GET_FLAG(RCC_FLAG_SFTRST)   ? RST_SOFTWARE :
+    #endif
+    #ifdef RCC_FLAG_PINRST
+      RESET != __HAL_RCC_GET_FLAG(RCC_FLAG_PINRST)   ? RST_EXTERNAL :
+    #endif
+    #ifdef RCC_FLAG_PORRST
+      RESET != __HAL_RCC_GET_FLAG(RCC_FLAG_PORRST)   ? RST_POWER_ON :
+    #endif
+    0
+  ;
 }
 
 void _delay_ms(const int delay_ms) { delay(delay_ms); }
@@ -104,12 +128,11 @@ extern "C" {
 // ADC
 // ------------------------
 
-void HAL_adc_start_conversion(const uint8_t adc_pin) {
-  HAL_adc_result = analogRead(adc_pin);
-}
+// TODO: Make sure this doesn't cause any delay
+void HAL_adc_start_conversion(const uint8_t adc_pin) { HAL_adc_result = analogRead(adc_pin); }
 
-uint16_t HAL_adc_get_result(void) {
-  return HAL_adc_result;
-}
+uint16_t HAL_adc_get_result() { return HAL_adc_result; }
+
+void flashFirmware(int16_t) { NVIC_SystemReset(); }
 
 #endif // ARDUINO_ARCH_STM32 && !STM32GENERIC

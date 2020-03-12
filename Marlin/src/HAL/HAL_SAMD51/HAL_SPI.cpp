@@ -1,7 +1,7 @@
 /**
  * Marlin 3D Printer Firmware
  *
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  * SAMD51 HAL developed by Giuliano Zaro (AKA GMagician)
  *
  * This program is free software: you can redistribute it and/or modify
@@ -46,9 +46,6 @@
   // ------------------------
   #error "Software SPI not supported for SAMD51. Use Hardware SPI."
 
-  #if SD_CONNECTION_IS(ONBOARD)
-  #endif
-
 #else // !SOFTWARE_SPI
 
   #ifdef ADAFRUIT_GRAND_CENTRAL_M4
@@ -64,7 +61,7 @@
   // ------------------------
   // Hardware SPI
   // ------------------------
-  void spiBegin(void) {
+  void spiBegin() {
     spiInit(SPI_HALF_SPEED);
   }
 
@@ -92,7 +89,7 @@
    *
    * @details
    */
-  uint8_t spiRec(void) {
+  uint8_t spiRec() {
     sdSPI.beginTransaction(spiConfig);
     uint8_t returnByte = sdSPI.transfer(0xFF);
     sdSPI.endTransaction();

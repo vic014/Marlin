@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  * Copyright (c) 2016 Bob Cousins bobcousins42@googlemail.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 #include "math.h"
 
 #ifdef USBCON
-  #include "HardwareSerial.h"
+  #include <HardwareSerial.h>
 #else
   #define HardwareSerial_h // Hack to prevent HardwareSerial.h header inclusion
   #include "MarlinSerial.h"
@@ -38,6 +38,14 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
+#ifndef pgm_read_ptr
+  // Compatibility for avr-libc 1.8.0-4.1 included with Ubuntu for
+  // Windows Subsystem for Linux on Windows 10 as of 10/18/2019
+  #define pgm_read_ptr_far(address_long) (void*)__ELPM_word((uint32_t)(address_long))
+  #define pgm_read_ptr_near(address_short) (void*)__LPM_word((uint16_t)(address_short))
+  #define pgm_read_ptr(address_short) pgm_read_ptr_near(address_short)
+#endif
+
 // ------------------------
 // Defines
 // ------------------------
@@ -45,8 +53,8 @@
 //#define analogInputToDigitalPin(IO) IO
 
 #ifndef CRITICAL_SECTION_START
-  #define CRITICAL_SECTION_START  unsigned char _sreg = SREG; cli()
-  #define CRITICAL_SECTION_END    SREG = _sreg
+  #define CRITICAL_SECTION_START()  unsigned char _sreg = SREG; cli()
+  #define CRITICAL_SECTION_END()    SREG = _sreg
 #endif
 #define ISRS_ENABLED() TEST(SREG, SREG_I)
 #define ENABLE_ISRS()  sei()
@@ -83,41 +91,54 @@ typedef int8_t pin_t;
   #define NUM_SERIAL 1
 #else
   #if !WITHIN(SERIAL_PORT, -1, 3)
-    #error "SERIAL_PORT must be from -1 to 3"
+    #error "SERIAL_PORT must be from -1 to 3. Please update your configuration."
   #endif
 
   #define MYSERIAL0 customizedSerial1
 
   #ifdef SERIAL_PORT_2
     #if !WITHIN(SERIAL_PORT_2, -1, 3)
-      #error "SERIAL_PORT_2 must be from -1 to 3"
+      #error "SERIAL_PORT_2 must be from -1 to 3. Please update your configuration."
     #elif SERIAL_PORT_2 == SERIAL_PORT
-      #error "SERIAL_PORT_2 must be different than SERIAL_PORT"
+      #error "SERIAL_PORT_2 must be different than SERIAL_PORT. Please update your configuration."
     #endif
-    #define NUM_SERIAL 2
     #define MYSERIAL1 customizedSerial2
+    #define NUM_SERIAL 2
   #else
     #define NUM_SERIAL 1
   #endif
+#endif
+
+#ifdef DGUS_SERIAL_PORT
+  #if !WITHIN(DGUS_SERIAL_PORT, -1, 3)
+    #error "DGUS_SERIAL_PORT must be from -1 to 3. Please update your configuration."
+  #elif DGUS_SERIAL_PORT == SERIAL_PORT
+    #error "DGUS_SERIAL_PORT must be different than SERIAL_PORT. Please update your configuration."
+  #elif defined(SERIAL_PORT_2) && DGUS_SERIAL_PORT == SERIAL_PORT_2
+    #error "DGUS_SERIAL_PORT must be different than SERIAL_PORT_2. Please update your configuration."
+  #endif
+  #define DGUS_SERIAL internalDgusSerial
+
+  #define DGUS_SERIAL_GET_TX_BUFFER_FREE DGUS_SERIAL.get_tx_buffer_free
 #endif
 
 // ------------------------
 // Public functions
 // ------------------------
 
-void HAL_init(void);
+void HAL_init();
 
-//void cli(void);
+//void cli();
 
 //void _delay_ms(const int delay);
 
-inline void HAL_clear_reset_source(void) { MCUSR = 0; }
-inline uint8_t HAL_get_reset_source(void) { return MCUSR; }
+inline void HAL_clear_reset_source() { MCUSR = 0; }
+inline uint8_t HAL_get_reset_source() { return MCUSR; }
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
 extern "C" {
-  int freeMemory(void);
+  int freeMemory();
 }
 #pragma GCC diagnostic pop
 
@@ -146,8 +167,7 @@ extern "C" {
 #define DISABLE_TEMPERATURE_INTERRUPT()    CBI(TIMSK0, OCIE0B)
 #define TEMPERATURE_ISR_ENABLED()         TEST(TIMSK0, OCIE0B)
 
-FORCE_INLINE void HAL_timer_start(const uint8_t timer_num, const uint32_t frequency) {
-  UNUSED(frequency);
+FORCE_INLINE void HAL_timer_start(const uint8_t timer_num, const uint32_t) {
   switch (timer_num) {
     case STEP_TIMER_NUM:
       // waveform generation = 0100 = CTC
@@ -199,9 +219,9 @@ FORCE_INLINE void HAL_timer_start(const uint8_t timer_num, const uint32_t freque
 
 /* 18 cycles maximum latency */
 #define HAL_STEP_TIMER_ISR() \
-extern "C" void TIMER1_COMPA_vect (void) __attribute__ ((signal, naked, used, externally_visible)); \
-extern "C" void TIMER1_COMPA_vect_bottom (void) asm ("TIMER1_COMPA_vect_bottom") __attribute__ ((used, externally_visible, noinline)); \
-void TIMER1_COMPA_vect (void) { \
+extern "C" void TIMER1_COMPA_vect() __attribute__ ((signal, naked, used, externally_visible)); \
+extern "C" void TIMER1_COMPA_vect_bottom() asm ("TIMER1_COMPA_vect_bottom") __attribute__ ((used, externally_visible, noinline)); \
+void TIMER1_COMPA_vect() { \
   __asm__ __volatile__ ( \
     A("push r16")                      /* 2 Save R16 */ \
     A("in r16, __SREG__")              /* 1 Get SREG */ \
@@ -268,13 +288,13 @@ void TIMER1_COMPA_vect (void) { \
     : \
   ); \
 } \
-void TIMER1_COMPA_vect_bottom(void)
+void TIMER1_COMPA_vect_bottom()
 
 /* 14 cycles maximum latency */
 #define HAL_TEMP_TIMER_ISR() \
-extern "C" void TIMER0_COMPB_vect (void) __attribute__ ((signal, naked, used, externally_visible)); \
-extern "C" void TIMER0_COMPB_vect_bottom(void)  asm ("TIMER0_COMPB_vect_bottom") __attribute__ ((used, externally_visible, noinline)); \
-void TIMER0_COMPB_vect (void) { \
+extern "C" void TIMER0_COMPB_vect() __attribute__ ((signal, naked, used, externally_visible)); \
+extern "C" void TIMER0_COMPB_vect_bottom()  asm ("TIMER0_COMPB_vect_bottom") __attribute__ ((used, externally_visible, noinline)); \
+void TIMER0_COMPB_vect() { \
   __asm__ __volatile__ ( \
     A("push r16")                       /* 2 Save R16 */ \
     A("in r16, __SREG__")               /* 1 Get SREG */ \
@@ -334,16 +354,16 @@ void TIMER0_COMPB_vect (void) { \
     : \
   ); \
 } \
-void TIMER0_COMPB_vect_bottom(void)
+void TIMER0_COMPB_vect_bottom()
 
 // ADC
 #ifdef DIDR2
-  #define HAL_ANALOG_SELECT(pin) do{ if (pin < 8) SBI(DIDR0, pin); else SBI(DIDR2, pin & 0x07); }while(0)
+  #define HAL_ANALOG_SELECT(ind) do{ if (ind < 8) SBI(DIDR0, ind); else SBI(DIDR2, ind & 0x07); }while(0)
 #else
-  #define HAL_ANALOG_SELECT(pin) do{ SBI(DIDR0, pin); }while(0)
+  #define HAL_ANALOG_SELECT(ind) SBI(DIDR0, ind);
 #endif
 
-inline void HAL_adc_init(void) {
+inline void HAL_adc_init() {
   ADCSRA = _BV(ADEN) | _BV(ADSC) | _BV(ADIF) | 0x07;
   DIDR0 = 0;
   #ifdef DIDR2
@@ -351,13 +371,14 @@ inline void HAL_adc_init(void) {
   #endif
 }
 
-#define SET_ADMUX_ADCSRA(pin) ADMUX = _BV(REFS0) | (pin & 0x07); SBI(ADCSRA, ADSC)
+#define SET_ADMUX_ADCSRA(ch) ADMUX = _BV(REFS0) | (ch & 0x07); SBI(ADCSRA, ADSC)
 #ifdef MUX5
-  #define HAL_START_ADC(pin) if (pin > 7) ADCSRB = _BV(MUX5); else ADCSRB = 0; SET_ADMUX_ADCSRA(pin)
+  #define HAL_START_ADC(ch) if (ch > 7) ADCSRB = _BV(MUX5); else ADCSRB = 0; SET_ADMUX_ADCSRA(ch)
 #else
-  #define HAL_START_ADC(pin) ADCSRB = 0; SET_ADMUX_ADCSRA(pin)
+  #define HAL_START_ADC(ch) ADCSRB = 0; SET_ADMUX_ADCSRA(ch)
 #endif
 
+#define HAL_ADC_RESOLUTION 10
 #define HAL_READ_ADC()  ADC
 #define HAL_ADC_READY() !TEST(ADCSRA, ADSC)
 

@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,13 +27,7 @@
 // Include configs and pins to get all EEPROM flags
 #include "../../inc/MarlinConfig.h"
 
-#ifdef STM32F7
-  #define HAS_EMULATED_EEPROM 1
-#else
-  #define HAS_EMULATED_EEPROM NONE(I2C_EEPROM, SPI_EEPROM)
-#endif
-
-#if HAS_EMULATED_EEPROM && ENABLED(EEPROM_SETTINGS)
+#if ENABLED(FLASH_EEPROM_EMULATION)
 
 // ------------------------
 // Includes
@@ -118,5 +112,5 @@ void eeprom_update_block(const void *__src, void *__dst, size_t __n) {
 
 }
 
-#endif // EEPROM_SETTINGS
+#endif // FLASH_EEPROM_EMULATION
 #endif // STM32GENERIC && (STM32F4 || STM32F7)

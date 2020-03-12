@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -151,13 +151,12 @@
     (((uint32_t)(addr) & 0xF0000000) + 0x02000000 + ((uint32_t)(addr)&0xFFFFF)*32 + (bit)*4)
 
   // run at ~8 .. ~10Mhz - Rx version (Tx line not altered)
-  static uint8_t spiTransferRx0(uint8_t bout) { // using Mode 0
+  static uint8_t spiTransferRx0(uint8_t) { // using Mode 0
     uint32_t bin = 0;
     uint32_t work = 0;
     uint32_t BITBAND_MISO_PORT = BITBAND_ADDRESS( ((uint32_t)PORT(MISO_PIN))+0x3C, PIN_SHIFT(MISO_PIN));  /* PDSR of port in bitband area */
     uint32_t SCK_PORT_PLUS30 = ((uint32_t) PORT(SCK_PIN)) + 0x30;    /* SODR of port */
     uint32_t SCK_MASK = PIN_MASK(SCK_PIN);
-    UNUSED(bout);
 
     /* The software SPI routine */
     __asm__ __volatile__(
@@ -241,7 +240,7 @@
   }
 
   // all the others
-  static uint32_t spiDelayCyclesX4 = (F_CPU) / 1000000; // 4uS => 125khz
+  static uint32_t spiDelayCyclesX4 = (F_CPU) / 1000000; // 4µs => 125khz
 
   static uint8_t spiTransferX(uint8_t b) { // using Mode 0
     int bits = 8;
@@ -428,7 +427,7 @@
 
   static void spiTxBlockX(const uint8_t* buf, uint32_t todo) {
     do {
-      (void) spiTransferTx(*buf++);
+      (void)spiTransferTx(*buf++);
     } while (--todo);
   }
 

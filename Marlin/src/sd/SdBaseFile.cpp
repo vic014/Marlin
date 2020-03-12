@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -20,6 +20,12 @@
  *
  */
 
+#if __GNUC__ > 8
+  // The NXP platform updated GCC from 7.2.1 to 9.2.1
+  // and this new warning apparently can be ignored.
+  #pragma GCC diagnostic ignored "-Waddress-of-packed-member"
+#endif
+
 /**
  * Arduino SdFat Library
  * Copyright (c) 2009 by William Greiman
@@ -33,7 +39,7 @@
 
 #include "SdBaseFile.h"
 
-#include "../Marlin.h"
+#include "../MarlinCore.h"
 SdBaseFile* SdBaseFile::cwd_ = 0;   // Pointer to Current Working Directory
 
 // callback function for date/time
@@ -273,7 +279,7 @@ int16_t SdBaseFile::fgets(char* str, int16_t num, char* delim) {
  *
  * \return true for success, false for failure.
  */
-bool SdBaseFile::getFilename(char * const name) {
+bool SdBaseFile::getDosName(char * const name) {
   if (!isOpen()) return false;
 
   if (isRoot()) {
@@ -957,7 +963,7 @@ void SdBaseFile::printFatTime(uint16_t fatTime) {
  */
 bool SdBaseFile::printName() {
   char name[FILENAME_LENGTH];
-  if (!getFilename(name)) return false;
+  if (!getDosName(name)) return false;
   SERIAL_ECHO(name);
   return true;
 }

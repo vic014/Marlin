@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -37,7 +37,7 @@
 #ifdef ARDUINO_ARCH_SAM
 
 // ISR handler type
-typedef void (*pfnISR_Handler)(void);
+typedef void (*pfnISR_Handler)();
 
 // Install a new interrupt vector handler for the given irq, returning the old one
 pfnISR_Handler install_isr(IRQn_Type irq, pfnISR_Handler newHandler);

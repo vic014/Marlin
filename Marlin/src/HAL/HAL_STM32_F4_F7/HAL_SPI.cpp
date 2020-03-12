@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -71,7 +71,7 @@ static SPISettings spiConfig;
  *
  * @details Only configures SS pin since libmaple creates and initialize the SPI object
  */
-void spiBegin(void) {
+void spiBegin() {
   #if !defined(SS_PIN) || SS_PIN < 0
     #error SS_PIN not defined!
   #endif
@@ -103,7 +103,7 @@ void spiInit(uint8_t spiRate) {
  *
  * @details
  */
-uint8_t spiRec(void) {
+uint8_t spiRec() {
   SPI.beginTransaction(spiConfig);
   uint8_t returnByte = SPI.transfer(0xFF);
   SPI.endTransaction();

@@ -1,7 +1,7 @@
 /**
  * Marlin 3D Printer Firmware
  *
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  * Copyright (c) 2016 Bob Cousins bobcousins42@googlemail.com
  * Copyright (c) 2015-2016 Nico Tonnhofer wurstnase.reprap@gmail.com
  *
@@ -86,10 +86,10 @@ void HAL_timer_start(const uint8_t timer_num, const uint32_t frequency) {
 
 //forward the interrupt
 extern "C" void TIM5_IRQHandler() {
-  ((void(*)(void))timerConfig[0].callback)();
+  ((void(*)())timerConfig[0].callback)();
 }
 extern "C" void TIM7_IRQHandler() {
-  ((void(*)(void))timerConfig[1].callback)();
+  ((void(*)())timerConfig[1].callback)();
 }
 
 void HAL_timer_set_compare(const uint8_t timer_num, const uint32_t compare) {

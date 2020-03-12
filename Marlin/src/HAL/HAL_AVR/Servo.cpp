@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -131,7 +131,7 @@ void initISR(timer16_Sequence_t timer) {
       TCCR1A = 0;             // normal counting mode
       TCCR1B = _BV(CS11);     // set prescaler of 8
       TCNT1 = 0;              // clear the timer count
-      #if defined(__AVR_ATmega8__)|| defined(__AVR_ATmega128__)
+      #if defined(__AVR_ATmega8__) || defined(__AVR_ATmega128__)
         SBI(TIFR, OCF1A);      // clear any pending interrupts;
         SBI(TIMSK, OCIE1A);    // enable the output compare interrupt
       #else

@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -35,7 +35,7 @@
 // Public functions
 // ------------------------
 
-void HAL_init(void) {
+void HAL_init() {
   // Init Servo Pins
   #define INIT_SERVO(N) OUT_WRITE(SERVO##N##_PIN, LOW)
   #if HAS_SERVO_0

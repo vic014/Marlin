@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -30,4 +30,4 @@ void watchdog_init();
 
 // Reset watchdog. MUST be called at least every 4 seconds after the
 // first watchdog_init or AVR will go into emergency procedures.
-inline void watchdog_reset() { watchdogReset(); }
+inline void HAL_watchdog_refresh() { watchdogReset(); }

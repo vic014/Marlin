@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -28,7 +28,7 @@
 
 #include "../../inc/MarlinConfig.h"
 
-#if ENABLED(EEPROM_SETTINGS) && NONE(FLASH_EEPROM_EMULATION, SRAM_EEPROM_EMULATION, SPI_EEPROM, I2C_EEPROM)
+#if ENABLED(SDCARD_EEPROM_EMULATION)
 
 #include "../shared/persistent_store_api.h"
 
@@ -47,7 +47,7 @@ static char _ALIGN(4) HAL_eeprom_data[HAL_EEPROM_SIZE];
   #define EEPROM_FILENAME "eeprom.dat"
 
   bool PersistentStore::access_start() {
-    if (!card.isDetected()) return false;
+    if (!card.isMounted()) return false;
 
     SdFile file, root = card.getroot();
     if (!file.open(&root, EEPROM_FILENAME, O_RDONLY))
@@ -62,7 +62,7 @@ static char _ALIGN(4) HAL_eeprom_data[HAL_EEPROM_SIZE];
   }
 
   bool PersistentStore::access_finish() {
-    if (!card.isDetected()) return false;
+    if (!card.isMounted()) return false;
 
     SdFile file, root = card.getroot();
     int bytes_written = 0;
@@ -99,5 +99,5 @@ bool PersistentStore::read_data(int &pos, uint8_t* value, const size_t size, uin
 
 size_t PersistentStore::capacity() { return HAL_EEPROM_SIZE; }
 
-#endif // EEPROM_SETTINGS
-#endif // STM32
+#endif // SDCARD_EEPROM_EMULATION
+#endif // STM32 && !STM32GENERIC

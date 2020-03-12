@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -75,7 +75,7 @@ class Max7219 {
 public:
   static uint8_t led_line[MAX7219_LINES];
 
-  Max7219() { }
+  Max7219() {}
 
   static void init();
   static void register_setup();
@@ -87,6 +87,12 @@ public:
 
   // Refresh all units
   static inline void refresh() { for (uint8_t i = 0; i < 8; i++) refresh_line(i); }
+
+  // Suspend / resume updates to the LED unit
+  // Use these methods to speed up multiple changes
+  // or to apply updates from interrupt context.
+  static inline void suspend() { suspended++; }
+  static inline void resume() { suspended--; suspended |= 0x80; }
 
   // Update a single native line on all units
   static void refresh_line(const uint8_t line);
@@ -126,6 +132,7 @@ public:
   static void idle_tasks();
 
 private:
+  static uint8_t suspended;
   static void error(const char * const func, const int32_t v1, const int32_t v2=-1);
   static void noop();
   static void set(const uint8_t line, const uint8_t bits);
@@ -136,11 +143,9 @@ private:
   static void quantity16(const uint8_t y, const uint8_t ov, const uint8_t nv);
 
   #ifdef MAX7219_INIT_TEST
-  #if MAX7219_INIT_TEST == 2
-    static void spiral(const bool on, const uint16_t del);
-  #else
-    static void sweep(const int8_t dir, const uint16_t ms, const bool on);
-  #endif
+    static void test_pattern();
+    static void run_test_pattern();
+    static void start_test_pattern();
   #endif
 };
 

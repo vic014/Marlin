@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -23,7 +23,7 @@
 
 void watchdog_init();
 
-inline void watchdog_reset() {
+inline void HAL_watchdog_refresh() {
   // Watchdog refresh sequence
   WDOG_REFRESH = 0xA602;
   WDOG_REFRESH = 0xB480;

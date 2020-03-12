@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -68,8 +68,8 @@ typedef uint32_t hal_timer_t;
 #define ENABLE_TEMPERATURE_INTERRUPT() HAL_timer_enable_interrupt(TEMP_TIMER_NUM)
 #define DISABLE_TEMPERATURE_INTERRUPT() HAL_timer_disable_interrupt(TEMP_TIMER_NUM)
 
-#define HAL_STEP_TIMER_ISR()  extern "C" void ftm0_isr(void) //void TC3_Handler()
-#define HAL_TEMP_TIMER_ISR()  extern "C" void ftm1_isr(void) //void TC4_Handler()
+#define HAL_STEP_TIMER_ISR()  extern "C" void ftm0_isr() //void TC3_Handler()
+#define HAL_TEMP_TIMER_ISR()  extern "C" void ftm1_isr() //void TC4_Handler()
 
 void HAL_timer_start(const uint8_t timer_num, const uint32_t frequency);
 

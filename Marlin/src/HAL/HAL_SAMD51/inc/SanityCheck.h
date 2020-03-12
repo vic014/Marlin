@@ -1,7 +1,7 @@
 /**
  * Marlin 3D Printer Firmware
  *
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  * SAMD51 HAL developed by Giuliano Zaro (AKA GMagician)
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,6 +23,10 @@
  * Test SAMD51 specific configuration values for errors at compile-time.
  */
 
+#if ENABLED(FLASH_EEPROM_EMULATION)
+  #warning "Did you activate the SmartEEPROM? See https://github.com/GMagician/SAMD51-SmartEEprom-Manager/releases"
+#endif
+
 #if defined(ADAFRUIT_GRAND_CENTRAL_M4) && SD_CONNECTION_IS(CUSTOM_CABLE)
   #error "No custom SD drive cable defined for this board."
 #endif
@@ -36,13 +40,9 @@
 #endif
 
 #if ENABLED(SDIO_SUPPORT)
-  #error "SDIO_SUPPORT is not supported."
+  #error "SDIO_SUPPORT is not supported on SAMD51."
 #endif
 
 #if ENABLED(FAST_PWM_FAN)
   #error "FAST_PWM_FAN is not yet implemented for this platform."
-#endif
-
-#if ENABLED(EEPROM_SETTINGS) && NONE(SPI_EEPROM, I2C_EEPROM)
-  #warning "Did you activate the SmartEEPROM? See https://github.com/GMagician/SAMD51-SmartEEprom-Activator"
 #endif

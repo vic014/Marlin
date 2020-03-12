@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -44,7 +44,7 @@
 #define sw_barrier() __asm__ volatile("": : :"memory");
 
 // (re)initialize UART0 as a monitor output to 250000,n,8,1
-static void TXBegin(void) {
+static void TXBegin() {
 }
 
 // Send character through UART with no interrupts
@@ -199,18 +199,27 @@ void HardFault_HandlerC(unsigned long *sp, unsigned long lr, unsigned long cause
 
   // Clear cause of reset to prevent entering smoothie bootstrap
   HAL_clear_reset_source();
+
   // Restart watchdog
-  //WDT_Restart(WDT);
-  watchdog_init();
+  #if ENABLED(USE_WATCHDOG)
+    //WDT_Restart(WDT);
+    watchdog_init();
+  #endif
 
   // Reset controller
   NVIC_SystemReset();
 
-  for (;;) watchdog_init();
+  // Nothing below here is compiled because NVIC_SystemReset loops forever
+
+  for (;;) {
+    #if ENABLED(USE_WATCHDOG)
+      watchdog_init();
+    #endif
+  }
 }
 
 extern "C" {
-__attribute__((naked)) void NMI_Handler(void) {
+__attribute__((naked)) void NMI_Handler() {
   __asm__ __volatile__ (
     ".syntax unified" "\n\t"
     A("tst lr, #4")
@@ -223,7 +232,7 @@ __attribute__((naked)) void NMI_Handler(void) {
   );
 }
 
-__attribute__((naked)) void HardFault_Handler(void) {
+__attribute__((naked)) void HardFault_Handler() {
   __asm__ __volatile__ (
     ".syntax unified" "\n\t"
     A("tst lr, #4")
@@ -236,7 +245,7 @@ __attribute__((naked)) void HardFault_Handler(void) {
   );
 }
 
-__attribute__((naked)) void MemManage_Handler(void) {
+__attribute__((naked)) void MemManage_Handler() {
   __asm__ __volatile__ (
     ".syntax unified" "\n\t"
     A("tst lr, #4")
@@ -249,7 +258,7 @@ __attribute__((naked)) void MemManage_Handler(void) {
   );
 }
 
-__attribute__((naked)) void BusFault_Handler(void) {
+__attribute__((naked)) void BusFault_Handler() {
   __asm__ __volatile__ (
     ".syntax unified" "\n\t"
     A("tst lr, #4")
@@ -262,7 +271,7 @@ __attribute__((naked)) void BusFault_Handler(void) {
   );
 }
 
-__attribute__((naked)) void UsageFault_Handler(void) {
+__attribute__((naked)) void UsageFault_Handler() {
   __asm__ __volatile__ (
     ".syntax unified" "\n\t"
     A("tst lr, #4")
@@ -275,7 +284,7 @@ __attribute__((naked)) void UsageFault_Handler(void) {
   );
 }
 
-__attribute__((naked)) void DebugMon_Handler(void) {
+__attribute__((naked)) void DebugMon_Handler() {
   __asm__ __volatile__ (
     ".syntax unified" "\n\t"
     A("tst lr, #4")
@@ -289,7 +298,7 @@ __attribute__((naked)) void DebugMon_Handler(void) {
 }
 
 /* This is NOT an exception, it is an interrupt handler - Nevertheless, the framing is the same */
-__attribute__((naked)) void WDT_IRQHandler(void) {
+__attribute__((naked)) void WDT_IRQHandler() {
   __asm__ __volatile__ (
     ".syntax unified" "\n\t"
     A("tst lr, #4")
@@ -302,7 +311,7 @@ __attribute__((naked)) void WDT_IRQHandler(void) {
   );
 }
 
-__attribute__((naked)) void RSTC_Handler(void) {
+__attribute__((naked)) void RSTC_Handler() {
   __asm__ __volatile__ (
     ".syntax unified" "\n\t"
     A("tst lr, #4")

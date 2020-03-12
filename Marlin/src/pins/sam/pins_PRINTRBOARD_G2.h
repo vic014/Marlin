@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -126,7 +126,7 @@
 #define MOTOR_CURRENT_PWM_Y_PIN 64 // PB19        MOTOR 3
 #define MOTOR_CURRENT_PWM_E_PIN 61 // PA2         MOTOR 4
 
-//#define DEFAULT_PWM_MOTOR_CURRENT { 300, 400, 1000}  // XY Z E0, 1000 = 1000mAh
+#define DEFAULT_PWM_MOTOR_CURRENT { 300, 400, 1000}  // XY Z E0, 1000 = 1000mAh
 
 //
 // Temperature Sensors

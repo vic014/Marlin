@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -24,13 +24,18 @@
 
 #include <Servo.h>
 
+#include "../../core/millis_t.h"
+
 // Inherit and expand on the official library
 class libServo : public Servo {
   public:
+    libServo();
     int8_t attach(const int pin);
     int8_t attach(const int pin, const int min, const int max);
     void move(const int value);
   private:
-    uint16_t min_ticks, max_ticks;
-    uint8_t servoIndex;               // index into the channel data for this servo
+    typedef Servo super;
+
+    int servo_pin = 0;
+    millis_t delay = 0;
 };

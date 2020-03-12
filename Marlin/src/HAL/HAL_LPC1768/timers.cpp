@@ -1,7 +1,7 @@
 /**
  * Marlin 3D Printer Firmware
  *
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  * Copyright (c) 2016 Bob Cousins bobcousins42@googlemail.com
  * Copyright (c) 2015-2016 Nico Tonnhofer wurstnase.reprap@gmail.com
  *
@@ -31,7 +31,7 @@
 #include "../../inc/MarlinConfig.h"
 #include "timers.h"
 
-void HAL_timer_init(void) {
+void HAL_timer_init() {
   SBI(LPC_SC->PCONP, SBIT_TIMER0);  // Power ON Timer 0
   LPC_TIM0->PR = (HAL_TIMER_RATE) / (STEPPER_TIMER_RATE) - 1; // Use prescaler to set frequency if needed
 

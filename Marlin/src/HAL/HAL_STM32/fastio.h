@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -55,7 +55,7 @@ void FastIO_init(); // Must be called before using fast io macros
     else   FastIOPortMap[STM_PORT(digitalPin[IO])]->BRR  = _BV32(STM_PIN(digitalPin[IO])) ; \
   }while(0)
 #else
-  #define _WRITE(IO, V) (FastIOPortMap[STM_PORT(digitalPin[IO])]->BSRR = _BV32(STM_PIN(digitalPin[IO]) + (V ? 0 : 16)))
+  #define _WRITE(IO, V) (FastIOPortMap[STM_PORT(digitalPin[IO])]->BSRR = _BV32(STM_PIN(digitalPin[IO]) + ((V) ? 0 : 16)))
 #endif
 
 #define _READ(IO)               bool(READ_BIT(FastIOPortMap[STM_PORT(digitalPin[IO])]->IDR, _BV32(STM_PIN(digitalPin[IO]))))

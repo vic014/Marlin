@@ -1,7 +1,7 @@
 /**
  * Marlin 3D Printer Firmware
  *
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 
 #include "../../inc/MarlinConfig.h"
 
-#if ENABLED(EEPROM_SETTINGS) && EITHER(SPI_EEPROM, I2C_EEPROM)
+#if USE_REAL_EEPROM
 
 #include "../shared/persistent_store_api.h"
 
@@ -49,7 +49,7 @@ bool PersistentStore::write_data(int &pos, const uint8_t *value, size_t size, ui
     if (v != eeprom_read_byte(p)) {
       eeprom_write_byte(p, v);
       if (eeprom_read_byte(p) != v) {
-        SERIAL_ECHO_MSG(MSG_ERR_EEPROM_WRITE);
+        SERIAL_ECHO_MSG(STR_ERR_EEPROM_WRITE);
         return true;
       }
     }
@@ -73,5 +73,5 @@ bool PersistentStore::read_data(int &pos, uint8_t* value, size_t size, uint16_t 
 
 size_t PersistentStore::capacity() { return E2END + 1; }
 
-#endif // EEPROM_SETTINGS && EITHER(SPI_EEPROM, I2C_EEPROM)
+#endif // USE_REAL_EEPROM
 #endif // __STM32F1__

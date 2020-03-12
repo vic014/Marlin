@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -38,15 +38,13 @@
  */
 #include "../../inc/MarlinConfigPre.h"
 
-#if ENABLED(EEPROM_SETTINGS)
+#if ENABLED(FLASH_EEPROM_EMULATION)
 
 #include "persistent_store_api.h"
 #include "../../inc/MarlinConfig.h"
 
-#if ENABLED(FLASH_EEPROM_EMULATION)
-
 extern "C" {
-  #include "lpc17xx_iap.h"
+  #include <lpc17xx_iap.h>
 }
 
 #define SECTOR_START(sector)  ((sector < 16) ? (sector * 0x1000) : ((sector - 14) * 0x8000))
@@ -128,5 +126,4 @@ bool PersistentStore::read_data(int &pos, uint8_t* value, size_t size, uint16_t 
 size_t PersistentStore::capacity() { return EEPROM_SIZE; }
 
 #endif // FLASH_EEPROM_EMULATION
-#endif // EEPROM_SETTINGS
 #endif // TARGET_LPC1768

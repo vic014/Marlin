@@ -1,3 +1,24 @@
+/**
+ * Marlin 3D Printer Firmware
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ *
+ * Based on Sprinter and grbl.
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 /* EEPROM emulation over flash with reduced wear
  *
@@ -33,7 +54,7 @@
 
 #include "../../inc/MarlinConfig.h"
 
-#if ENABLED(EEPROM_SETTINGS) && NONE(I2C_EEPROM, SPI_EEPROM)
+#if ENABLED(FLASH_EEPROM_EMULATION)
 
 #include "../shared/Marduino.h"
 #include "../shared/persistent_store_api.h"
@@ -922,8 +943,7 @@ static void ee_Init() {
       if (!ee_IsPageClean(grp * PagesPerGroup + page)) {
         #ifdef EE_EMU_DEBUG
           SERIAL_ECHO_START();
-          SERIAL_ECHOPAIR("EEPROM Page ",page);
-          SERIAL_ECHOLNPAIR(" not clean on group ",grp);
+          SERIAL_ECHOLNPAIR("EEPROM Page ", page, " not clean on group ", grp);
           SERIAL_FLUSH();
         #endif
         ee_PageErase(grp * PagesPerGroup + page);
@@ -944,7 +964,7 @@ static void ee_Init() {
 
   #ifdef EE_EMU_DEBUG
     SERIAL_ECHO_START();
-    SERIAL_ECHOLNPAIR("EEPROM Active page: ",curPage);
+    SERIAL_ECHOLNPAIR("EEPROM Active page: ", curPage);
     SERIAL_FLUSH();
   #endif
 
@@ -953,8 +973,7 @@ static void ee_Init() {
     if (!ee_IsPageClean(curGroup * PagesPerGroup + page)) {
       #ifdef EE_EMU_DEBUG
         SERIAL_ECHO_START();
-        SERIAL_ECHOPAIR("EEPROM Page ",page);
-        SERIAL_ECHOLNPAIR(" not clean on active group ",curGroup);
+        SERIAL_ECHOLNPAIR("EEPROM Page ", page, " not clean on active group ", curGroup);
         SERIAL_FLUSH();
         ee_Dump(curGroup * PagesPerGroup + page, getFlashStorage(curGroup * PagesPerGroup + page));
       #endif
@@ -993,9 +1012,9 @@ void eeprom_read_block(void* __dst, const void* __src, size_t __n) {
   }
 }
 
-void eeprom_flush(void) {
+void eeprom_flush() {
   ee_Flush();
 }
 
-#endif // EEPROM_SETTINGS && (!I2C_EEPROM && !SPI_EEPROM)
+#endif // FLASH_EEPROM_EMULATION
 #endif // ARDUINO_ARCH_AVR

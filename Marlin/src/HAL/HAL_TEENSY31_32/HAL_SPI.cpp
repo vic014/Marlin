@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -34,7 +34,7 @@ static SPISettings spiConfig;
  */
 
 // Initialize SPI bus
-void spiBegin(void) {
+void spiBegin() {
   #if !PIN_EXISTS(SS)
     #error "SS_PIN not defined!"
   #endif
@@ -71,7 +71,7 @@ void spiInit(uint8_t spiRate) {
 }
 
 // SPI receive a byte
-uint8_t spiRec(void) {
+uint8_t spiRec() {
   SPI.beginTransaction(spiConfig);
   const uint8_t returnByte = SPI.transfer(0xFF);
   SPI.endTransaction();

@@ -1,7 +1,7 @@
 /**
  * Marlin 3D Printer Firmware
  *
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  * Copyright (c) 2016 Bob Cousins bobcousins42@googlemail.com
  * Copyright (c) 2015-2016 Nico Tonnhofer wurstnase.reprap@gmail.com
  *
@@ -38,25 +38,62 @@
 
 #include <stdint.h>
 
-// Serial ports
-#if !WITHIN(SERIAL_PORT, -1, 3)
-  #error "SERIAL_PORT must be from -1 to 3"
+// Define MYSERIAL0/1 before MarlinSerial includes!
+#if SERIAL_PORT == -1
+  #define MYSERIAL0 customizedSerial1
+#elif SERIAL_PORT == 0
+  #define MYSERIAL0 Serial
+#elif SERIAL_PORT == 1
+  #define MYSERIAL0 Serial1
+#elif SERIAL_PORT == 2
+  #define MYSERIAL0 Serial2
+#elif SERIAL_PORT == 3
+  #define MYSERIAL0 Serial3
+#else
+  #error "The required SERIAL_PORT must be from -1 to 3. Please update your configuration."
 #endif
 
-// MYSERIAL0 required before MarlinSerial includes!
-#define MYSERIAL0 customizedSerial1
-
 #ifdef SERIAL_PORT_2
-  #if !WITHIN(SERIAL_PORT_2, -1, 3)
-    #error "SERIAL_PORT_2 must be from -1 to 3"
-  #elif SERIAL_PORT_2 == SERIAL_PORT
-    #error "SERIAL_PORT_2 must be different than SERIAL_PORT"
+  #if SERIAL_PORT_2 == SERIAL_PORT
+    #error "SERIAL_PORT_2 must be different from SERIAL_PORT. Please update your configuration."
+  #elif SERIAL_PORT_2 == -1
+    #define MYSERIAL1 customizedSerial2
+  #elif SERIAL_PORT_2 == 0
+    #define MYSERIAL1 Serial
+  #elif SERIAL_PORT_2 == 1
+    #define MYSERIAL1 Serial1
+  #elif SERIAL_PORT_2 == 2
+    #define MYSERIAL1 Serial2
+  #elif SERIAL_PORT_2 == 3
+    #define MYSERIAL1 Serial3
+  #else
+    #error "SERIAL_PORT_2 must be from -1 to 3. Please update your configuration."
   #endif
   #define NUM_SERIAL 2
-  #define MYSERIAL1 customizedSerial2
 #else
   #define NUM_SERIAL 1
 #endif
+
+#ifdef DGUS_SERIAL_PORT
+  #if DGUS_SERIAL_PORT == SERIAL_PORT
+    #error "DGUS_SERIAL_PORT must be different from SERIAL_PORT. Please update your configuration."
+  #elif defined(SERIAL_PORT_2) && DGUS_SERIAL_PORT == SERIAL_PORT_2
+    #error "DGUS_SERIAL_PORT must be different than SERIAL_PORT_2. Please update your configuration."
+  #elif DGUS_SERIAL_PORT == -1
+    #define DGUS_SERIAL internalDgusSerial
+  #elif DGUS_SERIAL_PORT == 0
+    #define DGUS_SERIAL Serial
+  #elif DGUS_SERIAL_PORT == 1
+    #define DGUS_SERIAL Serial1
+  #elif DGUS_SERIAL_PORT == 2
+    #define DGUS_SERIAL Serial2
+  #elif DGUS_SERIAL_PORT == 3
+    #define DGUS_SERIAL Serial3
+  #else
+    #error "DGUS_SERIAL_PORT must be from -1 to 3. Please update your configuration."
+  #endif
+#endif
+
 
 #include "MarlinSerial.h"
 #include "MarlinSerialUSB.h"
@@ -82,17 +119,17 @@ typedef int8_t pin_t;
 //
 // Interrupts
 //
-#define CRITICAL_SECTION_START  uint32_t primask = __get_PRIMASK(); __disable_irq()
-#define CRITICAL_SECTION_END    if (!primask) __enable_irq()
+#define CRITICAL_SECTION_START()  uint32_t primask = __get_PRIMASK(); __disable_irq()
+#define CRITICAL_SECTION_END()    if (!primask) __enable_irq()
 #define ISRS_ENABLED() (!__get_PRIMASK())
 #define ENABLE_ISRS()  __enable_irq()
 #define DISABLE_ISRS() __disable_irq()
 
-void cli(void);                     // Disable interrupts
-void sei(void);                     // Enable interrupts
+void cli();                     // Disable interrupts
+void sei();                     // Enable interrupts
 
-void HAL_clear_reset_source(void);  // clear reset reason
-uint8_t HAL_get_reset_source(void); // get reset reason
+void HAL_clear_reset_source();  // clear reset reason
+uint8_t HAL_get_reset_source(); // get reset reason
 
 //
 // EEPROM
@@ -111,16 +148,17 @@ extern uint16_t HAL_adc_result;     // result of last ADC conversion
   #define analogInputToDigitalPin(p) ((p < 12u) ? (p) + 54u : -1)
 #endif
 
-#define HAL_ANALOG_SELECT(pin)
+#define HAL_ANALOG_SELECT(ch)
 
-inline void HAL_adc_init(void) {}//todo
+inline void HAL_adc_init() {}//todo
 
-#define HAL_START_ADC(pin)  HAL_adc_start_conversion(pin)
+#define HAL_START_ADC(ch)   HAL_adc_start_conversion(ch)
+#define HAL_ADC_RESOLUTION  10
 #define HAL_READ_ADC()      HAL_adc_result
 #define HAL_ADC_READY()     true
 
-void HAL_adc_start_conversion(const uint8_t adc_pin);
-uint16_t HAL_adc_get_result(void);
+void HAL_adc_start_conversion(const uint8_t ch);
+uint16_t HAL_adc_get_result();
 
 //
 // Pin Map
@@ -138,8 +176,8 @@ void noTone(const pin_t _pin);
 
 // Enable hooks into idle and setup for HAL
 #define HAL_IDLETASK 1
-void HAL_idletask(void);
-void HAL_init(void);
+void HAL_idletask();
+void HAL_init();
 
 //
 // Utility functions
@@ -148,7 +186,7 @@ void _delay_ms(const int delay);
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
-int freeMemory(void);
+int freeMemory();
 #pragma GCC diagnostic pop
 
 #ifdef __cplusplus

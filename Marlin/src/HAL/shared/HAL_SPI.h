@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -59,7 +59,7 @@
 //
 
 // Initialize SPI bus
-void spiBegin(void);
+void spiBegin();
 
 // Configure SPI for specified SPI speed
 void spiInit(uint8_t spiRate);
@@ -68,7 +68,7 @@ void spiInit(uint8_t spiRate);
 void spiSend(uint8_t b);
 
 // Read single byte from SPI
-uint8_t spiRec(void);
+uint8_t spiRec();
 
 // Read from SPI into buffer
 void spiRead(uint8_t* buf, uint16_t nbyte);

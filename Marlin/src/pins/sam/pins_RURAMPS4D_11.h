@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -118,7 +118,7 @@
 //#define E3_MS2_PIN         ?
 //#define E3_MS3_PIN         ?
 
-#if USES_Z_MIN_PROBE_ENDSTOP
+#if HAS_CUSTOM_PROBE_PIN
   #define Z_MIN_PROBE_PIN  49
 #endif
 

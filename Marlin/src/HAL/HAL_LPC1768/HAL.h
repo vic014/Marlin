@@ -1,7 +1,7 @@
 /**
  * Marlin 3D Printer Firmware
  *
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  * Copyright (c) 2016 Bob Cousins bobcousins42@googlemail.com
  * Copyright (c) 2015-2016 Nico Tonnhofer wurstnase.reprap@gmail.com
  *
@@ -28,7 +28,7 @@
 
 #define CPU_32_BIT
 
-void HAL_init(void);
+void HAL_init();
 
 #include <stdint.h>
 #include <stdarg.h>
@@ -61,10 +61,6 @@ extern "C" volatile uint32_t _millis;
   #define ST7920_DELAY_3 DELAY_NS(750)
 #endif
 
-#if !WITHIN(SERIAL_PORT, -1, 3)
-  #error "SERIAL_PORT must be from -1 to 3"
-#endif
-
 #if SERIAL_PORT == -1
   #define MYSERIAL0 UsbSerial
 #elif SERIAL_PORT == 0
@@ -75,16 +71,14 @@ extern "C" volatile uint32_t _millis;
   #define MYSERIAL0 MSerial2
 #elif SERIAL_PORT == 3
   #define MYSERIAL0 MSerial3
+#else
+  #error "SERIAL_PORT must be from -1 to 3. Please update your configuration."
 #endif
 
 #ifdef SERIAL_PORT_2
-  #if !WITHIN(SERIAL_PORT_2, -1, 3)
-    #error "SERIAL_PORT_2 must be from -1 to 3"
-  #elif SERIAL_PORT_2 == SERIAL_PORT
-    #error "SERIAL_PORT_2 must be different than SERIAL_PORT"
-  #endif
-  #define NUM_SERIAL 2
-  #if SERIAL_PORT_2 == -1
+  #if SERIAL_PORT_2 == SERIAL_PORT
+    #error "SERIAL_PORT_2 must be different than SERIAL_PORT. Please update your configuration."
+  #elif SERIAL_PORT_2 == -1
     #define MYSERIAL1 UsbSerial
   #elif SERIAL_PORT_2 == 0
     #define MYSERIAL1 MSerial
@@ -94,16 +88,39 @@ extern "C" volatile uint32_t _millis;
     #define MYSERIAL1 MSerial2
   #elif SERIAL_PORT_2 == 3
     #define MYSERIAL1 MSerial3
+  #else
+    #error "SERIAL_PORT_2 must be from -1 to 3. Please update your configuration."
   #endif
+  #define NUM_SERIAL 2
 #else
   #define NUM_SERIAL 1
+#endif
+
+#ifdef DGUS_SERIAL_PORT
+  #if DGUS_SERIAL_PORT == SERIAL_PORT
+    #error "DGUS_SERIAL_PORT must be different than SERIAL_PORT. Please update your configuration."
+  #elif defined(SERIAL_PORT_2) && DGUS_SERIAL_PORT == SERIAL_PORT_2
+    #error "DGUS_SERIAL_PORT must be different than SERIAL_PORT_2. Please update your configuration."
+  #elif DGUS_SERIAL_PORT == -1
+    #define DGUS_SERIAL UsbSerial
+  #elif DGUS_SERIAL_PORT == 0
+    #define DGUS_SERIAL MSerial
+  #elif DGUS_SERIAL_PORT == 1
+    #define DGUS_SERIAL MSerial1
+  #elif DGUS_SERIAL_PORT == 2
+    #define DGUS_SERIAL MSerial2
+  #elif DGUS_SERIAL_PORT == 3
+    #define DGUS_SERIAL MSerial3
+  #else
+    #error "DGUS_SERIAL_PORT must be from -1 to 3. Please update your configuration."
+  #endif
 #endif
 
 //
 // Interrupts
 //
-#define CRITICAL_SECTION_START  uint32_t primask = __get_PRIMASK(); __disable_irq()
-#define CRITICAL_SECTION_END    if (!primask) __enable_irq()
+#define CRITICAL_SECTION_START()  uint32_t primask = __get_PRIMASK(); __disable_irq()
+#define CRITICAL_SECTION_END()    if (!primask) __enable_irq()
 #define ISRS_ENABLED() (!__get_PRIMASK())
 #define ENABLE_ISRS()  __enable_irq()
 #define DISABLE_ISRS() __disable_irq()
@@ -113,7 +130,7 @@ extern "C" volatile uint32_t _millis;
 //
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
-int freeMemory(void);
+int freeMemory();
 #pragma GCC diagnostic pop
 
 //
@@ -131,12 +148,43 @@ int freeMemory(void);
                                     // K = 6, 565 samples, 500Hz sample rate, 1.13s convergence on full range step
                                     // Memory usage per ADC channel (bytes): 4 (32 Bytes for 8 channels)
 
+#define HAL_ADC_RESOLUTION     12   // 15 bit maximum, raw temperature is stored as int16_t
+#define HAL_ADC_FILTERED            // Disable oversampling done in Marlin as ADC values already filtered in HAL
+
 using FilteredADC = LPC176x::ADC<ADC_LOWPASS_K_VALUE, ADC_MEDIAN_FILTER_SIZE>;
-#define HAL_adc_init()         FilteredADC::init()
+extern uint32_t HAL_adc_reading;
+[[gnu::always_inline]] inline void HAL_start_adc(const pin_t pin) {
+  HAL_adc_reading = FilteredADC::read(pin) >> (16 - HAL_ADC_RESOLUTION); // returns 16bit value, reduce to required bits
+}
+[[gnu::always_inline]] inline uint16_t HAL_read_adc() {
+  return HAL_adc_reading;
+}
+
+#define HAL_adc_init()
 #define HAL_ANALOG_SELECT(pin) FilteredADC::enable_channel(pin)
-#define HAL_START_ADC(pin)     FilteredADC::start_conversion(pin)
-#define HAL_READ_ADC()         FilteredADC::get_result()
-#define HAL_ADC_READY()        FilteredADC::finished_conversion()
+#define HAL_START_ADC(pin)     HAL_start_adc(pin)
+#define HAL_READ_ADC()         HAL_read_adc()
+#define HAL_ADC_READY()        (true)
+
+// Test whether the pin is valid
+constexpr bool VALID_PIN(const pin_t pin) {
+  return LPC176x::pin_is_valid(pin);
+}
+
+// Get the analog index for a digital pin
+constexpr int8_t DIGITAL_PIN_TO_ANALOG_PIN(const pin_t pin) {
+  return (LPC176x::pin_is_valid(pin) && LPC176x::pin_has_adc(pin)) ? pin : -1;
+}
+
+// Return the index of a pin number
+constexpr int16_t GET_PIN_MAP_INDEX(const pin_t pin) {
+  return LPC176x::pin_index(pin);
+}
+
+// Get the pin number at the given index
+constexpr pin_t GET_PIN_MAP_PIN(const int16_t index) {
+  return LPC176x::pin_index(index);
+}
 
 // Parse a G-code word into a pin index
 int16_t PARSED_PIN_INDEX(const char code, const int16_t dval);
@@ -144,7 +192,7 @@ int16_t PARSED_PIN_INDEX(const char code, const int16_t dval);
 #define HAL_SENSITIVE_PINS P0_06, P0_07, P0_08, P0_09
 
 #define HAL_IDLETASK 1
-void HAL_idletask(void);
+void HAL_idletask();
 
 #define PLATFORM_M997_SUPPORT
 void flashFirmware(int16_t value);
@@ -164,3 +212,7 @@ void set_pwm_frequency(const pin_t pin, int f_desired);
  *  Optionally allows changing the maximum size of the provided value to enable finer PWM duty control [default = 255]
  */
 void set_pwm_duty(const pin_t pin, const uint16_t v, const uint16_t v_size=255, const bool invert=false);
+
+// Reset source
+void HAL_clear_reset_source(void);
+uint8_t HAL_get_reset_source(void);
