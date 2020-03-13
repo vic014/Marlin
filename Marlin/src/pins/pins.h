@@ -367,6 +367,8 @@
   #include "lpc1768/pins_BIQU_B300_V1.0.h"      // LPC1768                                env:LPC1768
 #elif MB(GMARSH_X6_REV1)
   #include "lpc1768/pins_GMARSH_X6_REV1.h"      // LPC1768                                env:LPC1768
+#elif MB(GMARSH_EBAB)
+  #include "lpc1768/pins_GMARSH_EBAB.h"      // LPC1768                                env:LPC1778
 #elif MB(BTT_SKR_V1_1)
   #include "lpc1768/pins_BTT_SKR_V1_1.h"        // LPC1768                                env:LPC1768
 #elif MB(BTT_SKR_V1_3)
