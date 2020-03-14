@@ -78,7 +78,7 @@
 #endif
 
 #if ENABLED(MAX7219_DEBUG)
-  #include "feature/Max7219_Debug_LEDs.h"
+  #include "feature/max7219.h"
 #endif
 
 #if HAS_COLOR_LEDS
@@ -107,7 +107,7 @@
 #endif
 
 #if ENABLED(I2C_POSITION_ENCODERS)
-  #include "feature/I2CPositionEncoder.h"
+  #include "feature/encoder_i2c.h"
 #endif
 
 #if HAS_TRINAMIC_CONFIG && DISABLED(PSU_DEFAULT_OFF)
@@ -142,7 +142,7 @@
 #endif
 
 #if ENABLED(POWER_LOSS_RECOVERY)
-  #include "feature/power_loss_recovery.h"
+  #include "feature/powerloss.h"
 #endif
 
 #if ENABLED(CANCEL_OBJECTS)
@@ -174,7 +174,7 @@
 #endif
 
 #if ENABLED(PRUSA_MMU2)
-  #include "feature/prusa_MMU2/mmu2.h"
+  #include "feature/mmu2/mmu2.h"
 #endif
 
 #if HAS_L64XX
@@ -274,7 +274,7 @@ void setup_powerhold() {
 
 bool pin_is_protected(const pin_t pin) {
   static const pin_t sensitive_pins[] PROGMEM = SENSITIVE_PINS;
-  for (uint8_t i = 0; i < COUNT(sensitive_pins); i++) {
+  LOOP_L_N(i, COUNT(sensitive_pins)) {
     pin_t sensitive_pin;
     memcpy_P(&sensitive_pin, &sensitive_pins[i], sizeof(pin_t));
     if (pin == sensitive_pin) return true;
@@ -438,7 +438,9 @@ void startOrResumeJob() {
 
       case 4:                                   // Display "Click to Continue..."
         #if HAS_RESUME_CONTINUE                 // 30 min timeout with LCD, 1 min without
-          did_state = queue.enqueue_one_P(PSTR("M0Q1S" TERN(HAS_LCD_MENU, "1800", "60")));
+          did_state = queue.enqueue_one_P(
+            print_job_timer.duration() < 60 ? PSTR("M0Q1P1") : PSTR("M0Q1S" TERN(HAS_LCD_MENU, "1800", "60"))
+          );
         #endif
         break;
 
