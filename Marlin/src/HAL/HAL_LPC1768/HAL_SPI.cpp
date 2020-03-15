@@ -104,15 +104,15 @@
 
   // decide which HW SPI device to use
   #ifndef LPC_HW_SPI_DEV
-    //#if (SCK_PIN == P0_07 && MISO_PIN == P0_08 && MOSI_PIN == P0_09)
+    #if (SCK_PIN == P0_07 && MISO_PIN == P0_08 && MOSI_PIN == P0_09) || (SCK_PIN == P1_00 && MISO_PIN == P1_01 && MOSI_PIN == P1_04)
       #define LPC_HW_SPI_DEV 1
-    //#else
-    //  #if (SCK_PIN == P0_15 && MISO_PIN == P0_17 && MOSI_PIN == P0_18)
-    //    #define LPC_HW_SPI_DEV 0
-    //  #else
-    //    #error "Invalid pins selected for hardware SPI"
-    //  #endif
-    //#endif
+    #else
+      #if (SCK_PIN == P0_15 && MISO_PIN == P0_17 && MOSI_PIN == P0_18)
+        #define LPC_HW_SPI_DEV 0
+      #else
+        #error "Invalid pins selected for hardware SPI"
+      #endif
+    #endif
   #endif
   #if (LPC_HW_SPI_DEV == 0)
     #define LPC_SSPn LPC_SSP0

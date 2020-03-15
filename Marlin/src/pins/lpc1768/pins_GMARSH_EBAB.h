@@ -21,8 +21,8 @@
  */
 #pragma once
 
-#ifndef MCU_LPC1768
-  #error "Oops! Make sure you have the LPC1768 environment selected in your IDE."
+#if !defined(MCU_LPC1768) && !defined(MCU_LPC1769)
+  #error "Oops! Make sure you have the LPC1768 environment selected in your IDE for 1778 and LPC1769 for 4078."
 #endif
 
 #define BOARD_INFO_NAME "GMARSH EBAB"
@@ -318,7 +318,6 @@
   #define SD_DETECT_PIN    P3_27
 #elif SD_CONNECTION_IS(ONBOARD)
   #undef SD_DETECT_PIN
-  //#define SD_DETECT_PIN    P0_27
   #define SCK_PIN          P0_07
   #define MISO_PIN         P0_08
   #define MOSI_PIN         P0_09
