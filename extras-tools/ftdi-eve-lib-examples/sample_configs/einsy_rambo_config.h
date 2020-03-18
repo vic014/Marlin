@@ -27,7 +27,7 @@
 //#define LCD_4DSYSTEMS_4DLCD_FT843 // 4D Systems 4.3" 480x272
 //#define LCD_HAOYU_FT800CB         // Haoyu with 4.3" or 5" 480x272
 //#define LCD_HAOYU_FT810CB         // Haoyu with 5" 800x480
-//#define LCD_ALEPHOBJECTS_CLCD_UI  // Aleph Objects Color LCD User Interface
+#define LCD_ALEPHOBJECTS_CLCD_UI  // Aleph Objects Color LCD User Interface
 
 // Leave the following commented out to use a board's default resolution.
 // If you have changed the LCD panel, you may override the resolution
@@ -35,7 +35,7 @@
 
 //#define TOUCH_UI_320x240
 //#define TOUCH_UI_480x272
-//#define TOUCH_UI_800x480
+#define TOUCH_UI_800x480
 
 // Select interfacing pins, the following pin specifiers are supported:
 //
@@ -44,8 +44,8 @@
 //     1                  - When compiling Marlin, use Marlin pin IDs.
 
 // The pins for CS and MOD_RESET (PD) must be chosen.
-#define CLCD_MOD_RESET          AVR_D3 // LCD_PINS_ENABLE, Marlin Logical Pin 18
-#define CLCD_SPI_CS             AVR_D2 // LCD_PINS_D4, Marlin Logical Pin 19
+#define CLCD_MOD_RESET          AVR_F7 // LCD_PINS_ENABLE, Marlin Logical Pin 18
+#define CLCD_SPI_CS             AVR_F5 // LCD_PINS_D4, Marlin Logical Pin 19
 
 // If using software SPI, specify pins for SCLK, MOSI, MISO
 #define CLCD_USE_SOFT_SPI
@@ -63,7 +63,7 @@
 //#define TOUCH_UI_MIRRORED
 
 // Enable this to debug the event framework
-#define UI_FRAMEWORK_DEBUG
+#define TOUCH_UI_DEBUG
 
 // Sets the SPI speed in Hz
 
