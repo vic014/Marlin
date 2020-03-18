@@ -50,7 +50,7 @@ build_config accessory Gladiola_Mini                             AchemonSphinx_S
 build_config accessory Gladiola_Mini                             BandedTiger_HardenedSteel
 build_config accessory Gladiola_Mini                             DingyCutworm_HardenedSteelPlus
 build_config accessory Gladiola_Mini                             Goldenrod_HardenedExtruder
-                                                                 
+
 build_config custom    Gladiola_MiniLCD                          Gladiola_SingleExtruder
 build_config custom    Gladiola_MiniLCD                          Finch_Aerostruder
 build_config custom    Gladiola_MiniLCD                          CecropiaSilk_SingleExtruderAeroV2
@@ -61,9 +61,10 @@ build_config custom    Gladiola_MiniLCD                          DingyCutworm_Ha
 build_config custom    Gladiola_MiniLCD                          Goldenrod_HardenedExtruder
 build_config custom    Gladiola_MiniTouchUSB                     Gladiola_SingleExtruder
 build_config custom    Gladiola_MiniEinsyLCD                     Gladiola_SingleExtruder
+build_config custom    Gladiola_MiniEinsyLCD                     CecropiaSilk_SingleExtruderAeroV2
 build_config custom    Gladiola_MiniEinsyLCD                     BandedTiger_HardenedSteel
 build_config custom    Gladiola_MiniEinsyTouchUSB                Gladiola_SingleExtruder
-                                                                 
+
 build_config accessory Hibiscus_Mini2                            AchemonSphinx_SmallLayer
 build_config standard  Hibiscus_Mini2                            CecropiaSilk_SingleExtruderAeroV2
 build_config accessory Hibiscus_Mini2                            BandedTiger_HardenedSteel
@@ -71,7 +72,7 @@ build_config accessory Hibiscus_Mini2                            DingyCutworm_Ha
 build_config accessory Hibiscus_Mini2                            Goldenrod_HardenedExtruder
 build_config custom    Hibiscus_Mini2TouchSD                     CecropiaSilk_SingleExtruderAeroV2
 build_config custom    Hibiscus_Mini2TouchUSB                    CecropiaSilk_SingleExtruderAeroV2
-                                                                 
+
 build_config standard  Juniper_TAZ5                              Tilapia_SingleExtruder
 build_config accessory Juniper_TAZ5                              Angelfish_Aerostruder
 build_config accessory Juniper_TAZ5                              CecropiaSilk_SingleExtruderAeroV2
@@ -90,7 +91,7 @@ build_config custom    Juniper_TAZ5ArchimBLTouch                 Tilapia_SingleE
 build_config custom    Juniper_TAZ5Archim                        Angelfish_Aerostruder
 build_config custom    Juniper_TAZ5BLTouch                       Angelfish_Aerostruder
 build_config custom    Juniper_TAZ5ArchimBLTouch                 Angelfish_Aerostruder
-                                                                 
+
 build_config standard  Oliveoil_TAZ6                             Tilapia_SingleExtruder
 build_config accessory Oliveoil_TAZ6                             Angelfish_Aerostruder
 build_config accessory Oliveoil_TAZ6                             CecropiaSilk_SingleExtruderAeroV2
@@ -113,7 +114,7 @@ build_config custom    Oliveoil_TAZ6ArchimBLTouch                Angelfish_Aeros
 build_config custom    Oliveoil_TAZ6Archim                       E3D_Hermera
 build_config custom    Oliveoil_TAZ6BLTouch                      E3D_Hermera
 build_config custom    Oliveoil_TAZ6ArchimBLTouch                E3D_Hermera
-                                                                 
+
 build_config accessory Quiver_TAZPro                             AchemonSphinx_SmallLayer
 build_config accessory Quiver_TAZPro                             CecropiaSilk_SingleExtruderAeroV2
 build_config accessory Quiver_TAZPro                             BandedTiger_HardenedSteel
@@ -135,8 +136,8 @@ build_config custom    Redgum_TAZWorkhorseArchim                 E3D_Hermera
 build_config custom    Redgum_TAZWorkhorseBLTouch                E3D_Hermera
 build_config custom    Redgum_TAZWorkhorseArchimBLTouch          E3D_Hermera
 build_config custom    Redgum_TAZWorkhorseArchimTouchUSBBLTouch  E3D_Hermera
-                                                                 
-build_config standard  KangarooPaw_Bio                           KangarooPaw_SingleExtruder
-build_config custom    Hibiscus_TouchDemo                        Gladiola_SingleExtruder
 
+build_config standard  KangarooPaw_Bio                           KangarooPaw_SingleExtruder
+
+build_config custom    Experimental_TouchDemo                    Gladiola_SingleExtruder
 build_config custom    Experimental_BLTouch                      E3D_Hermera

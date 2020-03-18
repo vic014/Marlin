@@ -113,6 +113,7 @@
 #define RESTORE_LEVELING_AFTER_G28
 //#define SDSUPPORT
 #define SERIAL_PORT 0
+//#define SHOW_CUSTOM_BOOTSCREEN
 #define SOFT_PWM_SCALE 4
 #define SOURCE_CODE_URL "https://github.com/marciot/drunken-octopus-marlin"
 #define SPI_SPEED SPI_FULL_SPEED
