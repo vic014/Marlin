@@ -15,7 +15,7 @@
 #define SX2 // Small formfactor 200mm machine
 
 #define DUAL_Z
-#define GRAPHICSLCD
+//#define GRAPHICSLCD
 #define UBL
 
 /**

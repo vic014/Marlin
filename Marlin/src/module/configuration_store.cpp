@@ -122,6 +122,11 @@
   #include "../feature/probe_temp_comp.h"
 #endif
 
+#include "../feature/controllerfan.h"
+#if ENABLED(CONTROLLER_FAN_EDITABLE)
+  void M710_report(const bool forReplay);
+#endif
+
 #pragma pack(push, 1) // No padding between variables
 
 typedef struct { uint16_t X, Y, Z, X2, Y2, Z2, Z3, Z4, E0, E1, E2, E3, E4, E5; } tmc_stepper_current_t;
@@ -291,6 +296,11 @@ typedef struct SettingsDataStruct {
   // HAS_LCD_CONTRAST
   //
   int16_t lcd_contrast;                                 // M250 C
+
+  //
+  // Controller fan settings
+  //
+  controllerFan_settings_t controllerFan_settings;      // M710
 
   //
   // POWER_LOSS_RECOVERY
@@ -878,6 +888,19 @@ void MarlinSettings::postprocess() {
         #endif
       ;
       EEPROM_WRITE(lcd_contrast);
+    }
+
+    //
+    // Controller Fan
+    //
+    {
+      _FIELD_TEST(controllerFan_settings);
+      #if ENABLED(USE_CONTROLLER_FAN)
+        const controllerFan_settings_t &cfs = controllerFan.settings;
+      #else
+        controllerFan_settings_t cfs = controllerFan_defaults;
+      #endif
+      EEPROM_WRITE(cfs);
     }
 
     //
@@ -1720,6 +1743,19 @@ void MarlinSettings::postprocess() {
       }
 
       //
+      // Controller Fan
+      //
+      {
+        _FIELD_TEST(controllerFan_settings);
+        #if ENABLED(CONTROLLER_FAN_EDITABLE)
+          const controllerFan_settings_t &cfs = controllerFan.settings;
+        #else
+          controllerFan_settings_t cfs = { 0 };
+        #endif
+        EEPROM_READ(cfs);
+      }
+
+      //
       // Power-Loss Recovery
       //
       {
@@ -2185,8 +2221,10 @@ void MarlinSettings::postprocess() {
     }
 
     #if ENABLED(EEPROM_CHITCHAT) && DISABLED(DISABLE_M503)
-      if (!validating) report();
+      // Report the EEPROM settings
+      if (!validating && (DISABLED(EEPROM_BOOT_SILENT) || IsRunning())) report();
     #endif
+
     EEPROM_FINISH();
 
     return !eeprom_error;
@@ -2586,6 +2624,13 @@ void MarlinSettings::reset() {
 
   #if HAS_LCD_CONTRAST
     ui.set_contrast(DEFAULT_LCD_CONTRAST);
+  #endif
+
+  //
+  // Controller Fan
+  //
+  #if ENABLED(USE_CONTROLLER_FAN)
+    controllerFan.reset();
   #endif
 
   //
@@ -3150,6 +3195,10 @@ void MarlinSettings::reset() {
       CONFIG_ECHO_HEADING("LCD Contrast:");
       CONFIG_ECHO_START();
       SERIAL_ECHOLNPAIR("  M250 C", ui.contrast);
+    #endif
+
+    #if ENABLED(CONTROLLER_FAN_EDITABLE)
+      M710_report(forReplay);
     #endif
 
     #if ENABLED(POWER_LOSS_RECOVERY)
