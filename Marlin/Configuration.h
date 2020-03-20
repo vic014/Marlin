@@ -1,4 +1,4 @@
-//#define PetsfangMicroswiss
+#define PetsfangMicroswiss
 //#define BondtechBMG
 #define CR10SPro_GearedExtruder
 //#define E3DV6
@@ -1057,7 +1057,7 @@
  * Specify a Probe position as { X, Y, Z }
  */
 #if ENABLED(PetsfangMicroswiss)
-  #define NOZZLE_TO_PROBE_OFFSET { -48, -10, 0 }
+  #define NOZZLE_TO_PROBE_OFFSET { -42, -5, 0 }
 #elif ENABLED(E3DV6)
   #define NOZZLE_TO_PROBE_OFFSET { 36, 15, 0 }
 #else
@@ -1208,12 +1208,18 @@
 // @section machine
 
 // The size of the print bed
-#if ENABLED(SX2)
-  #define X_BED_SIZE 248
-  #define Y_BED_SIZE 238
+ #if ENABLED(PetsfangMicroswiss)
+  #define PetsfangModifier 10
 #else
-  #define X_BED_SIZE 398
-  #define Y_BED_SIZE 390
+  #define PetsfangModifier 0
+#endif
+
+#if ENABLED(SX2)
+  #define X_BED_SIZE 248 - PetsfangModifier
+  #define Y_BED_SIZE 238 - PetsfangModifier
+#else
+  #define X_BED_SIZE 398 - PetsfangModifier
+  #define Y_BED_SIZE 390 - PetsfangModifier
 #endif
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
