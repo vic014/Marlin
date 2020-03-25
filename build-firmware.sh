@@ -106,7 +106,7 @@ get_config_info() {
   fw_filename=Marlin_${printer}_${toolhead}_${fw_version}_${fw_hash}
   motherboard_name=`grep "define MOTHERBOARD" $config/Configuration.h | awk '{print $3}'`
   motherboard_number=`grep "$motherboard_name\b" Marlin/src/core/boards.h | awk '{print $3}'`
-  is_lulzbot=`grep "define LULZBOT_" $config/Configuration.h`
+  is_lulzbot=`grep "LulzBot printers" $config/Configuration.h`
 }
 
 ####

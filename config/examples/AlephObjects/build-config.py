@@ -142,7 +142,7 @@ def make_config(PRINTER, TOOLHEAD):
     USE_HOME_BUTTON                                      = False
     USE_REPRAP_LCD_DISPLAY                               = ("LCD"      in PRINTER or
                                                             "Mini2"    in PRINTER or
-                                                            "TAZ"      in PRINTER) 
+                                                            "TAZ"      in PRINTER)
     USE_TOUCH_UI                                         = ("TouchSD"  in PRINTER or
                                                             "TouchUSB" in PRINTER)
     USE_CALIBRATION_CUBE                                 = False
@@ -234,7 +234,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["ENDSTOPS_ALWAYS_ON_DEFAULT"]             = True
         MARLIN["BAUDRATE"]                               = 250000
         MARLIN["MACHINE_UUID"]                           = C_STRING("845f003c-aebd-4e53-a6b9-7d0984fde609")
-        
+
     if "Hibiscus_Mini2" in PRINTER:
         IS_MINI                                          = True
         MINI_BED                                         = True
@@ -463,7 +463,8 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["CUSTOM_MACHINE_NAME"]                    = C_STRING("Bio")
         MARLIN["NO_TOOLHEAD_HEATER_GCODE"]               = True
         MARLIN["E_MAX_POS"]                              = 60
-        MARLIN["LULZBOT_USE_BIOPRINTER_UI"]              = True
+        MARLIN["TOUCH_UI_LULZBOT_BIO"]                   = True
+        MARLIN["TOUCH_UI_FROZEN_THEME"]                  = True
         MARLIN["SENSORLESS_HOMING"]                      = True
         MARLIN["BACKLASH_COMPENSATION"]                  = True
         MARLIN["STEALTHCHOP_XY"]                         = False
@@ -606,6 +607,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_AUTOLEVELING                                 = True
         USE_CALIBRATION_CUBE                             = True
         USE_NORMALLY_CLOSED_ENDSTOPS                     = True
+        USE_MIN_ENDSTOPS                                 = True
         USE_DUAL_Z_ENDSTOPS                              = True
         USE_TOUCH_UI                                     = True
         USE_REPRAP_LCD_DISPLAY                           = False
@@ -613,7 +615,8 @@ def make_config(PRINTER, TOOLHEAD):
         USE_EXPERIMENTAL_FEATURES                        = True
         MARLIN["SHOW_CUSTOM_BOOTSCREEN"]                 = False
         MARLIN["BACKLASH_COMPENSATION"]                  = True
-        MARLIN["SENSORLESS_HOMING"]                      = True
+        #MARLIN["BLTOUCH"]                                = True
+        MARLIN["SENSORLESS_HOMING"]                      = False
         MARLIN["STEALTHCHOP_XY"]                         = False
         MARLIN["STEALTHCHOP_Z"]                          = True
         MARLIN["STEALTHCHOP_E"]                          = True
@@ -631,11 +634,12 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["TOUCH_UI_PORTRAIT"]                      = True
         MARLIN["TOUCH_UI_800x480"]                       = True
         MARLIN["LCD_ALEPHOBJECTS_CLCD_UI"]               = True
+        MARLIN["TOUCH_UI_ROYAL_THEME"]                   = True
         MARLIN["AO_EXP2_PINMAP"]                         = True
         # Put filament sensor on X_MAX
         MARLIN["USE_YMAX_PLUG"]                          = False
         MARLIN["FIL_RUNOUT_PIN"]                         = 15 # Archim2 Y-Max
-        
+
     if "Experimental_TouchDemo" in PRINTER:
         # Test stand with Einsy Rambo and LulzBot Touch LCD
         IS_MINI                                          = True
@@ -656,12 +660,13 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["MACHINE_UUID"]                           = C_STRING("23421dc0-df9f-430b-8f91-0e3bcb55b4e4")
         # Since we are using EinsyRetro 1.1a, use EXP1 for touch panel
         MARLIN["LCD_ALEPHOBJECTS_CLCD_UI"]               = True
-        #MARLIN["AO_EXP1_PINMAP"]                         = True
+        #MARLIN["TOUCH_UI_LULZBOT_BIO"]                   = True
         MARLIN["AO_EXP2_PINMAP"]                         = True
         MARLIN["TOUCH_UI_PORTRAIT"]                      = True
         MARLIN["TOUCH_UI_INVERTED"]                      = True
         MARLIN["TOUCH_UI_800x480"]                       = True
         MARLIN["TOUCH_UI_DEBUG"]                         = True
+        MARLIN["TOUCH_UI_ROYAL_THEME"]                   = True
         # SD or USB will only work on EXP2, but a 5
         # pigtail to an endstop connector is needed
         # since EXP2 does not have 5V on pin 1
@@ -772,8 +777,8 @@ def make_config(PRINTER, TOOLHEAD):
     MARLIN["USE_ZMIN_PLUG"]                              = USE_MIN_ENDSTOPS or MARLIN["Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN"]
 
     MARLIN["USE_XMAX_PLUG"]                              = USE_MAX_ENDSTOPS
-    MARLIN["USE_YMAX_PLUG"]                              = USE_MAX_ENDSTOPS or IS_MINI
-    MARLIN["USE_ZMAX_PLUG"]                              = USE_MAX_ENDSTOPS or IS_MINI or (IS_TAZ and not USE_HOME_BUTTON and not MARLIN["BLTOUCH"])
+    MARLIN["USE_YMAX_PLUG"]                              = USE_MAX_ENDSTOPS
+    MARLIN["USE_ZMAX_PLUG"]                              = USE_MAX_ENDSTOPS or IS_MINI or (IS_TAZ and not USE_HOME_BUTTON)
 
     if PRINTER in ["KangarooPaw_Bio"]:
         MARLIN["USE_XMAX_PLUG"]                          = True
@@ -813,7 +818,7 @@ def make_config(PRINTER, TOOLHEAD):
 
 ########################## HOMING & AXIS DIRECTIONS ###########################
 
-    if 'Redgum_TAZWorkhorse' in PRINTER:
+    if "Redgum_TAZWorkhorse" in PRINTER:
         MARLIN["INVERT_X_DIR"]                           = 'true'
     else:
         MARLIN["INVERT_X_DIR"]                           = 'false'
@@ -833,7 +838,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["Y_HOME_DIR"]                             = -1 # Home bed rear
         MARLIN["QUICK_HOME"]                             =  True
 
-    elif "Redgum_TAZWorkhorse" in PRINTER:
+    elif "Redgum_TAZWorkhorse" in PRINTER or "Experimental_BLTouch" in PRINTER:
         MARLIN["X_HOME_DIR"]                             = -1 # Home left
         MARLIN["Y_HOME_DIR"]                             = -1 # Home bed rear
         MARLIN["QUICK_HOME"]                             =  True
@@ -842,7 +847,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["X_HOME_DIR"]                             = -1 # Home left
         MARLIN["Y_HOME_DIR"]                             =  1 # Home bed forward
         MARLIN["QUICK_HOME"]                             =  True
-        
+
     if USE_HOME_BUTTON or MARLIN["BLTOUCH"] or "Juniper_TAZ5" in PRINTER:
         MARLIN["Z_HOME_DIR"]                             = -1 # Home towards bed
     else:
@@ -1146,6 +1151,7 @@ def make_config(PRINTER, TOOLHEAD):
 
     if not TOOLHEAD_IS_UNIVERSAL and (
         "Redgum_TAZWorkhorse" in PRINTER or
+        "Experimental_BLTouch" in PRINTER or
         "Quiver_TAZPro" in PRINTER or
         "Hibiscus_Mini2" in PRINTER
     ):
@@ -1197,7 +1203,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["Z_CLEARANCE_DEPLOY_PROBE"]               = 30
         MARLIN["Z_CLEARANCE_BETWEEN_PROBES"]             = 30
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_CLOSED_ENDSTOP
-        
+
     if TOOLHEAD in ["E3D_Hermera"]:
         TOOLHEAD_TYPE                                    = "Hermera"
         TOOLHEAD_BLOCK                                   = "E3D_Hermera_V6"
@@ -1281,7 +1287,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["DEFAULT_Kp"]                             = 21.00
         MARLIN["DEFAULT_Ki"]                             =  1.78
         MARLIN["DEFAULT_Kd"]                             = 61.93
-        
+
     elif TOOLHEAD_BLOCK == "E3D_Hermera_V6":
         # E3D Hermera with LulzBot V6 block
         MARLIN["DEFAULT_Kp"]                             = 25.2
@@ -1338,7 +1344,7 @@ def make_config(PRINTER, TOOLHEAD):
     MARLIN["FAN_KICKSTART_TIME"]                         = 100
     MARLIN["FAN_MIN_PWM"]                                = 70
     MARLIN["SOFT_PWM_SCALE"]                             = 4
-    
+
     MARLIN["ADAPTIVE_FAN_SLOWING"]                       = True
     MARLIN["NO_FAN_SLOWING_IN_PID_TUNING"]               = True
 
@@ -1442,7 +1448,7 @@ def make_config(PRINTER, TOOLHEAD):
     elif IS_TAZ and USE_Z_BELT:
         STANDARD_Z_MIN_POS                               = -2
         STANDARD_Z_MAX_POS                               = 299
-        
+
     if MARLIN["BLTOUCH"]:
         # If using BLTouch, then set the Z_MIN_POS to zero
         STANDARD_Z_MAX_POS -= STANDARD_Z_MIN_POS
@@ -1485,15 +1491,17 @@ def make_config(PRINTER, TOOLHEAD):
             MARLIN["PROBING_STEPPERS_OFF"]               = True
             GOTO_1ST_PROBE_POINT                         = ""
 
+            MARLIN["BED_LEVELING_COMMANDS"]              = C_STRING("G29 P1\nG29 S")
+
         else:
             # LulzBot Conductive Probing
-            
+
             # Auto-leveling was introduced on the Mini and TAZ 6.
             # Define probe parameters related to bed leveling,
             # e.g. the washers on the bed. These are confusingly
             # named Z_MIN_PROBE in Marlin. The Z-Home switch
             # is called Z_MIN_ENDSTOP
-    
+
             if MINI_BED:
                 STANDARD_LEFT_PROBE_BED_POSITION             = -3
                 STANDARD_RIGHT_PROBE_BED_POSITION            = 163
@@ -1512,16 +1520,16 @@ def make_config(PRINTER, TOOLHEAD):
                 STANDARD_RIGHT_PROBE_BED_POSITION            = 260
                 STANDARD_BACK_PROBE_BED_POSITION             = 260
                 STANDARD_FRONT_PROBE_BED_POSITION            = 20
-                
+
             elif TAZ_BED:
                 STANDARD_LEFT_PROBE_BED_POSITION             = -10
                 STANDARD_RIGHT_PROBE_BED_POSITION            = 288
                 STANDARD_BACK_PROBE_BED_POSITION             = 291
                 STANDARD_FRONT_PROBE_BED_POSITION            = -9
-            
+
             MARLIN["AUTO_BED_LEVELING_LINEAR"]             = True
             MARLIN["NOZZLE_AS_PROBE"]                      = True
-          
+
             MARLIN["MULTIPLE_PROBING"]                   = 2
             MARLIN["Z_PROBE_SPEED_SLOW"]                 = 1*60
             MARLIN["Z_PROBE_SPEED_FAST"]                 = 20*60 if USE_Z_BELT else 8*60
@@ -1540,7 +1548,7 @@ def make_config(PRINTER, TOOLHEAD):
             RIGHT_PROBE_BED_POSITION = min(STANDARD_RIGHT_PROBE_BED_POSITION + TOOLHEAD_RIGHT_PROBE_ADJ, MARLIN["X_MAX_POS"])
             BACK_PROBE_BED_POSITION  = min(STANDARD_BACK_PROBE_BED_POSITION  + TOOLHEAD_BACK_PROBE_ADJ,  MARLIN["Y_MAX_POS"])
             FRONT_PROBE_BED_POSITION = max(STANDARD_FRONT_PROBE_BED_POSITION + TOOLHEAD_FRONT_PROBE_ADJ, MARLIN["Y_MIN_POS"])
-             
+
             # Make sure Marlin allows probe points outside of the bed area
 
             MARLIN["MIN_PROBE_EDGE_LEFT"]                = LEFT_PROBE_BED_POSITION
@@ -1562,7 +1570,7 @@ def make_config(PRINTER, TOOLHEAD):
                 # probing on the washer underneath the wiper pad.
                 MARLIN["END_G29_ON_BACK_LEFT_CORNER"] = True
                 GOTO_1ST_PROBE_POINT = "G0 X{} Y{}".format(LEFT_PROBE_BED_POSITION, FRONT_PROBE_BED_POSITION)
-            
+
 ############################# X AXIS LEVELING #############################
 
     if PRINTER == "KangarooPaw_Bio":
@@ -1589,8 +1597,31 @@ def make_config(PRINTER, TOOLHEAD):
             "G28 Z0\n"                                   # Home Axis
             "M117 Leveling done.\n"                      # Set LCD status
         )
+        
+    elif USE_Z_BELT and IS_TAZ and MARLIN["BLTOUCH"]:
+        # Level X Axis to the top
+        AXIS_LEVELING_COMMANDS = (
+            "M117 Leveling X Axis\n"                     # Set LCD status
+            "G28\n"                                      # Home Axis
+            + XLEVEL_POS +                               # Move toolhead to the right
+            "G0 Z300 F6000\n"                            # Move to top of printer
+            "G91\n"                                      # Set relative motion mode
+            "M211 S0\n"                                  # Turn off soft endstops
+            "M120\n"                                     # Turn on hardware endstops
+            "M400\n"                                     # Finish moves
+            "G0 Z15 F500\n"                              # Skip steppers against uppers
+            "G0 Z-5 F500\n"                              # Move Z-Axis down a bit
+            "M400\n"                                     # Finish moves
+            "G90\n"                                      # Return to absolute mode
+            "M121\n"                                     # Turn off hardware endstops
+            "M211 S1\n"                                  # Turn soft endstops back on
+            "G28 Z0\n"                                   # Home Axis
+            "M117 Leveling done.\n"                      # Set LCD status
+        )
 
-    elif USE_Z_BELT and IS_TAZ and not MARLIN["BLTOUCH"]:
+        MARLIN["ENDSTOP_INTERRUPTS_FEATURE"] = True
+
+    elif USE_Z_BELT and IS_TAZ:
         AXIS_LEVELING_COMMANDS = (
             "M117 Leveling X Axis\n"                     # Set LCD status
             + XLEVEL_POS +                               # Center axis
@@ -1619,7 +1650,7 @@ def make_config(PRINTER, TOOLHEAD):
             "M400\n"                                     # Wait for moves to finish
             "M18 X Y"                                    # Unlock motors
         )
-        
+
 ################ AUTO-CALIBRATION (BACKLASH AND NOZZLE OFFSET) ################
 
     if (USE_CALIBRATION_CUBE or CALIBRATE_ON_WASHER) and not MARLIN["BLTOUCH"]:
@@ -1753,7 +1784,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["X_HYBRID_THRESHOLD"]                     = 72
 
         MARLIN["CHOPPER_TIMING"]                         = [ 3, -2, 6 ]
-        
+
         def TMC_INIT(st):
             return (
                 "st.shaft({});".format(SHAFT_DIR) +
@@ -1975,7 +2006,7 @@ def make_config(PRINTER, TOOLHEAD):
 
     if USE_AUTOLEVELING:
         MARLIN["NOZZLE_CLEAN_FEATURE"]                   = True
-        
+
         if MARLIN["EXTRUDERS"] == 1:
             WIPE_HEAT_TEMP                               = "M104 S170\n" # Preheat to wipe temp
             WIPE_WAIT_TEMP                               = "M109 R170\n" # Wait for wipe temp
@@ -2015,9 +2046,9 @@ def make_config(PRINTER, TOOLHEAD):
               WIPE_DONE_TEMP +                           # Drop to probe temp
             "M107\n"                                     # Turn off fan
         )
-        
+
 ################################# PROBE REWIPE ################################
-    
+
     if USE_AUTOLEVELING and not MARLIN["BLTOUCH"]:
         MARLIN["G29_RETRY_AND_RECOVER"]                  = True
         MARLIN["G29_MAX_RETRIES"]                        = 2
@@ -2320,7 +2351,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["NO_PAUSE_FOR_REHEAT"]                    = True
         MARLIN["DEVELOPER_SCREENS"]                      = True
         MARLIN["LCD_TIMEOUT_TO_STATUS"]                  = 0
-        
+
         # Virtual joystick functionality
         MARLIN["JOYSTICK"]                               = True
         MARLIN["JOY_X_PIN"]                              = -1
@@ -2330,8 +2361,8 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["JOY_X_LIMITS"]                           = False
         MARLIN["JOY_Y_LIMITS"]                           = False
         MARLIN["JOY_Z_LIMITS"]                           = False
-        
-    if ENABLED("LULZBOT_USE_BIOPRINTER_UI"):
+
+    if ENABLED("TOUCH_UI_LULZBOT_BIO"):
         MARLIN["PRESERVE_LCD_MESSAGE_AFTER_PRINT"]       = True
 
     if ENABLED("USB_FLASH_DRIVE_SUPPORT"):
@@ -2499,6 +2530,10 @@ if __name__ == "__main__":
         counts = init_counters(config)
         for i in args.input:
             process_config(config, counts, i, args.directory + "/" + os.path.basename(i))
+        dump_counters(config, counts)
+
+        if args.summary:
+            dump_variables(config, args.directory + "/Configuration_summary.txt") os.path.basename(i))
         dump_counters(config, counts)
 
         if args.summary:

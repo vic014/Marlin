@@ -69,7 +69,7 @@ void InterfaceSettingsScreen::onRedraw(draw_mode_t what) {
        .cmd(COLOR_RGB(bg_text_enabled))
        .tag(0)
        .font(font_medium)
-       .text(BTN_POS(1,1), BTN_SIZE(4,1), GET_TEXT_F(MSG_INTERFACE_SETTINGS))
+       .text(BTN_POS(1,1), BTN_SIZE(4,1), GET_TEXT_F(MSG_INTERFACE))
     #undef EDGE_R
     #define EDGE_R 30
        .font(font_small)
@@ -100,11 +100,11 @@ void InterfaceSettingsScreen::onRedraw(draw_mode_t what) {
     #define EDGE_R 0
     #ifdef TOUCH_UI_PORTRAIT
        .colors(normal_btn)
-       .tag(6).button (BTN_POS(1,6), BTN_SIZE(4,1), GET_TEXT_F(MSG_INTERFACE_SOUNDS))
+       .tag(6).button (BTN_POS(1,6), BTN_SIZE(4,1), GET_TEXT_F(MSG_SOUNDS))
        .colors(action_btn)
        .tag(1).button (BTN_POS(1,7), BTN_SIZE(4,1), GET_TEXT_F(MSG_BACK));
     #else
-       .tag(6).button (BTN_POS(1,6), BTN_SIZE(2,1), GET_TEXT_F(MSG_INTERFACE_SOUNDS))
+       .tag(6).button (BTN_POS(1,6), BTN_SIZE(2,1), GET_TEXT_F(MSG_SOUNDS))
        .colors(action_btn)
        .tag(1).button (BTN_POS(3,6), BTN_SIZE(2,1), GET_TEXT_F(MSG_BACK));
     #endif

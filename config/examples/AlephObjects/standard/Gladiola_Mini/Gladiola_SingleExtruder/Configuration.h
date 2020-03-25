@@ -2256,6 +2256,7 @@
 //#define AXIS_LEVELING_COMMANDS
 //#define PARK_AND_RELEASE_COMMANDS
 #define CALIBRATION_COMMANDS "M117 Starting Auto-Calibration\nT0\nG28\nG12\nM117 Calibrating...\nG425\nM500\nM117 Calibration data saved" // <-- changed
+//#define BED_LEVELING_COMMANDS
 //#define AO_EXP1_DEPRECATED_PINMAP
 //#define DISABLE_DUE_SD_MMC
 //#define EXTRUDER_FAN_ON_PIN_6
@@ -2272,7 +2273,9 @@
 //#define E_MAX_POS
 //#define NO_TOOLHEAD_HEATER_GCODE
 //#define DEVELOPER_SCREENS
-//#define LULZBOT_USE_BIOPRINTER_UI
+//#define TOUCH_UI_LULZBOT_BIO
+//#define TOUCH_UI_FROZEN_THEME
+//#define TOUCH_UI_ROYAL_THEME
 //#define SWAP_E0_AND_E1
 //#define FILAMENT_RUNOUT_ENABLE_DEFAULT
 //#define FIL_RUNOUT_PIN

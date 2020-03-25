@@ -2256,6 +2256,7 @@
 #define AXIS_LEVELING_COMMANDS "M117 Leveling X Axis\nG28\nG0 X170 Y75 F9999\nG0 Z5 F6000\nG91\nM211 S0\nM400\nM906 Z600\nG0 Z-15 F500\nG0 Z5 F500\nM400\nG90\nM906 Z960\nM211 S1\nG28 Z0\nM117 Leveling done." // <-- changed
 #define PARK_AND_RELEASE_COMMANDS "G0 X115 Z50 F6000\nM400\nM18 X Y" // <-- changed
 //#define CALIBRATION_COMMANDS
+//#define BED_LEVELING_COMMANDS
 //#define AO_EXP1_DEPRECATED_PINMAP
 //#define DISABLE_DUE_SD_MMC
 //#define EXTRUDER_FAN_ON_PIN_6
@@ -2272,7 +2273,9 @@
 #define E_MAX_POS 60 // <-- changed
 #define NO_TOOLHEAD_HEATER_GCODE // <-- changed
 #define DEVELOPER_SCREENS // <-- changed
-#define LULZBOT_USE_BIOPRINTER_UI // <-- changed
+#define TOUCH_UI_LULZBOT_BIO // <-- changed
+#define TOUCH_UI_FROZEN_THEME // <-- changed
+//#define TOUCH_UI_ROYAL_THEME
 //#define SWAP_E0_AND_E1
 //#define FILAMENT_RUNOUT_ENABLE_DEFAULT
 //#define FIL_RUNOUT_PIN
