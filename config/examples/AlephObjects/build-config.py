@@ -1348,13 +1348,16 @@ def make_config(PRINTER, TOOLHEAD):
     MARLIN["USE_CONTROLLER_FAN"]                         = True
     if USE_EINSY_RETRO or USE_EINSY_RAMBO:
         # The TMC drivers need a bit more cooling
-        MARLIN["CONTROLLERFAN_SPEED"]                    = 255
-        MARLIN["CONTROLLERFAN_SPEED_Z_ONLY"]             = 120
+        MARLIN["CONTROLLERFAN_SPEED_ACTIVE"]             = 255
+        MARLIN["CONTROLLERFAN_SPEED_IDLE"]               = 120
+        MARLIN["CONTROLLER_FAN_IGNORE_Z"]                = True
     elif IS_MINI:
         # The Mini fan runs rather loud at full speed
-        MARLIN["CONTROLLERFAN_SPEED"]                    = 120
+        MARLIN["CONTROLLERFAN_SPEED_ACTIVE"]             = 120
+        MARLIN["CONTROLLERFAN_SPEED_IDLE"]               = 120
     elif IS_TAZ:
-        MARLIN["CONTROLLERFAN_SPEED"]                    = 255
+        MARLIN["CONTROLLERFAN_SPEED_ACTIVE"]             = 255
+        MARLIN["CONTROLLERFAN_SPEED_IDLE"]               = 255
 
 ############################### AXIS TRAVEL LIMITS ###############################
 
@@ -2343,7 +2346,6 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["TOUCH_UI_USE_UTF8"]                      = True
         MARLIN["TOUCH_UI_UTF8_COPYRIGHT"]                = True
         MARLIN["TOUCH_UI_UTF8_SUPERSCRIPTS"]             = True
-        MARLIN["SD_DETECT_INVERTED"]                     = False
         MARLIN["LCD_SET_PROGRESS_MANUALLY"]              = True
         MARLIN["SCROLL_LONG_FILENAMES"]                  = False if USE_LESS_MEMORY else True
         MARLIN["NO_PAUSE_FOR_REHEAT"]                    = True
@@ -2359,9 +2361,6 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["JOY_X_LIMITS"]                           = False
         MARLIN["JOY_Y_LIMITS"]                           = False
         MARLIN["JOY_Z_LIMITS"]                           = False
-
-    if ENABLED("TOUCH_UI_LULZBOT_BIO"):
-        MARLIN["PRESERVE_LCD_MESSAGE_AFTER_PRINT"]       = True
 
     if ENABLED("USB_FLASH_DRIVE_SUPPORT"):
         MARLIN["SDSUPPORT"]                              = True
