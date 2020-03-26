@@ -77,7 +77,9 @@ void InterfaceSettingsScreen::onRedraw(draw_mode_t what) {
        .text(BTN_POS(1,2), BTN_SIZE(2,1), GET_TEXT_F(MSG_LCD_BRIGHTNESS), OPT_RIGHTX | OPT_CENTERY)
        .text(BTN_POS(1,3), BTN_SIZE(2,1), GET_TEXT_F(MSG_SOUND_VOLUME),   OPT_RIGHTX | OPT_CENTERY)
        .text(BTN_POS(1,4), BTN_SIZE(2,1), GET_TEXT_F(MSG_SCREEN_LOCK),    OPT_RIGHTX | OPT_CENTERY);
+    #if DISABLED(TOUCH_UI_NO_BOOTSCREEN)
     cmd.text(BTN_POS(1,5), BTN_SIZE(2,1), GET_TEXT_F(MSG_BOOT_SCREEN),    OPT_RIGHTX | OPT_CENTERY);
+    #endif
     #undef EDGE_R
   }
 
@@ -95,7 +97,9 @@ void InterfaceSettingsScreen::onRedraw(draw_mode_t what) {
        .tag(3).slider(BTN_POS(3,3), BTN_SIZE(2,1), screen_data.InterfaceSettingsScreen.volume,     0xFF)
        .colors(ui_toggle)
        .tag(4).toggle2(BTN_POS(3,4), BTN_SIZE(w,1), GET_TEXT_F(MSG_NO), GET_TEXT_F(MSG_YES), LockScreen::is_enabled())
+    #if DISABLED(TOUCH_UI_NO_BOOTSCREEN)
        .tag(5).toggle2(BTN_POS(3,5), BTN_SIZE(w,1), GET_TEXT_F(MSG_NO), GET_TEXT_F(MSG_YES), UIData::animations_enabled())
+    #endif
     #undef EDGE_R
     #define EDGE_R 0
     #ifdef TOUCH_UI_PORTRAIT
