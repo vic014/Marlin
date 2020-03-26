@@ -1559,7 +1559,7 @@
    * between attempts, and after the maximum number of retries have been tried.
    */
   #define G29_SUCCESS_COMMANDS "M117 Probe successful" // <-- changed
-  #define G29_RECOVER_COMMANDS "M104 S170 T0\nM104 S170 T1\nM117 Leveling X Axis\nG0 X150 F9999\nG28 Z0\nM117 Leveling done.\nG12\nM109 R160\nM400\nM117 Probing bed" // <-- changed
+  #define G29_RECOVER_COMMANDS "M104 S170 T0\nM104 S170 T1\nG0 X150 F9999\nG28 Z0\nG12\nM109 R160\nM400\nM117 Probing bed" // <-- changed
   #define G29_FAILURE_COMMANDS "M117 Bed leveling failed.\nG0 Z10\nG0 E0\nM300 P25 S880\nM300 P50 S0\nM300 P25 S880\nM300 P50 S0\nM300 P25 S880\nG4 S1" // <-- changed
 
 #endif
@@ -2811,7 +2811,7 @@
  *
  * Execute certain G-code commands immediately after power-on.
  */
-#define STARTUP_COMMANDS "G28 Z" // <-- changed
+#define STARTUP_COMMANDS "G0 X150 F9999\nG28 Z0" // <-- changed
 
 /**
  * G-code Macros

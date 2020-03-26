@@ -21,7 +21,7 @@
 #define BAUDRATE 250000
 //#define BLTOUCH
 #define BUFSIZE 5
-#define CALIBRATION_COMMANDS "M117 Starting Auto-Calibration\nT0\nM218 T1 X44.576 Y0.095 Z0.005\nG28\nM117 Leveling X Axis\nG0 X150 F9999\nG28 Z0\nM117 Leveling done.\nG12\nM117 Calibrating...\nG425\nM500\nM117 Calibration data saved"
+#define CALIBRATION_COMMANDS "M117 Starting Auto-Calibration\nT0\nM218 T1 X44.576 Y0.095 Z0.005\nG28\nG0 X150 F9999\nG28 Z0\nG12\nM117 Calibrating...\nG425\nM500\nM117 Calibration data saved"
 #define CALIBRATION_GCODE
 #define CALIBRATION_MEASURE_BACK
 #define CALIBRATION_MEASURE_FRONT
@@ -84,7 +84,7 @@
 #define G29_FAILURE_COMMANDS "M117 Bed leveling failed.\nG0 Z10\nG0 E0\nM300 P25 S880\nM300 P50 S0\nM300 P25 S880\nM300 P50 S0\nM300 P25 S880\nG4 S1"
 #define G29_HALT_ON_FAILURE
 #define G29_MAX_RETRIES 2
-#define G29_RECOVER_COMMANDS "M104 S170 T0\nM104 S170 T1\nM117 Leveling X Axis\nG0 X150 F9999\nG28 Z0\nM117 Leveling done.\nG12\nM109 R160\nM400\nM117 Probing bed"
+#define G29_RECOVER_COMMANDS "M104 S170 T0\nM104 S170 T1\nG0 X150 F9999\nG28 Z0\nG12\nM109 R160\nM400\nM117 Probing bed"
 #define G29_RETRY_AND_RECOVER
 #define G29_SUCCESS_COMMANDS "M117 Probe successful"
 #define GCODE_MACROS
@@ -175,7 +175,7 @@
 #define SOFT_PWM_SCALE 4
 #define SOURCE_CODE_URL "https://github.com/marciot/drunken-octopus-marlin"
 #define SPI_SPEED SPI_SIXTEENTH_SPEED
-#define STARTUP_COMMANDS "G28 Z"
+#define STARTUP_COMMANDS "G0 X150 F9999\nG28 Z0"
 #define STEALTHCHOP_E
 //#define STEALTHCHOP_XY
 #define STEALTHCHOP_Z

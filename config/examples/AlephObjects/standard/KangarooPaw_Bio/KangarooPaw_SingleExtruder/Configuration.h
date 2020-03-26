@@ -2273,6 +2273,7 @@
 #define E_MAX_POS 60 // <-- changed
 #define NO_TOOLHEAD_HEATER_GCODE // <-- changed
 #define DEVELOPER_SCREENS // <-- changed
+//#define TOUCH_UI_NO_BOOTSCREEN
 #define TOUCH_UI_LULZBOT_BIO // <-- changed
 #define TOUCH_UI_FROZEN_THEME // <-- changed
 //#define TOUCH_UI_ROYAL_THEME

@@ -100,7 +100,7 @@ LulzBot printers.'''
 #  18. AXIS TRAVEL LIMITS
 #  19. AUTOLEVELING / BED PROBE
 #  20. X AXIS LEVELING
-#  21. BIO-PRINTER STARTUP COMMANDS
+#  21. STARTUP COMMANDS
 #  22. AUTO-CALIBRATION (BACKLASH AND NOZZLE OFFSET)
 #  23. FILAMENT CONFIGURATION (LIN_ADVANCE/RUNOUT)
 #  24. MOTOR DRIVER TYPE
@@ -615,7 +615,7 @@ def make_config(PRINTER, TOOLHEAD):
         USE_EXPERIMENTAL_FEATURES                        = True
         MARLIN["SHOW_CUSTOM_BOOTSCREEN"]                 = False
         MARLIN["BACKLASH_COMPENSATION"]                  = True
-        #MARLIN["BLTOUCH"]                                = True
+        MARLIN["BLTOUCH"]                                = True
         MARLIN["SENSORLESS_HOMING"]                      = False
         MARLIN["STEALTHCHOP_XY"]                         = False
         MARLIN["STEALTHCHOP_Z"]                          = True
@@ -632,6 +632,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["ARCHIM2_SPI_FLASH_EEPROM_BACKUP_SIZE"]   = 1000
         # Touch LCD configuration
         MARLIN["TOUCH_UI_PORTRAIT"]                      = True
+        MARLIN["TOUCH_UI_NO_BOOTSCREEN"]                 = True
         MARLIN["TOUCH_UI_800x480"]                       = True
         MARLIN["LCD_ALEPHOBJECTS_CLCD_UI"]               = True
         MARLIN["TOUCH_UI_ROYAL_THEME"]                   = True
@@ -667,6 +668,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["TOUCH_UI_800x480"]                       = True
         MARLIN["TOUCH_UI_DEBUG"]                         = True
         MARLIN["TOUCH_UI_ROYAL_THEME"]                   = True
+        MARLIN["TOUCH_UI_NO_BOOTSCREEN"]                 = True
         # SD or USB will only work on EXP2, but a 5
         # pigtail to an endstop connector is needed
         # since EXP2 does not have 5V on pin 1
@@ -924,11 +926,6 @@ def make_config(PRINTER, TOOLHEAD):
             MARLIN["SD_FINISHED_RELEASECOMMAND"]         = C_STRING("M84 X Y Z E")
 
     MARLIN["DISABLE_INACTIVE_Z"]                         = 'false' if USE_Z_BELT else 'true'
-
-    if USE_Z_BELT:
-        MARLIN["STARTUP_COMMANDS"]                       = C_STRING("M17 Z")
-    if USE_Z_BELT and IS_TAZ:
-        MARLIN["STARTUP_COMMANDS"]                       = C_STRING("G28 Z")
 
 ######################### COMMON TOOLHEADS PARAMETERS #########################
 
@@ -1580,7 +1577,6 @@ def make_config(PRINTER, TOOLHEAD):
 
     if USE_Z_BELT and IS_MINI:
         AXIS_LEVELING_COMMANDS = (
-            "M117 Leveling X Axis\n"                     # Set LCD status
             "G28\n"                                      # Home Axis
             + XLEVEL_POS +                               # Move toolhead to the right
             "G0 Z5 F6000\n"                              # Move to bottom of printer
@@ -1595,44 +1591,42 @@ def make_config(PRINTER, TOOLHEAD):
             "M906 Z960\n"                                # Restore default current
             "M211 S1\n"                                  # Turn soft endstops back on
             "G28 Z0\n"                                   # Home Axis
-            "M117 Leveling done.\n"                      # Set LCD status
+        )
+        
+    elif USE_Z_BELT and IS_TAZ and not MARLIN["BLTOUCH"]:
+        # On printers that home to the top, it is okay to simply home the Z to level the axis
+        AXIS_LEVELING_COMMANDS = (
+            XLEVEL_POS +                                 # Center axis
+            "G28 Z0\n"                                   # Home Axis
         )
         
     elif USE_Z_BELT and IS_TAZ and MARLIN["BLTOUCH"]:
-        # Level X Axis to the top
+        # Since the printer homes to the bottom, we cannot use a home Z to auto-level
         AXIS_LEVELING_COMMANDS = (
-            "M117 Leveling X Axis\n"                     # Set LCD status
-            "G28\n"                                      # Home Axis
-            + XLEVEL_POS +                               # Move toolhead to the right
-            "G0 Z300 F6000\n"                            # Move to top of printer
             "G91\n"                                      # Set relative motion mode
             "M211 S0\n"                                  # Turn off soft endstops
             "M120\n"                                     # Turn on hardware endstops
             "M400\n"                                     # Finish moves
-            "G0 Z15 F500\n"                              # Skip steppers against uppers
+            "G0 Z400 F500\n"                             # Skip steppers against uppers
             "G0 Z-5 F500\n"                              # Move Z-Axis down a bit
             "M400\n"                                     # Finish moves
             "G90\n"                                      # Return to absolute mode
             "M121\n"                                     # Turn off hardware endstops
             "M211 S1\n"                                  # Turn soft endstops back on
             "G28 Z0\n"                                   # Home Axis
-            "M117 Leveling done.\n"                      # Set LCD status
         )
 
         MARLIN["ENDSTOP_INTERRUPTS_FEATURE"] = True
 
-    elif USE_Z_BELT and IS_TAZ:
-        AXIS_LEVELING_COMMANDS = (
-            "M117 Leveling X Axis\n"                     # Set LCD status
-            + XLEVEL_POS +                               # Center axis
-            "G28 Z0\n"                                   # Home Axis
-            "M117 Leveling done.\n"                      # Set LCD status
-        )
     else:
         AXIS_LEVELING_COMMANDS = ""
 
-    if USE_Z_BELT:
-        MARLIN["AXIS_LEVELING_COMMANDS"]                 = C_STRING(AXIS_LEVELING_COMMANDS)
+    if USE_Z_BELT and AXIS_LEVELING_COMMANDS:
+        MARLIN["AXIS_LEVELING_COMMANDS"]                 = C_STRING(
+          "M117 Leveling X Axis\n"                       # Set LCD status
+          + AXIS_LEVELING_COMMANDS +
+          "M117 Leveling done.\n"                        # Set LCD status
+        )
 
     elif USE_Z_SCREW:
         # The older Minis seem succeptible to noise in the probe lines.
@@ -1640,11 +1634,15 @@ def make_config(PRINTER, TOOLHEAD):
         # version of Marlin.
         MARLIN["ENDSTOP_NOISE_THRESHOLD"]                =  2
 
-######################### BIO-PRINTER STARTUP COMMANDS ########################
+############################### STARTUP COMMANDS #############################
+
+    if USE_Z_BELT:
+      if IS_MINI:
+        MARLIN["STARTUP_COMMANDS"]                       = C_STRING("M17 Z")
+      else:
+        MARLIN["STARTUP_COMMANDS"]                       = C_STRING(AXIS_LEVELING_COMMANDS)
 
     if PRINTER in ['KangarooPaw_Bio']:
-        MARLIN["AXIS_LEVELING_COMMANDS"]                 = C_STRING(AXIS_LEVELING_COMMANDS)
-
         MARLIN["PARK_AND_RELEASE_COMMANDS"]              = C_STRING(
             "G0 X115 Z50 F6000\n"                        # Goto loading position
             "M400\n"                                     # Wait for moves to finish
@@ -2530,10 +2528,6 @@ if __name__ == "__main__":
         counts = init_counters(config)
         for i in args.input:
             process_config(config, counts, i, args.directory + "/" + os.path.basename(i))
-        dump_counters(config, counts)
-
-        if args.summary:
-            dump_variables(config, args.directory + "/Configuration_summary.txt") os.path.basename(i))
         dump_counters(config, counts)
 
         if args.summary:
