@@ -765,7 +765,7 @@ int16_t Temperature::getHeaterPower(const heater_ind_t heater_id) {
 //
 
 inline void loud_kill(PGM_P const lcd_msg, const heater_ind_t heater) {
-  Running = false;
+  marlin_state = MF_KILLED;
   #if USE_BEEPER
     for (uint8_t i = 20; i--;) {
       WRITE(BEEPER_PIN, HIGH); delay(25);
@@ -830,6 +830,9 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
 }
 
 #if HOTENDS
+  #if ENABLED(PID_DEBUG)
+    extern bool PID_Debug_Flag;
+  #endif
 
   float Temperature::get_pid_output_hotend(const uint8_t E_NAME) {
     const uint8_t ee = HOTEND_INDEX;
@@ -911,24 +914,15 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
       #endif // PID_OPENLOOP
 
       #if ENABLED(PID_DEBUG)
-        if (ee == active_extruder) {
+        if (ee == active_extruder && PID_Debug_Flag) {
           SERIAL_ECHO_START();
-          SERIAL_ECHOPAIR(
-            STR_PID_DEBUG, ee,
-            STR_PID_DEBUG_INPUT, temp_hotend[ee].celsius,
-            STR_PID_DEBUG_OUTPUT, pid_output
-          );
+          SERIAL_ECHOPAIR(STR_PID_DEBUG, ee, STR_PID_DEBUG_INPUT, temp_hotend[ee].celsius, STR_PID_DEBUG_OUTPUT, pid_output);
           #if DISABLED(PID_OPENLOOP)
-          {
-            SERIAL_ECHOPAIR(
-              STR_PID_DEBUG_PTERM, work_pid[ee].Kp,
-              STR_PID_DEBUG_ITERM, work_pid[ee].Ki,
-              STR_PID_DEBUG_DTERM, work_pid[ee].Kd
+            SERIAL_ECHOPAIR( STR_PID_DEBUG_PTERM, work_pid[ee].Kp, STR_PID_DEBUG_ITERM, work_pid[ee].Ki, STR_PID_DEBUG_DTERM, work_pid[ee].Kd
               #if ENABLED(PID_EXTRUSION_SCALING)
                 , STR_PID_DEBUG_CTERM, work_pid[ee].Kc
               #endif
             );
-          }
           #endif
           SERIAL_EOL();
         }
@@ -2003,7 +1997,7 @@ void Temperature::init() {
 
     /**
       SERIAL_ECHO_START();
-      SERIAL_ECHOPGM("Thermal Thermal Runaway Running. Heater ID: ");
+      SERIAL_ECHOPGM("Thermal Runaway Running. Heater ID: ");
       if (heater_id == H_CHAMBER) SERIAL_ECHOPGM("chamber");
       if (heater_id < 0) SERIAL_ECHOPGM("bed"); else SERIAL_ECHO(heater_id);
       SERIAL_ECHOPAIR(" ;  State:", sm.state, " ;  Timer:", sm.timer, " ;  Temperature:", current, " ;  Target Temp:", target);

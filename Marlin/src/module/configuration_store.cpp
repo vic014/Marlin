@@ -122,6 +122,11 @@
   #include "../feature/probe_temp_comp.h"
 #endif
 
+#include "../feature/controllerfan.h"
+#if ENABLED(CONTROLLER_FAN_EDITABLE)
+  void M710_report(const bool forReplay);
+#endif
+
 #pragma pack(push, 1) // No padding between variables
 
 typedef struct { uint16_t X, Y, Z, X2, Y2, Z2, Z3, Z4, E0, E1, E2, E3, E4, E5; } tmc_stepper_current_t;
@@ -291,6 +296,11 @@ typedef struct SettingsDataStruct {
   // HAS_LCD_CONTRAST
   //
   int16_t lcd_contrast;                                 // M250 C
+
+  //
+  // Controller fan settings
+  //
+  controllerFan_settings_t controllerFan_settings;      // M710
 
   //
   // POWER_LOSS_RECOVERY
@@ -881,6 +891,19 @@ void MarlinSettings::postprocess() {
     }
 
     //
+    // Controller Fan
+    //
+    {
+      _FIELD_TEST(controllerFan_settings);
+      #if ENABLED(USE_CONTROLLER_FAN)
+        const controllerFan_settings_t &cfs = controllerFan.settings;
+      #else
+        controllerFan_settings_t cfs = controllerFan_defaults;
+      #endif
+      EEPROM_WRITE(cfs);
+    }
+
+    //
     // Power-Loss Recovery
     //
     {
@@ -1208,7 +1231,7 @@ void MarlinSettings::postprocess() {
       #if HAS_MOTOR_CURRENT_PWM
         EEPROM_WRITE(stepper.motor_current_setting);
       #else
-        const xyz_ulong_t no_current{0};
+        const uint32_t no_current[3] = { 0 };
         EEPROM_WRITE(no_current);
       #endif
     }
@@ -1531,10 +1554,10 @@ void MarlinSettings::postprocess() {
         _FIELD_TEST(planner_leveling_active);
         #if ENABLED(AUTO_BED_LEVELING_UBL)
           const bool &planner_leveling_active = planner.leveling_active;
-          const uint8_t &ubl_storage_slot = ubl.storage_slot;
+          const int8_t &ubl_storage_slot = ubl.storage_slot;
         #else
           bool planner_leveling_active;
-          uint8_t ubl_storage_slot;
+          int8_t ubl_storage_slot;
         #endif
         EEPROM_READ(planner_leveling_active);
         EEPROM_READ(ubl_storage_slot);
@@ -1717,6 +1740,19 @@ void MarlinSettings::postprocess() {
         #if HAS_LCD_CONTRAST
           ui.set_contrast(lcd_contrast);
         #endif
+      }
+
+      //
+      // Controller Fan
+      //
+      {
+        _FIELD_TEST(controllerFan_settings);
+        #if ENABLED(CONTROLLER_FAN_EDITABLE)
+          const controllerFan_settings_t &cfs = controllerFan.settings;
+        #else
+          controllerFan_settings_t cfs = { 0 };
+        #endif
+        EEPROM_READ(cfs);
       }
 
       //
@@ -2185,8 +2221,10 @@ void MarlinSettings::postprocess() {
     }
 
     #if ENABLED(EEPROM_CHITCHAT) && DISABLED(DISABLE_M503)
-      if (!validating) report();
+      // Report the EEPROM settings
+      if (!validating && (DISABLED(EEPROM_BOOT_SILENT) || IsRunning())) report();
     #endif
+
     EEPROM_FINISH();
 
     return !eeprom_error;
@@ -2589,6 +2627,13 @@ void MarlinSettings::reset() {
   #endif
 
   //
+  // Controller Fan
+  //
+  #if ENABLED(USE_CONTROLLER_FAN)
+    controllerFan.reset();
+  #endif
+
+  //
   // Power-Loss Recovery
   //
 
@@ -2651,7 +2696,7 @@ void MarlinSettings::reset() {
 
   #if HAS_MOTOR_CURRENT_PWM
     constexpr uint32_t tmp_motor_current_setting[3] = PWM_MOTOR_CURRENT;
-    for (uint8_t q = 3; q--;)
+    LOOP_L_N(q, 3)
       stepper.digipot_current(q, (stepper.motor_current_setting[q] = tmp_motor_current_setting[q]));
   #endif
 
@@ -3150,6 +3195,10 @@ void MarlinSettings::reset() {
       CONFIG_ECHO_HEADING("LCD Contrast:");
       CONFIG_ECHO_START();
       SERIAL_ECHOLNPAIR("  M250 C", ui.contrast);
+    #endif
+
+    #if ENABLED(CONTROLLER_FAN_EDITABLE)
+      M710_report(forReplay);
     #endif
 
     #if ENABLED(POWER_LOSS_RECOVERY)
