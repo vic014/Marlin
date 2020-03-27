@@ -53,6 +53,9 @@ void GcodeSuite::G0_G1(
   if (IsRunning()
     #if ENABLED(NO_MOTION_BEFORE_HOMING)
       && !axis_unhomed_error(
+        #if ENABLED(NO_MOTION_BEFORE_HOMING_WORKAROUND)
+        parser.seen('U') ? 0 :
+        #endif
           (parser.seen('X') ? _BV(X_AXIS) : 0)
         | (parser.seen('Y') ? _BV(Y_AXIS) : 0)
         | (parser.seen('Z') ? _BV(Z_AXIS) : 0) )

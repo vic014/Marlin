@@ -1579,7 +1579,7 @@ def make_config(PRINTER, TOOLHEAD):
         XLEVEL_POS                                       = "G0 X150 F9999\n"
 
     if USE_Z_BELT and IS_MINI:
-        AXIS_LEVELING_COMMANDS = (
+        LEVEL_AXIS_NO_HOME = (
             "G28\n"                                      # Home Axis
             + XLEVEL_POS +                               # Move toolhead to the right
             "G0 Z5 F6000\n"                              # Move to bottom of printer
@@ -1593,41 +1593,43 @@ def make_config(PRINTER, TOOLHEAD):
             "G90\n"                                      # Return to absolute mode
             "M906 Z960\n"                                # Restore default current
             "M211 S1\n"                                  # Turn soft endstops back on
-            "G28 Z0\n"                                   # Home Axis
         )
+        LEVEL_AXIS_AND_HOME = LEVEL_AXIS_NO_HOME + "G28 Z0\n"
         
     elif USE_Z_BELT and IS_TAZ and not MARLIN["BLTOUCH"]:
         # On printers that home to the top, it is okay to simply home the Z to level the axis
-        AXIS_LEVELING_COMMANDS = (
+        LEVEL_AXIS_NO_HOME = (
             XLEVEL_POS +                                 # Center axis
             "G28 Z0\n"                                   # Home Axis
         )
+        LEVEL_AXIS_AND_HOME = LEVEL_AXIS_NO_HOME
         
     elif USE_Z_BELT and IS_TAZ and MARLIN["BLTOUCH"] and USE_ARCHIM2:
         # Since the printer homes to the bottom, we cannot use a home Z to auto-level
-        AXIS_LEVELING_COMMANDS = (
+        LEVEL_AXIS_NO_HOME = (
             "G91\n"                                      # Set relative motion mode
             "M211 S0\n"                                  # Turn off soft endstops
             "M120\n"                                     # Turn on hardware endstops
             "M400\n"                                     # Finish moves
-            "G0 Z400 F500\n"                             # Skip steppers against uppers
-            "G0 Z-5 F500\n"                              # Move Z-Axis down a bit
+            "G0 Z400 F500 U\n"                           # Skip steppers against uppers
+            "G0 Z-5 F500 U\n"                            # Move Z-Axis down a bit
             "M400\n"                                     # Finish moves
             "G90\n"                                      # Return to absolute mode
             "M121\n"                                     # Turn off hardware endstops
             "M211 S1\n"                                  # Turn soft endstops back on
-            "G28 Z0\n"                                   # Home Axis
         )
-
-        MARLIN["ENDSTOP_INTERRUPTS_FEATURE"] = True
+        LEVEL_AXIS_AND_HOME = LEVEL_AXIS_NO_HOME + "G28\n"
+        MARLIN["NO_MOTION_BEFORE_HOMING_WORKAROUND"]    = True
+        MARLIN["ENDSTOP_INTERRUPTS_FEATURE"]            = True
 
     else:
-        AXIS_LEVELING_COMMANDS = ""
+        LEVEL_AXIS_NO_HOME                              = ""
+        LEVEL_AXIS_AND_HOME                             = ""
 
-    if USE_Z_BELT and AXIS_LEVELING_COMMANDS:
+    if USE_Z_BELT and LEVEL_AXIS_AND_HOME:
         MARLIN["AXIS_LEVELING_COMMANDS"]                 = C_STRING(
           "M117 Leveling X Axis\n"                       # Set LCD status
-          + AXIS_LEVELING_COMMANDS +
+          + LEVEL_AXIS_AND_HOME +
           "M117 Leveling done.\n"                        # Set LCD status
         )
 
@@ -1643,7 +1645,7 @@ def make_config(PRINTER, TOOLHEAD):
       if IS_MINI:
         MARLIN["STARTUP_COMMANDS"]                       = C_STRING("M17 Z")
       else:
-        MARLIN["STARTUP_COMMANDS"]                       = C_STRING(AXIS_LEVELING_COMMANDS)
+        MARLIN["STARTUP_COMMANDS"]                       = C_STRING(LEVEL_AXIS_NO_HOME)
 
     if PRINTER in ['KangarooPaw_Bio']:
         MARLIN["PARK_AND_RELEASE_COMMANDS"]              = C_STRING(
@@ -1668,7 +1670,7 @@ def make_config(PRINTER, TOOLHEAD):
             "T0\n"                                       # Switch to first nozzle
             + RESTORE_NOZZLE_OFFSET +                    # Restore default nozzle offset
             "G28\n"                                      # Auto-Home
-            + AXIS_LEVELING_COMMANDS +                   # Level X-Axis
+            + LEVEL_AXIS_AND_HOME +                      # Level X-Axis
             "G12\n"                                      # Wipe the nozzles
             "M117 Calibrating...\n"                      # Status message
             "G425\n"                                     # Calibrate nozzles
@@ -2066,7 +2068,7 @@ def make_config(PRINTER, TOOLHEAD):
         if USE_Z_BELT:
             G29_RECOVER_COMMANDS = (
                 WIPE_HEAT_TEMP +                         # Preheat extruders
-                AXIS_LEVELING_COMMANDS +                 # Level X axis
+                LEVEL_AXIS_AND_HOME +                    # Level X axis
                 "G12\n"                                  # Perform wipe sequence
                 "M109 R160\n"                            # Setting probing temperature
                 "M400\n"                                 # Wait for motion to finish

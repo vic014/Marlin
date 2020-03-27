@@ -60,7 +60,12 @@ void AboutScreen::onRedraw(draw_mode_t) {
     strlen_P(TOOLHEAD_NAME) + 1
   ];
   #ifdef TOOLHEAD_NAME
+    // If MSG_ABOUT_TOUCH_PANEL_2 has %s, substitute in the toolhead name.
+    // But this is optional, so squelch the compiler warning here.
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wformat-extra-args"
     sprintf_P(about_str, GET_TEXT(MSG_ABOUT_TOUCH_PANEL_2), TOOLHEAD_NAME);
+    #pragma GCC diagnostic pop
   #else
     strcpy_P(about_str, GET_TEXT(MSG_ABOUT_TOUCH_PANEL_2));
   #endif
@@ -86,15 +91,16 @@ void AboutScreen::onRedraw(draw_mode_t) {
 
 bool AboutScreen::onTouchEnd(uint8_t tag) {
   switch (tag) {
-    case 1: GOTO_PREVIOUS();            return true;
+    case 1: GOTO_PREVIOUS(); break;
 #if ENABLED(PRINTCOUNTER)
-    case 2:  GOTO_SCREEN(StatisticsScreen);                           break;
+    case 2: GOTO_SCREEN(StatisticsScreen); break;
 #endif
 #if ENABLED(TOUCH_UI_DEVELOPER_MENU)
-    case 3: GOTO_SCREEN(DeveloperMenu); return true;
+    case 3: GOTO_SCREEN(DeveloperMenu); break;
 #endif
-    default:                            return false;
+    default: return false;
   }
+  return true;
 }
 
 #endif // TOUCH_UI_FTDI_EVE
