@@ -30,7 +30,10 @@ usage() {
   echo
   echo "   -c|--config       Save the values of 'Configuration.h' and 'Configuration_adv.h'"
   echo "                     that are used for the specified printer and toolhead."
+  echo
   echo "   -n|--dry-run      Just print commands, don't execute"
+  echo
+  echo "   -r|--restart      Restart a compilation that failed (i.e. skip already compiled FW)"
   echo
   exit
 }
@@ -107,6 +110,15 @@ get_config_info() {
   motherboard_name=`grep "define MOTHERBOARD" $config/Configuration.h | awk '{print $3}'`
   motherboard_number=`grep "$motherboard_name\b" Marlin/src/core/boards.h | awk '{print $3}'`
   is_lulzbot=`grep "LulzBot printers" $config/Configuration.h`
+  if [ ! $FULLNAMES ]; then
+    # Shorten firmware name (removing the code names)
+    fw_filename=`echo $fw_filename | sed 's/Marlin_(.+)_(.+)_(.+)_(.+)_(.+)_(.+)/Marlin_$2_$4_$5_$6/'`
+  fi
+  if [ $motherboard_name = "BOARD_ARCHIM2" ]; then
+    fw_path=build/$group/$printer/$toolhead/$fw_filename.bin
+  else
+    fw_path=build/$group/$printer/$toolhead/$fw_filename.hex
+  fi
 }
 
 ####
@@ -151,6 +163,11 @@ build_firmware() {
   get_config_info $config
   locate_gcc_for_board $motherboard_name
   compile_deps_for_board $motherboard_name
+  
+  if [ ! -z "$RESTART" -a -f $fw_path ]; then
+    echo Skipping for $printer and $toolhead as it already exists
+    return
+  fi
 
   if [ -z "$is_lulzbot" ]; then
     # Bail if the FW is not an official Lulzbot build
@@ -191,20 +208,11 @@ build_firmware() {
   # Copy builds to build directory
 
   mkdir -p build/$group/$printer/$toolhead
-  if [ $motherboard_name = "BOARD_ARCHIM2" ]; then
-    mv Marlin/applet/marlin.bin build/$group/$printer/$toolhead/$fw_filename.bin
-  else
-    mv Marlin/applet/marlin.hex build/$group/$printer/$toolhead/$fw_filename.hex
-  fi
+  mv Marlin/applet/marlin.bin $fw_path
   chmod a-x build/$group/$printer/$toolhead/*
 
   if [ $GENERATE_CONFIG ]; then
     cp $config/* build/$group/$printer/$toolhead
-  fi
-  
-  if [ ! $FULLNAMES ]; then
-    # Shorten firmware name (removing the code names)
-    rename 's/Marlin_(.+)_(.+)_(.+)_(.+)_(.+)_(.+)/Marlin_$2_$4_$5_$6/' build/$group/$printer/$toolhead/*
   fi
 }
 
@@ -307,6 +315,10 @@ do
       DRY_RUN=1
       shift
       ;;
+    -r|--restart)
+      RESTART=1
+      shift
+      ;;
     -*|--*)
       usage
       ;;
@@ -318,8 +330,12 @@ done
 
 MAKE_FLAGS="$MAKE_FLAGS -j $(grep -c ^processor /proc/cpuinfo)"
 
-rm -rf build
-mkdir  build
+if [ ! $RESTART ]; then
+  rm -rf build
+  mkdir  build
+else
+  echo Restarting from where we left off...
+fi
 
 # Collect list of configuration directories to build
 
