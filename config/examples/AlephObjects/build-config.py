@@ -1205,7 +1205,7 @@ def make_config(PRINTER, TOOLHEAD):
         TOOLHEAD_TYPE                                    = "Hermera"
         TOOLHEAD_BLOCK                                   = "E3D_Hermera_V6"
         E_STEPS                                          = 400
-        MOTOR_CURRENT_E                                  = 960 # mA
+        MOTOR_CURRENT_E                                  = 1330 # mA
         MARLIN["TOOLHEAD_NAME"]                          = C_STRING("E3D Hermera")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_CLOSED_ENDSTOP
@@ -1579,7 +1579,7 @@ def make_config(PRINTER, TOOLHEAD):
         XLEVEL_POS                                       = "G0 X150 F9999\n"
 
     if USE_Z_BELT and IS_MINI:
-        LEVEL_AXIS_NO_HOME = (
+        AXIS_LEVELING_COMMANDS = (
             "G28\n"                                      # Home Axis
             + XLEVEL_POS +                               # Move toolhead to the right
             "G0 Z5 F6000\n"                              # Move to bottom of printer
@@ -1593,20 +1593,19 @@ def make_config(PRINTER, TOOLHEAD):
             "G90\n"                                      # Return to absolute mode
             "M906 Z960\n"                                # Restore default current
             "M211 S1\n"                                  # Turn soft endstops back on
+            "G28 Z0\n"                                   # Rehome to correct coorinate system
         )
-        LEVEL_AXIS_AND_HOME = LEVEL_AXIS_NO_HOME + "G28 Z0\n"
         
     elif USE_Z_BELT and IS_TAZ and not MARLIN["BLTOUCH"]:
         # On printers that home to the top, it is okay to simply home the Z to level the axis
-        LEVEL_AXIS_NO_HOME = (
+        AXIS_LEVELING_COMMANDS = (
             XLEVEL_POS +                                 # Center axis
             "G28 Z0\n"                                   # Home Axis
         )
-        LEVEL_AXIS_AND_HOME = LEVEL_AXIS_NO_HOME
         
     elif USE_Z_BELT and IS_TAZ and MARLIN["BLTOUCH"] and USE_ARCHIM2:
         # Since the printer homes to the bottom, we cannot use a home Z to auto-level
-        LEVEL_AXIS_NO_HOME = (
+        AXIS_LEVELING_COMMANDS = (
             "G91\n"                                      # Set relative motion mode
             "M211 S0\n"                                  # Turn off soft endstops
             "M120\n"                                     # Turn on hardware endstops
@@ -1617,19 +1616,19 @@ def make_config(PRINTER, TOOLHEAD):
             "G90\n"                                      # Return to absolute mode
             "M121\n"                                     # Turn off hardware endstops
             "M211 S1\n"                                  # Turn soft endstops back on
+            "M18 Z\n"                                    # Power off stepper to...
+            "M17 Z\n"                                    # ...forget current position
         )
-        LEVEL_AXIS_AND_HOME = LEVEL_AXIS_NO_HOME + "G28\n"
         MARLIN["NO_MOTION_BEFORE_HOMING_WORKAROUND"]    = True
         MARLIN["ENDSTOP_INTERRUPTS_FEATURE"]            = True
 
     else:
-        LEVEL_AXIS_NO_HOME                              = ""
-        LEVEL_AXIS_AND_HOME                             = ""
+        AXIS_LEVELING_COMMANDS                             = ""
 
-    if USE_Z_BELT and LEVEL_AXIS_AND_HOME:
+    if USE_Z_BELT and AXIS_LEVELING_COMMANDS:
         MARLIN["AXIS_LEVELING_COMMANDS"]                 = C_STRING(
           "M117 Leveling X Axis\n"                       # Set LCD status
-          + LEVEL_AXIS_AND_HOME +
+          + AXIS_LEVELING_COMMANDS +
           "M117 Leveling done.\n"                        # Set LCD status
         )
 
@@ -1645,7 +1644,7 @@ def make_config(PRINTER, TOOLHEAD):
       if IS_MINI:
         MARLIN["STARTUP_COMMANDS"]                       = C_STRING("M17 Z")
       else:
-        MARLIN["STARTUP_COMMANDS"]                       = C_STRING(LEVEL_AXIS_NO_HOME)
+        MARLIN["STARTUP_COMMANDS"]                       = C_STRING(AXIS_LEVELING_COMMANDS)
 
     if PRINTER in ['KangarooPaw_Bio']:
         MARLIN["PARK_AND_RELEASE_COMMANDS"]              = C_STRING(
@@ -1669,8 +1668,8 @@ def make_config(PRINTER, TOOLHEAD):
             "M117 Starting Auto-Calibration\n"           # Status message
             "T0\n"                                       # Switch to first nozzle
             + RESTORE_NOZZLE_OFFSET +                    # Restore default nozzle offset
+              AXIS_LEVELING_COMMANDS +                   # Level X-Axis
             "G28\n"                                      # Auto-Home
-            + LEVEL_AXIS_AND_HOME +                      # Level X-Axis
             "G12\n"                                      # Wipe the nozzles
             "M117 Calibrating...\n"                      # Status message
             "G425\n"                                     # Calibrate nozzles
@@ -2068,7 +2067,8 @@ def make_config(PRINTER, TOOLHEAD):
         if USE_Z_BELT:
             G29_RECOVER_COMMANDS = (
                 WIPE_HEAT_TEMP +                         # Preheat extruders
-                LEVEL_AXIS_AND_HOME +                    # Level X axis
+                AXIS_LEVELING_COMMANDS +                 # Level X axis
+                "G28\n"                                  # Rehome
                 "G12\n"                                  # Perform wipe sequence
                 "M109 R160\n"                            # Setting probing temperature
                 "M400\n"                                 # Wait for motion to finish
@@ -2249,7 +2249,9 @@ def make_config(PRINTER, TOOLHEAD):
             MARLIN["DEFAULT_TRAVEL_ACCELERATION"]        = 500
 
         if not "NOZZLE_TO_PROBE_OFFSET" in MARLIN:
-            if MARLIN["BLTOUCH"]:
+            if "Experimental_BLTouch" in PRINTER:
+                MARLIN["NOZZLE_TO_PROBE_OFFSET"]         = [43.5, 23.75, -2.35]
+            elif MARLIN["BLTOUCH"]:
                 MARLIN["NOZZLE_TO_PROBE_OFFSET"]         = [0, -22, -2.35]
             elif PRINTER == "Quiver_TAZPro":
                 MARLIN["NOZZLE_TO_PROBE_OFFSET"]         = [0, 0, -1.102]
