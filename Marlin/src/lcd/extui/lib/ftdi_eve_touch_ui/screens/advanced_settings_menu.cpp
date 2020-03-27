@@ -109,7 +109,7 @@ void AdvancedSettingsMenu::onRedraw(draw_mode_t what) {
       )
       .tag(13).button( TMC_CURRENT_POS,        GET_TEXT_F(MSG_TMC_CURRENT))
       .enabled(
-        #if SENSORLESS_HOMING
+        #if ENABLED(SENSORLESS_HOMING)
           1
         #endif
       )
@@ -180,6 +180,8 @@ bool AdvancedSettingsMenu::onTouchEnd(uint8_t tag) {
     case 12: GOTO_SCREEN(EndstopStatesScreen); break;
     #if HAS_TRINAMIC_CONFIG
     case 13: GOTO_SCREEN(StepperCurrentScreen); break;
+    #endif
+    #if ENABLED(SENSORLESS_HOMING)
     case 14: GOTO_SCREEN(StepperBumpSensitivityScreen); break;
     #endif
     case 15: GOTO_SCREEN(DisplayTuningScreen); break;

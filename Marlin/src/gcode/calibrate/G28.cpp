@@ -163,15 +163,13 @@
   }
 
   static void home_e() {
-    feedrate_mm_s = 1; // mm/s
-
     // Back off the extruder until the pin is triggered
     destination = current_position;
     while(!read_e_min_pin()) {
       current_position[E_AXIS] = 0.5;
       sync_plan_position();
       destination[E_AXIS] = 0;
-      prepare_move_to_destination();
+      do_blocking_move_to(destination, feedrate_mm_s);
       planner.synchronize();
     };
 

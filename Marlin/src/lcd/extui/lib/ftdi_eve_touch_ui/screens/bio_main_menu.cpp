@@ -51,7 +51,7 @@ void MainMenu::onRedraw(draw_mode_t what) {
        .tag(4).button( BTN_POS(1,4), BTN_SIZE(2,1), GET_TEXT_F(MSG_RELEASE_XY_AXIS))
        .tag(5).button( BTN_POS(1,5), BTN_SIZE(2,1), GET_TEXT_F(MSG_AUTOLEVEL_X_AXIS))
        .tag(6).button( BTN_POS(1,6), BTN_SIZE(2,1), GET_TEXT_F(MSG_BED_TEMPERATURE))
-       .tag(7).button( BTN_POS(1,7), BTN_SIZE(2,1), GET_TEXT_F(MSG_INTERFACE_SETTINGS))
+       .tag(7).button( BTN_POS(1,7), BTN_SIZE(2,1), GET_TEXT_F(MSG_INTERFACE))
        .tag(8).button( BTN_POS(1,8), BTN_SIZE(2,1), GET_TEXT_F(MSG_ADVANCED_SETTINGS))
        .tag(9).button( BTN_POS(1,9), BTN_SIZE(2,1), GET_TEXT_F(MSG_INFO_MENU))
        .colors(action_btn)

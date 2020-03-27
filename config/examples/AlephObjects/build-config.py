@@ -779,7 +779,7 @@ def make_config(PRINTER, TOOLHEAD):
     MARLIN["USE_ZMIN_PLUG"]                              = USE_MIN_ENDSTOPS or MARLIN["Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN"]
 
     MARLIN["USE_XMAX_PLUG"]                              = USE_MAX_ENDSTOPS
-    MARLIN["USE_YMAX_PLUG"]                              = USE_MAX_ENDSTOPS
+    MARLIN["USE_YMAX_PLUG"]                              = USE_MAX_ENDSTOPS or IS_MINI
     MARLIN["USE_ZMAX_PLUG"]                              = USE_MAX_ENDSTOPS or IS_MINI or (IS_TAZ and not USE_HOME_BUTTON)
 
     if PRINTER in ["KangarooPaw_Bio"]:
@@ -1603,7 +1603,7 @@ def make_config(PRINTER, TOOLHEAD):
             "G28 Z0\n"                                   # Home Axis
         )
         
-    elif USE_Z_BELT and IS_TAZ and MARLIN["BLTOUCH"]:
+    elif USE_Z_BELT and IS_TAZ and MARLIN["BLTOUCH"] and USE_ARCHIM2:
         # Since the printer homes to the bottom, we cannot use a home Z to auto-level
         AXIS_LEVELING_COMMANDS = (
             "G91\n"                                      # Set relative motion mode
