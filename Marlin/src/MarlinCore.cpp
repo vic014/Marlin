@@ -202,7 +202,7 @@ const char NUL_STR[] PROGMEM = "",
            SP_Z_LBL[] PROGMEM = " Z:",
            SP_E_LBL[] PROGMEM = " E:";
 
-bool Running = true;
+MarlinState marlin_state = MF_INITIALIZING;
 
 // For M109 and M190, this flag may be cleared (by M108) to exit the wait loop
 bool wait_for_heatup = true;
@@ -436,12 +436,16 @@ void startOrResumeJob() {
         #endif
         break;
 
-      case 4:                                   // Display "Click to Continue..."
-        #if HAS_RESUME_CONTINUE                 // 30 min timeout with LCD, 1 min without
-          did_state = queue.enqueue_one_P(
+      case 4:
+        did_state =                                   // Display "Click to Continue..."
+        #if HAS_RESUME_CONTINUE && HAS_LEDS_OFF_FLAG  // 30 min timeout with LCD, 1 min without
+          queue.enqueue_one_P(
             print_job_timer.duration() < 60 ? PSTR("M0Q1P1") : PSTR("M0Q1S" TERN(HAS_LCD_MENU, "1800", "60"))
-          );
+          )
+        #else
+          true
         #endif
+        ;
         break;
 
       case 5:
@@ -567,7 +571,7 @@ inline void manage_inactivity(const bool ignore_stepper_queue=false) {
   #endif
 
   #if ENABLED(USE_CONTROLLER_FAN)
-    controllerfan_update(); // Check if fan should be turned on to cool stepper drivers down
+    controllerFan.update(); // Check if fan should be turned on to cool stepper drivers down
   #endif
 
   #if ENABLED(AUTO_POWER_CONTROL)
@@ -839,7 +843,7 @@ void stop() {
     SERIAL_ERROR_MSG(STR_ERR_STOPPED);
     LCD_MESSAGEPGM(MSG_STOPPED);
     safe_delay(350);       // allow enough time for messages to get out before stopping
-    Running = false;
+    marlin_state = MF_STOPPED;
   }
 }
 
@@ -984,6 +988,10 @@ void setup() {
     SETUP_RUN(leds.setup());
   #endif
 
+  #if ENABLED(USE_CONTROLLER_FAN)     // Set up fan controller to initialize also the default configurations.
+    SETUP_RUN(controllerFan.setup());
+  #endif
+
   SETUP_RUN(ui.init());
   SETUP_RUN(ui.reset_status());       // Load welcome message early. (Retained if no errors exist.)
 
@@ -991,8 +999,8 @@ void setup() {
     SETUP_RUN(ui.show_bootscreen());
   #endif
 
-  #if ENABLED(SDSUPPORT)
-    SETUP_RUN(card.mount());          // Mount the SD card before settings.first_load
+  #if ENABLED(SDSUPPORT) && defined(SDCARD_CONNECTION) && !SD_CONNECTION_IS(LCD)
+    SETUP_RUN(card.mount());          // Mount onboard / custom SD card before settings.first_load
   #endif
 
   SETUP_RUN(settings.first_load());   // Load data from EEPROM if available (or use defaults)
@@ -1045,10 +1053,6 @@ void setup() {
 
   #if HAS_BED_PROBE
     SETUP_RUN(endstops.enable_z_probe(false));
-  #endif
-
-  #if ENABLED(USE_CONTROLLER_FAN)
-    SET_OUTPUT(CONTROLLER_FAN_PIN);
   #endif
 
   #if HAS_STEPPER_RESET
@@ -1182,6 +1186,8 @@ void setup() {
   #if ENABLED(MAX7219_DEBUG)
     SETUP_RUN(max7219.init());
   #endif
+
+  marlin_state = MF_RUNNING;
 
   SETUP_LOG("setup() completed.");
 }
