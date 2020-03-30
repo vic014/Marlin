@@ -1205,7 +1205,7 @@ def make_config(PRINTER, TOOLHEAD):
         TOOLHEAD_TYPE                                    = "Hermera"
         TOOLHEAD_BLOCK                                   = "E3D_Hermera_V6"
         E_STEPS                                          = 400
-        MOTOR_CURRENT_E                                  = 1330 # mA
+        MOTOR_CURRENT_E                                  = 960 # mA
         MARLIN["TOOLHEAD_NAME"]                          = C_STRING("E3D Hermera")
         #         16 chars max                                       ^^^^^^^^^^^^^^^
         MARLIN["X_MAX_ENDSTOP_INVERTING"]                = NORMALLY_CLOSED_ENDSTOP
@@ -1491,7 +1491,7 @@ def make_config(PRINTER, TOOLHEAD):
             MARLIN["PROBING_STEPPERS_OFF"]               = True
             GOTO_1ST_PROBE_POINT                         = ""
 
-            MARLIN["BED_LEVELING_COMMANDS"]              = C_STRING("G29 P1\nG29 S")
+            MARLIN["BED_LEVELING_COMMANDS"]              = C_STRING("G29 P1\nG29 S1")
 
         else:
             # LulzBot Conductive Probing
