@@ -130,7 +130,7 @@ namespace ExtUI {
     void onMeshUpdate(const int8_t, const int8_t, const float) {
     }
   #endif
-  
+
   #if ENABLED(POWER_LOSS_RECOVERY)
     void onPowerLossResume() {
       // Called on resume from power-loss
