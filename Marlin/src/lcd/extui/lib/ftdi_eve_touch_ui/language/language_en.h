@@ -67,7 +67,6 @@ namespace Language_en {
   PROGMEM Language_Str MSG_AXIS_ALL                 = u8"All";
   PROGMEM Language_Str MSG_HOME                     = u8"Home";
   PROGMEM Language_Str MSG_PRINT_STARTING           = u8"Print starting";
-  PROGMEM Language_Str MSG_PRINT_FINISHED           = u8"Print finished";
   PROGMEM Language_Str MSG_PRINT_ERROR              = u8"Print error";
   PROGMEM Language_Str MSG_ABOUT_TOUCH_PANEL_1      = u8"Color Touch Panel";
   PROGMEM Language_Str MSG_ABOUT_TOUCH_PANEL_2      = WEBSITE_URL;

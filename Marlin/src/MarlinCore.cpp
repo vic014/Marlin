@@ -438,9 +438,19 @@ void startOrResumeJob() {
 
       case 4:                                   // Display "Click to Continue..."
         #if HAS_RESUME_CONTINUE                 // 30 min timeout with LCD, 1 min without
-          did_state = queue.enqueue_one_P(
-            print_job_timer.duration() < 60 ? PSTR("M0Q1P1") : PSTR("M0Q1S" TERN(HAS_LCD_MENU, "1800", "60"))
-          );
+          {
+            const char * const gcode = print_job_timer.duration() < 60 ? PSTR("M0Q1P1") : PSTR("M0Q1S" TERN(HAS_LCD_MENU, "1800", "60"));
+            #if ENABLED(EXTENSIBLE_UI)
+              const char * const msg = GET_TEXT(MSG_PRINT_FINISHED);
+              char str[strlen_P(gcode) + strlen_P(msg) + 2];
+              strcpy_P(str, gcode);
+              strcat_P(str, " ");
+              strcat_P(str, msg);
+              did_state = queue.enqueue_one(str);
+            #else
+              did_state = queue.enqueue_one_P(gcode);
+            #endif
+          }
         #endif
         break;
 

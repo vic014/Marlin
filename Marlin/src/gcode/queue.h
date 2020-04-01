@@ -84,6 +84,12 @@ public:
   static bool enqueue_one_P(PGM_P const pgcode);
 
   /**
+   * Enqueue with Serial Echo
+   * Return true on success
+   */
+  static bool enqueue_one(const char* cmd);
+
+  /**
    * Enqueue from program memory and return only when commands are actually enqueued
    */
   static void enqueue_now_P(PGM_P const cmd);
@@ -147,12 +153,6 @@ private:
 
   // Process the next "immediate" command
   static bool process_injected_command();
-
-  /**
-   * Enqueue with Serial Echo
-   * Return true on success
-   */
-  static bool enqueue_one(const char* cmd);
 
   static void gcode_line_error(PGM_P const err, const int8_t pn);
 
