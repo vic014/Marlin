@@ -55,6 +55,9 @@ enum {
   MAX_VELOCITY_SCREEN_CACHE,
   MAX_ACCELERATION_SCREEN_CACHE,
   DEFAULT_ACCELERATION_SCREEN_CACHE,
+#if HAS_MESH
+  BED_MESH_SCREEN_CACHE,
+#endif
 #if DISABLED(CLASSIC_JERK)
   JUNC_DEV_SCREEN_CACHE,
 #else
@@ -131,7 +134,7 @@ class AboutScreen : public BaseScreen, public UncachedScreen {
 };
 
 #if HAS_MESH
-class BedMeshScreen : public BaseScreen, public UncachedScreen {
+class BedMeshScreen : public BaseScreen, public CachedScreen<BED_MESH_SCREEN_CACHE> {
   private:
     enum MeshOpts {
         USE_POINTS    = 0x01,
@@ -143,6 +146,7 @@ class BedMeshScreen : public BaseScreen, public UncachedScreen {
     static uint8_t pointToTag(uint8_t x, uint8_t y);
     static void tagToPoint(uint8_t tag, uint8_t &x, uint8_t &y);
     static float getHightlightedValue();
+    static void drawHighlightedPointValue();
     static void drawMesh(int16_t x, int16_t y, int16_t w, int16_t h, ExtUI::bed_mesh_t data, uint8_t opts);
 
   public:
