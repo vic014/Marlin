@@ -146,13 +146,8 @@ namespace Language_en {
 
   PROGMEM Language_Str MSG_TOUCH_CALIBRATION_START  = u8"Release to begin screen calibration";
   PROGMEM Language_Str MSG_TOUCH_CALIBRATION_PROMPT = u8"Touch the dots to calibrate";
-<<<<<<< HEAD
-  PROGMEM Language_Str MSG_AUTOLEVEL_X_AXIS       = u8"Level X Axis";
-  
-=======
   PROGMEM Language_Str MSG_AUTOLEVEL_X_AXIS         = u8"Level X Axis";
 
->>>>>>> upstream/bugfix-2.0.x
   #ifdef TOUCH_UI_LULZBOT_BIO
     PROGMEM Language_Str MSG_MOVE_TO_HOME           = u8"Move to Home";
     PROGMEM Language_Str MSG_RAISE_PLUNGER          = u8"Raise Plunger";

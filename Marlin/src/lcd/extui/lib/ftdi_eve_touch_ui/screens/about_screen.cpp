@@ -104,4 +104,3 @@ bool AboutScreen::onTouchEnd(uint8_t tag) {
 }
 
 #endif // TOUCH_UI_FTDI_EVE
-

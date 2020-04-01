@@ -142,12 +142,6 @@ namespace ExtUI {
     }
   #endif
 
-  #if ENABLED(POWER_LOSS_RECOVERY)
-    void onPowerLossResume() {
-      // Called on resume from power-loss
-    }
-  #endif
-
   #if HAS_PID_HEATING
     void onPidTuning(const result_t rst) {
       // Called for temperature PID tuning result

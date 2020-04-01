@@ -104,21 +104,12 @@ void MainMenu::onRedraw(draw_mode_t what) {
          #ifdef PRINTCOUNTER
            1
          #endif
-<<<<<<< HEAD
         )
        .enabled(
          #ifdef AXIS_LEVELING_COMMANDS
            1
          #endif
         )
-=======
-        )
-       .enabled(
-         #ifdef AXIS_LEVELING_COMMANDS
-           1
-         #endif
-        )
->>>>>>> upstream/bugfix-2.0.x
        .tag(9).button( LEVEL_AXIS_POS, GET_TEXT_F(MSG_AUTOLEVEL_X_AXIS))
        .enabled(
          #ifdef HAS_LEVELING
