@@ -133,7 +133,7 @@ namespace ExtUI {
   #if HAS_PID_HEATING
     void onPidTuning(const result_t rst) {
       // Called for temperature PID tuning result
-      SERIAL_ECHOLNPAIR("OnPidTuning:",rst);
+      SERIAL_ECHOLNPAIR("onPidTuning:",rst);
       switch(rst) {
         case PID_BAD_EXTRUDER_NUM:
           ScreenHandler.setstatusmessagePGM(PSTR(STR_PID_BAD_EXTRUDER_NUM));
