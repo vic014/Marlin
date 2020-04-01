@@ -65,6 +65,8 @@ void GcodeSuite::M1001() {
 
   #if DISABLED(NO_TIME_AFTER_SD_PRINT)
   if (long_print) gcode.process_subcommands_now_P(PSTR("M31"));
+  #else
+    UNUSED(long_print);
   #endif
 
   // Stop the print job timer
