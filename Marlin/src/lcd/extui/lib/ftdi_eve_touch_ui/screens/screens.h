@@ -130,6 +130,31 @@ class AboutScreen : public BaseScreen, public UncachedScreen {
     static bool onTouchEnd(uint8_t tag);
 };
 
+#if HAS_MESH
+class BedMeshScreen : public BaseScreen, public UncachedScreen {
+  private:
+    enum MeshOpts {
+        USE_POINTS    = 0x01,
+        USE_COLORS    = 0x02,
+        USE_TAGS      = 0x04,
+        USE_HIGHLIGHT = 0x08
+    };
+
+    static uint8_t pointToTag(uint8_t x, uint8_t y);
+    static void tagToPoint(uint8_t tag, uint8_t &x, uint8_t &y);
+    static float getHightlightedValue();
+    static void drawMesh(int16_t x, int16_t y, int16_t w, int16_t h, ExtUI::bed_mesh_t data, uint8_t opts);
+
+  public:
+    static void onMeshUpdate(const int8_t x, const int8_t y, const float val);
+    static void onMeshUpdate(const int8_t x, const int8_t y, const ExtUI::probe_state_t);
+    static void onEntry();
+    static void onRedraw(draw_mode_t);
+    static bool onTouchStart(uint8_t tag);
+    static bool onTouchEnd(uint8_t tag);
+};
+#endif
+
 #if ENABLED(PRINTCOUNTER)
   class StatisticsScreen : public BaseScreen, public UncachedScreen {
     public:
