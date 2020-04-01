@@ -1403,9 +1403,9 @@ def make_config(PRINTER, TOOLHEAD):
         STANDARD_Y_BED_SIZE                              = 280
 
     elif "Experimental_BLTouch" in PRINTER:
-        STANDARD_X_MAX_POS                               = 314
+        STANDARD_X_MAX_POS                               = 288
         STANDARD_X_MIN_POS                               = -49
-        STANDARD_Y_MAX_POS                               = 306
+        STANDARD_Y_MAX_POS                               = 304
         STANDARD_Y_MIN_POS                               = -35
 
         STANDARD_X_BED_SIZE                              = 280
@@ -1444,6 +1444,10 @@ def make_config(PRINTER, TOOLHEAD):
     elif IS_TAZ and USE_Z_SCREW:
         STANDARD_Z_MIN_POS                               = 0
         STANDARD_Z_MAX_POS                               = 270
+
+    elif "Experimental_BLTouch" in PRINTER:
+        STANDARD_Z_MIN_POS                               = -2
+        STANDARD_Z_MAX_POS                               = 296
 
     elif IS_TAZ and USE_Z_BELT:
         STANDARD_Z_MIN_POS                               = -2
@@ -1595,14 +1599,14 @@ def make_config(PRINTER, TOOLHEAD):
             "M211 S1\n"                                  # Turn soft endstops back on
             "G28 Z0\n"                                   # Rehome to correct coorinate system
         )
-        
+
     elif USE_Z_BELT and IS_TAZ and not MARLIN["BLTOUCH"]:
         # On printers that home to the top, it is okay to simply home the Z to level the axis
         AXIS_LEVELING_COMMANDS = (
             XLEVEL_POS +                                 # Center axis
             "G28 Z0\n"                                   # Home Axis
         )
-        
+
     elif USE_Z_BELT and IS_TAZ and MARLIN["BLTOUCH"] and USE_ARCHIM2:
         # Since the printer homes to the bottom, we cannot use a home Z to auto-level
         AXIS_LEVELING_COMMANDS = (
@@ -1643,6 +1647,8 @@ def make_config(PRINTER, TOOLHEAD):
     if USE_Z_BELT:
       if IS_MINI:
         MARLIN["STARTUP_COMMANDS"]                       = C_STRING("M17 Z")
+      elif "Experimental_BLTouch" in PRINTER:
+        MARLIN["STARTUP_COMMANDS"]                       = C_STRING("G29 L1\n" + AXIS_LEVELING_COMMANDS)
       else:
         MARLIN["STARTUP_COMMANDS"]                       = C_STRING(AXIS_LEVELING_COMMANDS)
 
