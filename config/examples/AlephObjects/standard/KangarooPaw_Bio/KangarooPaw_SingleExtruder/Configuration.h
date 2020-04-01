@@ -2291,3 +2291,4 @@
 //#define FIL_RUNOUT_PIN
 #define CONTROLLER_FAN_IGNORE_Z // <-- changed
 //#define NO_MOTION_BEFORE_HOMING_WORKAROUND
+#define NO_TIME_AFTER_SD_PRINT // <-- changed

@@ -62,7 +62,10 @@ void GcodeSuite::M1001() {
 
   // Report total print time
   const bool long_print = print_job_timer.duration() > 60;
+
+  #if DISABLED(NO_TIME_AFTER_SD_PRINT)
   if (long_print) gcode.process_subcommands_now_P(PSTR("M31"));
+  #endif
 
   // Stop the print job timer
   gcode.process_subcommands_now_P(PSTR("M77"));

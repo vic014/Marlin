@@ -702,7 +702,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["S_CURVE_ACCELERATION"]                   = True
 
     if USE_STATUS_LED:
-        MARLIN["NEOPIXEL_RGBW_LED"]                      = True
+        MARLIN["NEOPIXEL_LED"]                           = True
         MARLIN["NEOPIXEL_PIN"]                           = 32    # X_MAX_PIN
         MARLIN["NEOPIXEL_PIXELS"]                        = 8
         MARLIN["USE_XMAX_PLUG"]                          = False
@@ -2359,6 +2359,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["LCD_SET_PROGRESS_MANUALLY"]              = True
         MARLIN["SCROLL_LONG_FILENAMES"]                  = False if USE_LESS_MEMORY else True
         MARLIN["NO_PAUSE_FOR_REHEAT"]                    = True
+        MARLIN["NO_TIME_AFTER_SD_PRINT"]                 = True
         MARLIN["DEVELOPER_SCREENS"]                      = True
         MARLIN["LCD_TIMEOUT_TO_STATUS"]                  = 0
 
