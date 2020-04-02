@@ -1614,7 +1614,7 @@ def make_config(PRINTER, TOOLHEAD):
             "M211 S0\n"                                  # Turn off soft endstops
             "M120\n"                                     # Turn on hardware endstops
             "M400\n"                                     # Finish moves
-            "G0 Z400 F500 U\n"                           # Skip steppers against uppers
+            "G0 Z400 F6000 U\n"                          # Skip steppers against uppers
             "G0 Z-5 F500 U\n"                            # Move Z-Axis down a bit
             "M400\n"                                     # Finish moves
             "G90\n"                                      # Return to absolute mode
