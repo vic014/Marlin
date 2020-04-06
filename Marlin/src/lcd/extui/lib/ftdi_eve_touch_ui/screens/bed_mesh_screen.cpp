@@ -50,16 +50,16 @@ using namespace ExtUI;
   #define BACK_POS       BTN_POS(4,5), BTN_SIZE(2,1)
 #endif
 
-void BedMeshScreen::drawMesh(int16_t x, int16_t y, int16_t w, int16_t h, ExtUI::bed_mesh_t data, uint8_t opts) {  
+void BedMeshScreen::drawMesh(int16_t x, int16_t y, int16_t w, int16_t h, ExtUI::bed_mesh_t data, uint8_t opts) {
   constexpr uint8_t rows       = GRID_MAX_POINTS_Y;
   constexpr uint8_t cols       = GRID_MAX_POINTS_X;
 
   #define VALUE(X,Y)         (data ? data[X][Y] : 0)
   #define ISVAL(X,Y)         (data ? !isnan(VALUE(X,Y)) : true)
   #define HEIGHT(X,Y)        (ISVAL(X,Y) ? (VALUE(X,Y) - val_min) * scale_z : 0)
-  
+
   // Compute the mean, min and max for the points
-  
+
   float   val_mean = 0;
   float   val_max  = -INFINITY;
   float   val_min  =  INFINITY;
@@ -85,11 +85,11 @@ void BedMeshScreen::drawMesh(int16_t x, int16_t y, int16_t w, int16_t h, ExtUI::
     val_min  = 0;
     val_max  = 0;
   }
-  
+
   const float scale_z = 0.02 / ((val_max == val_min) ? 1.0 : (val_max - val_min));
 
   // These equations determine the appearance of the grid on the screen.
-  
+
   #define TRANSFORM_5(X,Y,Z)  (X), (Y)                                                                   // No transform
   #define TRANSFORM_4(X,Y,Z)  TRANSFORM_5((X)/(Z),(Y)/-(Z), 0)                                           // Perspective
   #define TRANSFORM_3(X,Y,Z)  TRANSFORM_4((X), (Z), (Y))                                                 // Swap Z and Y
@@ -99,7 +99,7 @@ void BedMeshScreen::drawMesh(int16_t x, int16_t y, int16_t w, int16_t h, ExtUI::
   // Compute the bounding box for the grid prior to scaling. Do this at compile-time by
   // transforming the four corner points via the transformation equations and finding
   // the min and max for each axis.
-  
+
   constexpr float bounds[][3]  = {{TRANSFORM(0     , 0     , 0)},
                                   {TRANSFORM(cols-1, 0     , 0)},
                                   {TRANSFORM(0     , rows-1, 0)},
@@ -113,17 +113,17 @@ void BedMeshScreen::drawMesh(int16_t x, int16_t y, int16_t w, int16_t h, ExtUI::
   constexpr float grid_cy      = grid_y + grid_h/2;
 
   // Figure out scale and offset such that the grid fits within the rectangle given by (x,y,w,h)
-  
+
   const float scale_x          = float(w)/grid_w;
   const float scale_y          = float(h)/grid_h;
   const float center_x         = x + w/2;
   const float center_y         = y + h/2;
-  
+
   #undef  TRANSFORM_5
   #define TRANSFORM_5(X,Y,Z)  center_x + (X - grid_cx) * scale_x, center_y + (Y - grid_cy) * scale_y      // Fit to bounds
 
   // Draw the grid
-  
+
   const uint16_t basePointSize = min(w,h) / max(cols,rows);
 
   CommandProcessor cmd;
@@ -187,7 +187,7 @@ void BedMeshScreen::drawMesh(int16_t x, int16_t y, int16_t w, int16_t h, ExtUI::
   if (opts & USE_HIGHLIGHT) {
     const uint8_t tag = screen_data.BedMeshScreen.highlightedTag;
     uint8_t x, y;
-    if(tagToPoint(tag, x, y)) {
+    if (tagToPoint(tag, x, y)) {
       cmd.cmd(COLOR_A(128))
          .cmd(POINT_SIZE(basePointSize * 6))
          .cmd(BEGIN(POINTS))
@@ -203,7 +203,7 @@ uint8_t BedMeshScreen::pointToTag(uint8_t x, uint8_t y) {
 }
 
 bool BedMeshScreen::tagToPoint(uint8_t tag, uint8_t &x, uint8_t &y) {
-  if(tag < 10) return false;
+  if (tag < 10) return false;
   x = (tag - 10) % (GRID_MAX_POINTS_X);
   y = (tag - 10) / (GRID_MAX_POINTS_X);
   return true;
@@ -245,7 +245,7 @@ void BedMeshScreen::drawHighlightedPointValue() {
 void BedMeshScreen::onRedraw(draw_mode_t what) {
   #define _INSET_POS(x,y,w,h) x + min(w,h)/10, y + min(w,h)/10, w - min(w,h)/5, h - min(w,h)/5
   #define INSET_POS(pos) _INSET_POS(pos)
-  
+
   if (what & BACKGROUND) {
     CommandProcessor cmd;
     cmd.cmd(CLEAR_COLOR_RGB(bg_color))
@@ -272,7 +272,7 @@ bool BedMeshScreen::onTouchStart(uint8_t tag) {
 }
 
 bool BedMeshScreen::onTouchEnd(uint8_t tag) {
-  switch(tag) {
+  switch (tag) {
     case 1:
       GOTO_PREVIOUS();
       return true;
