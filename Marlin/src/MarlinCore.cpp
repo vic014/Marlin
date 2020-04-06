@@ -218,13 +218,8 @@ bool wait_for_heatup = true;
     KEEPALIVE_STATE(PAUSED_FOR_USER);
     wait_for_user = true;
     if (ms) ms += millis(); // expire time
-    while (wait_for_user && !(ms && ELAPSED(millis(), ms))) {
-      idle(
-        #if ENABLED(ADVANCED_PAUSE_FEATURE)
-          no_sleep
-        #endif
-      );
-    }
+    while (wait_for_user && !(ms && ELAPSED(millis(), ms)))
+      idle(TERN_(ADVANCED_PAUSE_FEATURE, no_sleep));
     wait_for_user = false;
   }
 
@@ -425,7 +420,11 @@ void startOrResumeJob() {
     #if DISABLED(SD_ABORT_NO_COOLDOWN)
       thermalManager.disable_all_heaters();
     #endif
-    thermalManager.zero_fan_speeds();
+    #if !HAS_CUTTER
+      thermalManager.zero_fan_speeds();
+    #else
+      cutter.kill();              // Full cutter shutdown including ISR control
+    #endif
     wait_for_heatup = false;
     #if ENABLED(POWER_LOSS_RECOVERY)
       recovery.purge();
@@ -647,52 +646,54 @@ inline void manage_inactivity(const bool ignore_stepper_queue=false) {
 /**
  * Standard idle routine keeps the machine alive
  */
-void idle(
-  #if ENABLED(ADVANCED_PAUSE_FEATURE)
-    bool no_stepper_sleep/*=false*/
-  #endif
-) {
+void idle(TERN_(ADVANCED_PAUSE_FEATURE, bool no_stepper_sleep/*=false*/)) {
+  // Handle Power-Loss Recovery
   #if ENABLED(POWER_LOSS_RECOVERY) && PIN_EXISTS(POWER_LOSS)
     recovery.outage();
   #endif
 
+  // Run StallGuard endstop checks
   #if ENABLED(SPI_ENDSTOPS)
     if (endstops.tmc_spi_homing.any
-      #if ENABLED(IMPROVE_HOMING_RELIABILITY)
-        && ELAPSED(millis(), sg_guard_period)
-      #endif
-    ) {
-      for (uint8_t i = 4; i--;) // Read SGT 4 times per idle loop
+      && TERN1(IMPROVE_HOMING_RELIABILITY, ELAPSED(millis(), sg_guard_period))
+    ) LOOP_L_N(i, 4) // Read SGT 4 times per idle loop
         if (endstops.tmc_spi_homing_check()) break;
-    }
   #endif
 
+  // Max7219 heartbeat, animation, etc.
   #if ENABLED(MAX7219_DEBUG)
     max7219.idle_tasks();
   #endif
 
+  // Read Buttons and Update the LCD
   ui.update();
 
+  // Announce Host Keepalive state (if any)
   #if ENABLED(HOST_KEEPALIVE_FEATURE)
     gcode.host_keepalive();
   #endif
 
+  // Core Marlin activities
   manage_inactivity(
     #if ENABLED(ADVANCED_PAUSE_FEATURE)
       no_stepper_sleep
     #endif
   );
 
+  // Manage heaters (and Watchdog)
   thermalManager.manage_heater();
 
+  // Update the Print Job Timer state
   #if ENABLED(PRINTCOUNTER)
     print_job_timer.tick();
   #endif
 
+  // Update the Beeper queue
   #if USE_BEEPER
     buzzer.tick();
   #endif
 
+  // Run i2c Position Encoders
   #if ENABLED(I2C_POSITION_ENCODERS)
     static millis_t i2cpem_next_update_ms;
     if (planner.has_blocks_queued()) {
@@ -704,10 +705,12 @@ void idle(
     }
   #endif
 
+  // Run HAL idle tasks
   #ifdef HAL_IDLETASK
     HAL_idletask();
   #endif
 
+  // Auto-report Temperatures / SD Status
   #if HAS_AUTO_REPORTING
     if (!gcode.autoreport_paused) {
       #if ENABLED(AUTO_REPORT_TEMPERATURES)
@@ -719,14 +722,17 @@ void idle(
     }
   #endif
 
+  // Handle USB Flash Drive insert / remove
   #if ENABLED(USB_FLASH_DRIVE_SUPPORT)
     Sd2Card::idle();
   #endif
 
+  // Update the Prusa MMU2
   #if ENABLED(PRUSA_MMU2)
     mmu2.mmu_loop();
   #endif
 
+  // Handle Joystick jogging
   #if ENABLED(POLL_JOG)
     joystick.inject_jog_moves();
   #endif
@@ -738,6 +744,10 @@ void idle(
  */
 void kill(PGM_P const lcd_error/*=nullptr*/, PGM_P const lcd_component/*=nullptr*/, const bool steppers_off/*=false*/) {
   thermalManager.disable_all_heaters();
+
+  #if HAS_CUTTER
+    cutter.kill();              // Full cutter shutdown including ISR control
+  #endif
 
   SERIAL_ERROR_MSG(STR_ERR_KILLED);
 
@@ -768,6 +778,10 @@ void minkill(const bool steppers_off/*=false*/) {
   // Reiterate heaters off
   thermalManager.disable_all_heaters();
 
+  #if HAS_CUTTER
+    cutter.kill();  // Reiterate cutter shutdown
+  #endif
+
   // Power off all steppers (for M112) or just the E steppers
   steppers_off ? disable_all_steppers() : disable_e_steppers();
 
@@ -787,14 +801,14 @@ void minkill(const bool steppers_off/*=false*/) {
     // Wait for kill to be pressed
     while (READ(KILL_PIN)) watchdog_refresh();
 
-    void (*resetFunc)() = 0;  // Declare resetFunc() at address 0
+    void (*resetFunc)() = 0;      // Declare resetFunc() at address 0
     resetFunc();                  // Jump to address 0
 
-  #else // !HAS_KILL
+  #else
 
-    for (;;) watchdog_refresh(); // Wait for reset
+    for (;;) watchdog_refresh();  // Wait for reset
 
-  #endif // !HAS_KILL
+  #endif
 }
 
 /**
