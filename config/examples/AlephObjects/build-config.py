@@ -630,6 +630,7 @@ def make_config(PRINTER, TOOLHEAD):
         MARLIN["FILAMENT_MOTION_SENSOR"]                 = False
         MARLIN["USE_UHS3_USB"]                           = False
         MARLIN["ARCHIM2_SPI_FLASH_EEPROM_BACKUP_SIZE"]   = 1000
+        MARLIN["EMI_MITIGATION"]                         = True
         # Touch LCD configuration
         MARLIN["TOUCH_UI_PORTRAIT"]                      = True
         MARLIN["TOUCH_UI_NO_BOOTSCREEN"]                 = True

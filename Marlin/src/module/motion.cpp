@@ -1547,6 +1547,10 @@ void homeaxis(const AxisEnum axis) {
     if (axis == Z_AXIS && probe.deploy()) return;
   #endif
 
+  #if ENABLED(EMI_MITIGATION)
+    enable_emi_pins(true);
+  #endif
+
   // Set flags for X, Y, Z motor locking
   #if HAS_EXTRA_ENDSTOPS
     switch (axis) {
@@ -1807,6 +1811,10 @@ void homeaxis(const AxisEnum axis) {
         #endif
       #endif
     }
+  #endif
+
+  #if ENABLED(EMI_MITIGATION)
+    enable_emi_pins(false);
   #endif
 
   // Clear retracted status if homing the Z axis

@@ -27,7 +27,11 @@
  * M119: Output endstop states to serial output
  */
 void GcodeSuite::M119() {
-
+  #if ENABLED(EMI_MITIGATION)
+    enable_emi_pins(true);
+  #endif
   endstops.report_states();
-
+  #if ENABLED(EMI_MITIGATION)
+    enable_emi_pins(false);
+  #endif
 }

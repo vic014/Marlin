@@ -19,7 +19,7 @@ fetch_default_config() {
     CONF_DIR=../../default
     (wget $CONF_URL/Configuration.h -O $CONF_DIR/Configuration.h &&
     wget $CONF_URL/Configuration_adv.h -O $CONF_DIR/Configuration_adv.h &&
-    cat  $CONF_DIR/Configuration_Lulzbot.h >> $CONF_DIR/Configuration.h) ||
+    cat  $CONF_DIR/Configuration_DrunkenOctopus.h >> $CONF_DIR/Configuration.h) ||
     exit 1
 }
 

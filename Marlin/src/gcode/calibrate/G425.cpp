@@ -610,6 +610,10 @@ void GcodeSuite::G425() {
 
   if (axis_unhomed_error()) return;
 
+  #if ENABLED(EMI_MITIGATION) && ENABLED(NOZZLE_AS_PROBE)
+   enable_emi_pins(true);
+  #endif
+
   measurements_t m;
 
   float uncertainty = parser.seenval('U') ? parser.value_float() : CALIBRATION_MEASUREMENT_UNCERTAIN;
@@ -635,6 +639,10 @@ void GcodeSuite::G425() {
   #endif
   else
     calibrate_all();
+
+  #if ENABLED(EMI_MITIGATION) && ENABLED(NOZZLE_AS_PROBE)
+   enable_emi_pins(false);
+  #endif
 }
 
 #endif // CALIBRATION_GCODE

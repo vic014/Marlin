@@ -1,6 +1,6 @@
 
 /**
- * Extra modifications to Marlin for LulzBot printers
+ * Extra parameters used by Drunken Octopus
  */
 //#define SOURCE_CODE_URL
 //#define TOOLHEAD_NAME
@@ -35,3 +35,4 @@
 //#define CONTROLLER_FAN_IGNORE_Z
 //#define NO_MOTION_BEFORE_HOMING_WORKAROUND
 //#define NO_TIME_AFTER_SD_PRINT
+//#define EMI_MITIGATION

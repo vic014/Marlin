@@ -241,6 +241,9 @@ xyz_pos_t Probe::offset; // Initialized by settings.load()
 #if QUIET_PROBING
 
   void Probe::set_probing_paused(const bool p) {
+   #if ENABLED(EMI_MITIGATION) && ENABLED(NOZZLE_AS_PROBE)
+     enable_emi_pins(p);
+   #endif
     #if ENABLED(PROBING_HEATERS_OFF)
       thermalManager.pause(p);
     #endif
