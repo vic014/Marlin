@@ -1,21 +1,22 @@
-#define PetsfangMicroswiss
+//#define PetsfangMicroswiss
 //#define BondtechBMG
-#define CR10SPro_GearedExtruder
+//#define CR10SPro_GearedExtruder
 //#define E3DV6
 
 //#define FilamentSensorStd
 //#define FilamentSensorLerdge
+#define FilamentEncoder
 
-#define STOCK_2208 // V2 Stock Board with TMC2208 Drivers
+//#define STOCK_2208 // V2 Stock Board with TMC2208 Drivers
 //#define SKR13 // 32 bit board - assumes 2208 drivers
 //#define SKR13_2209
 //#define E_8825
 //#define SKR13_UART // Configure SKR board with drivers in UART mode
 
-#define SX2 // Small formfactor 200mm machine
+//#define SX2 // Small formfactor 200mm machine
 
 #define DUAL_Z
-//#define GRAPHICSLCD
+#define GRAPHICSLCD
 #define UBL
 
 /**
@@ -123,6 +124,7 @@
 /**
  * Select the serial port on the board to use for communication with the host.
  * This allows the connection of wireless adapters (for instance) to non-default port pins.
+ * Serial port -1 is the USB emulated serial port, if available.
  * Note: The first serial port (-1 or 0) will always be used by the Arduino bootloader.
  *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
@@ -131,9 +133,6 @@
 
 /**
  * Select a secondary serial port on the board to use for communication with the host.
- * This allows the connection of wireless adapters (for instance) to non-default port pins.
- * Serial port -1 is the USB emulated serial port, if available.
- *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
 #if ENABLED(SKR13)
@@ -397,6 +396,7 @@
  *   331 : (3.3V scaled thermistor 1 table for MEGA)
  *   332 : (3.3V scaled thermistor 1 table for DUE)
  *     2 : 200k thermistor - ATC Semitec 204GT-2 (4.7k pullup)
+ *   202 : 200k thermistor - Copymaster 3D
  *     3 : Mendel-parts thermistor (4.7k pullup)
  *     4 : 10k thermistor !! do not use it for a hotend. It gives bad resolution at high temp. !!
  *     5 : 100K thermistor - ATC Semitec 104GT-2/104NT-4-R025H42G (Used in ParCan & J-Head) (4.7k pullup)
@@ -1270,7 +1270,7 @@
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  * By default the firmware assumes HIGH=FILAMENT PRESENT.
  */
- #if ENABLED(FilamentSensorStd) || ENABLED(FilamentSensorLerdge)
+ #if ANY(FilamentSensorStd, FilamentSensorLerdge, FilamentEncoder)
   #define FILAMENT_RUNOUT_SENSOR
 #endif
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
@@ -1294,13 +1294,19 @@
   // After a runout is detected, continue printing this length of filament
   // before executing the runout script. Useful for a sensor at the end of
   // a feed tube. Requires 4 bytes SRAM per sensor, plus 4 bytes overhead.
-  #define FILAMENT_RUNOUT_DISTANCE_MM 5
+  #if ENABLED(FilamentEncoder)
+    #define FILAMENT_RUNOUT_DISTANCE_MM 15
+  #else
+    #define FILAMENT_RUNOUT_DISTANCE_MM 5
+  #endif
 
   #ifdef FILAMENT_RUNOUT_DISTANCE_MM
     // Enable this option to use an encoder disc that toggles the runout pin
     // as the filament moves. (Be sure to set FILAMENT_RUNOUT_DISTANCE_MM
     // large enough to avoid false positives.)
-    //#define FILAMENT_MOTION_SENSOR
+    #if ENABLED(FilamentEncoder)
+      #define FILAMENT_MOTION_SENSOR
+    #endif
   #endif
 #endif
 
@@ -1592,6 +1598,7 @@
 #define EEPROM_SETTINGS     // Persistent storage with M500 and M501
 //#define DISABLE_M503        // Saves ~2700 bytes of PROGMEM. Disable for release!
 #define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
+#define EEPROM_BOOT_SILENT    // Keep M503 quiet and only give errors during first load
 #if ENABLED(EEPROM_SETTINGS)
   #define EEPROM_AUTO_INIT  // Init EEPROM automatically on any errors.
 #endif
