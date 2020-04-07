@@ -25,6 +25,6 @@
 /******************************** EMI MITIGATION *******************************/
 
 #if ENABLED(EMI_MITIGATION)
-  void emi_shutoff_pins(void);
+  void emi_init(void);
   void enable_emi_pins(const bool);
 #endif

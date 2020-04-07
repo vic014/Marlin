@@ -44,3 +44,7 @@
 #include "../core/language.h"
 #include "../core/utility.h"
 #include "../core/serial.h"
+
+#if ENABLED(EMI_MITIGATION)
+  #include "../drunken_octopus_extras.h"
+#endif

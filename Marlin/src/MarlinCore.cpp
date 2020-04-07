@@ -1127,7 +1127,7 @@ void setup() {
   #endif
 
   #if ENABLED(EMI_MITIGATION)
-    SETUP_RUN(emi_shutoff_pins());
+    SETUP_RUN(emi_init());
   #endif
 
   #if DO_SWITCH_EXTRUDER

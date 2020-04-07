@@ -19,14 +19,14 @@
  *   location: <http://www.gnu.org/licenses/>.                              *
  ****************************************************************************/
 
-#include "Marlin.h"
+#include "MarlinCore.h"
 
 #include "drunken_octopus_extras.h"
 
 /******************************** EMI MITIGATION *******************************/
 
 #if ENABLED(EMI_MITIGATION)
-  void emi_shutoff_pins() {
+  void emi_init(void) {
       enable_emi_pins(false);
 
       #define EMI_SHUTOFF(pin) SET_OUTPUT(pin); WRITE(pin, LOW);
