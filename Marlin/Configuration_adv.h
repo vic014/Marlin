@@ -150,7 +150,7 @@
  */
 #if ENABLED(THERMAL_PROTECTION_HOTENDS)
   #define THERMAL_PROTECTION_PERIOD 15 // <-- changed:  Seconds
-  #define THERMAL_PROTECTION_HYSTERESIS 30 // <-- changed:  Degrees Celsius
+  #define THERMAL_PROTECTION_HYSTERESIS 15 // <-- changed:  Degrees Celsius
 
   #define ADAPTIVE_FAN_SLOWING // <-- changed:  Slow part cooling fan if temperature drops
   #if BOTH(ADAPTIVE_FAN_SLOWING, PIDTEMP)
@@ -343,16 +343,10 @@
  */
 #define USE_CONTROLLER_FAN // <-- changed
 #if ENABLED(USE_CONTROLLER_FAN)
-  #define CONTROLLER_FAN_PIN FAN1_PIN // <-- changed:  Set a custom pin for the controller fan
-  //#define CONTROLLER_FAN_USE_Z_ONLY    // With this option only the Z axis is considered
-  #define CONTROLLERFAN_SPEED_MIN      0 // (0-255) Minimum speed. (If set below this value the fan is turned off.)
-  #define CONTROLLERFAN_SPEED_ACTIVE 255 // (0-255) Active speed, used when any motor is enabled
-  #define CONTROLLERFAN_SPEED_IDLE     255 // <-- changed:  (0-255) Idle speed, used when motors are disabled
-  #define CONTROLLERFAN_IDLE_TIME     60 // (seconds) Extra time to keep the fan running after disabling motors
-  //#define CONTROLLER_FAN_EDITABLE      // Enable M710 configurable settings
-  #if ENABLED(CONTROLLER_FAN_EDITABLE)
-    #define CONTROLLER_FAN_MENU          // Enable the Controller Fan submenu
-  #endif
+  #define CONTROLLER_FAN_PIN FAN2_PIN // <-- changed:  Set a custom pin for the controller fan
+  #define CONTROLLERFAN_SECS 60             // Duration in seconds for the fan to run after all motors are disabled
+  #define CONTROLLERFAN_SPEED 255           // 255 == full speed
+  //#define CONTROLLERFAN_SPEED_Z_ONLY 127  // Reduce noise on machines that keep Z enabled
 #endif
 
 // When first starting the main fan, run it at full speed for the
@@ -401,7 +395,7 @@
  *   USE_OCR2A_AS_TOP sacrifices duty cycle control resolution to achieve this broader range of frequencies.
  */
 #if ENABLED(FAST_PWM_FAN)
-  //#define FAST_PWM_FAN_FREQUENCY 31400
+  #define FAST_PWM_FAN_FREQUENCY 122 // <-- changed
   //#define USE_OCR2A_AS_TOP
 #endif
 
@@ -465,7 +459,7 @@
 
 // If you want endstops to stay on (by default) even when not homing
 // enable this option. Override at any time with M120, M121.
-//#define ENDSTOPS_ALWAYS_ON_DEFAULT
+#define ENDSTOPS_ALWAYS_ON_DEFAULT // <-- changed
 
 // @section extras
 
@@ -595,7 +589,7 @@
 #define Z_HOME_BUMP_MM 2
 #define HOMING_BUMP_DIVISOR { 2, 2, 4 }  // Re-Bump Speed Divisor (Divides the Homing Feedrate)
 #define QUICK_HOME // <-- changed:  If homing includes X and Y, do a diagonal move initially
-//#define HOMING_BACKOFF_MM { 2, 2, 2 }  // (mm) Move away from the endstops after homing
+#define HOMING_BACKOFF_MM {0, 0, 16} // <-- changed:  (mm) Move away from the endstops after homing
 
 // When G28 is called, this option will make Y home before X
 //#define HOME_Y_BEFORE_X
@@ -748,13 +742,13 @@
 #define DEFAULT_STEPPER_DEACTIVE_TIME 600 // <-- changed
 #define DISABLE_INACTIVE_X true
 #define DISABLE_INACTIVE_Y true
-#define DISABLE_INACTIVE_Z false // <-- changed:  Set to false if the nozzle will fall down on your printed part when print has finished.
+#define DISABLE_INACTIVE_Z true  // Set to false if the nozzle will fall down on your printed part when print has finished.
 #define DISABLE_INACTIVE_E true
 
 #define DEFAULT_MINIMUMFEEDRATE       0.0     // minimum feedrate
 #define DEFAULT_MINTRAVELFEEDRATE     0.0
 
-#define HOME_AFTER_DEACTIVATE // <-- changed:  Require rehoming after steppers are deactivated
+//#define HOME_AFTER_DEACTIVATE  // Require rehoming after steppers are deactivated
 
 // Minimum time that a segment needs to take if the buffer is emptied
 #define DEFAULT_MINSEGMENTTIME        20000   // (ms)
@@ -905,7 +899,7 @@
  *    M909, M910 & LCD - only PRINTRBOARD_REVF & RIGIDBOARD_V2
  */
 //#define PWM_MOTOR_CURRENT { 1300, 1300, 1250 }          // Values in milliamps
-//#define DIGIPOT_MOTOR_CURRENT { 135,135,135,135,135 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
+#define DIGIPOT_MOTOR_CURRENT {175, 175, 200, 135, 135} // <-- changed:  Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
 //#define DAC_MOTOR_CURRENT_DEFAULT { 70, 80, 90, 80 }    // Default drive percent - X, Y, Z, E axis
 
 // Use an I2C based DIGIPOT (e.g., Azteeg X3 Pro)
@@ -938,7 +932,7 @@
 // @section lcd
 
 #if EITHER(ULTIPANEL, EXTENSIBLE_UI)
-  #define MANUAL_FEEDRATE {2340, 2340, 2340, 60.0} // <-- changed:  Feedrates for manual moves along X, Y, Z, E from panel
+  #define MANUAL_FEEDRATE {3000, 3000, 240, 60.0} // <-- changed:  Feedrates for manual moves along X, Y, Z, E from panel
   #define SHORT_MANUAL_Z_MOVE 0.025 // (mm) Smallest manual Z move (< 0.1mm)
   #if ENABLED(ULTIPANEL)
     #define MANUAL_E_MOVES_RELATIVE // Display extruder move distance rather than "position"
@@ -963,13 +957,13 @@
 #if HAS_LCD_MENU
 
   // Include a page of printer information in the LCD Main Menu
-  //#define LCD_INFO_MENU
+  #define LCD_INFO_MENU // <-- changed
   #if ENABLED(LCD_INFO_MENU)
     //#define LCD_PRINTER_INFO_IS_BOOTSCREEN // Show bootscreen(s) instead of Printer Info pages
   #endif
 
   // BACK menu items keep the highlight at the top
-  //#define TURBO_BACK_MENU_ITEM
+  #define TURBO_BACK_MENU_ITEM // <-- changed
 
   /**
    * LED Control Menu
@@ -991,7 +985,7 @@
 #endif // HAS_LCD_MENU
 
 // Scroll a longer status message into view
-//#define STATUS_MESSAGE_SCROLLING
+#define STATUS_MESSAGE_SCROLLING // <-- changed
 
 // On the Info Screen, display XY with one decimal place when possible
 //#define LCD_DECIMAL_SMALL_XY
@@ -1031,12 +1025,15 @@
 
 #if ENABLED(SDSUPPORT)
 
-  // The standard SD detect circuit reads LOW when media is inserted and HIGH when empty.
-  // Enable this option and set to HIGH if your SD cards are incorrectly detected.
-  //#define SD_DETECT_STATE HIGH
+  // Some RAMPS and other boards don't detect when an SD card is inserted. You can work
+  // around this by connecting a push button or single throw switch to the pin defined
+  // as SD_DETECT_PIN in your board's pins definitions.
+  // This setting should be disabled unless you are using a push button, pulling the pin to ground.
+  // Note: This is always disabled for ULTIPANEL (except ELB_FULL_GRAPHIC_CONTROLLER).
+  #define SD_DETECT_INVERTED
 
-  #define SD_FINISHED_STEPPERRELEASE false // <-- changed:  Disable steppers when SD Print is finished
-  #define SD_FINISHED_RELEASECOMMAND "M84 X Y E" // <-- changed:  You might want to keep the Z enabled so your bed stays in place.
+  #define SD_FINISHED_STEPPERRELEASE true          // Disable steppers when SD Print is finished
+  #define SD_FINISHED_RELEASECOMMAND "M84 X Y Z E" // You might want to keep the Z enabled so your bed stays in place.
 
   // Reverse SD sort to show "more recent" files first, according to the card's FAT.
   // Since the FAT gets out of order with usage, SDCARD_SORT_ALPHA is recommended.
@@ -1046,7 +1043,7 @@
 
   //#define MENU_ADDAUTOSTART               // Add a menu option to run auto#.g files
 
-  #define EVENT_GCODE_SD_STOP "G91\nG0 Z15 F600\nG90\nG0 X170 Y290 F3000\nM117 Print aborted." // <-- changed:  G-code to run on Stop Print (e.g., "G28XY" or "G27")
+  #define EVENT_GCODE_SD_STOP "G1X0Y0\nM84"       // G-code to run on Stop Print (e.g., "G28XY" or "G27")
 
   #if ENABLED(PRINTER_EVENT_LEDS)
     #define PE_LEDS_COMPLETED_TIME  (30*60) // (seconds) Time to keep the LED "done" color before restoring normal illumination
@@ -1128,7 +1125,7 @@
    * This feature must be enabled with "M540 S1" or from the LCD menu.
    * To have any effect, endstops must be enabled during SD printing.
    */
-  #define SD_ABORT_ON_ENDSTOP_HIT // <-- changed
+  //#define SD_ABORT_ON_ENDSTOP_HIT
 
   /**
    * This option makes it easier to print the same SD Card file again.
@@ -1140,7 +1137,7 @@
   /**
    * Auto-report SdCard status with M27 S<seconds>
    */
-  //#define AUTO_REPORT_SD_STATUS
+  #define AUTO_REPORT_SD_STATUS
 
   /**
    * Support for USB thumb drives using an Arduino USB Host Shield or
@@ -1156,7 +1153,7 @@
    *
    * [1] On AVR an interrupt-capable pin is best for UHS3 compatibility.
    */
-  #define USB_FLASH_DRIVE_SUPPORT // <-- changed
+  //#define USB_FLASH_DRIVE_SUPPORT
   #if ENABLED(USB_FLASH_DRIVE_SUPPORT)
     #define USB_CS_PIN    SDSS
     #define USB_INTR_PIN  SD_DETECT_PIN
@@ -1171,7 +1168,7 @@
      *   is less tested and is known to interfere with Servos.
      *   [1] This requires USB_INTR_PIN to be interrupt-capable.
      */
-    //#define USE_UHS3_USB  // <-- changed
+    //#define USE_UHS3_USB
   #endif
 
   /**
@@ -1229,10 +1226,10 @@
   //#define DOGM_SD_PERCENT
 
   // Enable to save many cycles by drawing a hollow frame on the Info Screen
-  #define XYZ_HOLLOW_FRAME
+  //#define XYZ_HOLLOW_FRAME  // <-- changed
 
   // Enable to save many cycles by drawing a hollow frame on Menu Screens
-  #define MENU_HOLLOW_FRAME
+  //#define MENU_HOLLOW_FRAME  // <-- changed
 
   // A bigger font is available for edit items. Costs 3120 bytes of PROGMEM.
   // Western only. Not available for Cyrillic, Kana, Turkish, Greek, or Chinese.
@@ -1240,7 +1237,7 @@
 
   // A smaller font may be used on the Info Screen. Costs 2300 bytes of PROGMEM.
   // Western only. Not available for Cyrillic, Kana, Turkish, Greek, or Chinese.
-  //#define USE_SMALL_INFOFONT
+  #define USE_SMALL_INFOFONT // <-- changed
 
   // Swap the CW/CCW indicators in the graphics overlay
   //#define OVERLAY_GFX_REVERSE
@@ -1284,14 +1281,14 @@
   //#define STATUS_ALT_FAN_BITMAP     // Use the alternative fan bitmap
   //#define STATUS_FAN_FRAMES 3       // :[0,1,2,3,4] Number of fan animation frames
   //#define STATUS_HEAT_PERCENT       // Show heating in a progress bar
-  //#define BOOT_MARLIN_LOGO_SMALL    // Show a smaller Marlin logo on the Boot Screen (saving 399 bytes of flash)
+  #define BOOT_MARLIN_LOGO_SMALL // <-- changed:  Show a smaller Marlin logo on the Boot Screen (saving 399 bytes of flash)
   //#define BOOT_MARLIN_LOGO_ANIMATED // Animated Marlin logo. Costs ~‭3260 (or ~940) bytes of PROGMEM.
 
   // Frivolous Game Options
-  //#define MARLIN_BRICKOUT
-  //#define MARLIN_INVADERS
-  //#define MARLIN_SNAKE
-  //#define GAMES_EASTER_EGG          // Add extra blank lines above the "Games" sub-menu
+  //#define MARLIN_BRICKOUT // <-- changed
+  //#define MARLIN_INVADERS // <-- changed
+  //#define MARLIN_SNAKE // <-- changed
+  //#define GAMES_EASTER_EGG // <-- changed:  Add extra blank lines above the "Games" sub-menu
 
 #endif // HAS_GRAPHICAL_LCD
 
@@ -1341,16 +1338,16 @@
   //#define LCD_4DSYSTEMS_4DLCD_FT843 // 4D Systems 4.3" (480x272)
   //#define LCD_HAOYU_FT800CB         // Haoyu with 4.3" or 5" (480x272)
   //#define LCD_HAOYU_FT810CB         // Haoyu with 5" (800x480)
-  #define LCD_ALEPHOBJECTS_CLCD_UI // <-- changed:  Aleph Objects Color LCD UI
+  //#define LCD_ALEPHOBJECTS_CLCD_UI  // Aleph Objects Color LCD UI
 
   // Correct the resolution if not using the stock TFT panel.
   //#define TOUCH_UI_320x240
   //#define TOUCH_UI_480x272
-  #define TOUCH_UI_800x480 // <-- changed
+  //#define TOUCH_UI_800x480
 
   // Mappings for boards with a standard RepRapDiscount Display connector
   //#define AO_EXP1_PINMAP    // AlephObjects CLCD UI EXP1 mapping
-  #define AO_EXP2_PINMAP // <-- changed:  AlephObjects CLCD UI EXP2 mapping
+  //#define AO_EXP2_PINMAP    // AlephObjects CLCD UI EXP2 mapping
   //#define CR10_TFT_PINMAP   // Rudolph Riedel's CR10 pin mapping
   //#define S6_TFT_PINMAP     // FYSETC S6 pin mapping
 
@@ -1373,12 +1370,12 @@
   // is supported on the FT800. The FT810 and beyond also support
   // portrait and mirrored orientations.
   //#define TOUCH_UI_INVERTED
-  #define TOUCH_UI_PORTRAIT // <-- changed
+  //#define TOUCH_UI_PORTRAIT
   //#define TOUCH_UI_MIRRORED
 
   // UTF8 processing and rendering.
   // Unsupported characters are shown as '?'.
-  #define TOUCH_UI_USE_UTF8 // <-- changed
+  //#define TOUCH_UI_USE_UTF8
   #if ENABLED(TOUCH_UI_USE_UTF8)
     // Western accents support. These accented characters use
     // combined bitmaps and require relatively little storage.
@@ -1386,8 +1383,8 @@
     #if ENABLED(TOUCH_UI_UTF8_WESTERN_CHARSET)
       // Additional character groups. These characters require
       // full bitmaps and take up considerable storage:
-      #define TOUCH_UI_UTF8_SUPERSCRIPTS // <-- changed:  ¹ ² ³
-      #define TOUCH_UI_UTF8_COPYRIGHT // <-- changed:  © ®
+      //#define TOUCH_UI_UTF8_SUPERSCRIPTS  // ¹ ² ³
+      //#define TOUCH_UI_UTF8_COPYRIGHT     // © ®
       //#define TOUCH_UI_UTF8_GERMANIC      // ß
       //#define TOUCH_UI_UTF8_SCANDINAVIAN  // Æ Ð Ø Þ æ ð ø þ
       //#define TOUCH_UI_UTF8_PUNCTUATION   // « » ¿ ¡
@@ -1473,7 +1470,7 @@
   #define BABYSTEP_MULTIPLICATOR_Z  10 // <-- changed:  Babysteps are very small. Increase for faster motion.
   #define BABYSTEP_MULTIPLICATOR_XY 1
 
-  //#define DOUBLECLICK_FOR_Z_BABYSTEPPING  // Double-click on the Status Screen for Z Babystepping.
+  #define DOUBLECLICK_FOR_Z_BABYSTEPPING  // Double-click on the Status Screen for Z Babystepping.
   #if ENABLED(DOUBLECLICK_FOR_Z_BABYSTEPPING)
     #define DOUBLECLICK_MAX_INTERVAL 1250   // Maximum interval between clicks, in milliseconds.
                                             // Note: Extra time may be added to mitigate controller latency.
@@ -1489,7 +1486,7 @@
   #define BABYSTEP_ZPROBE_OFFSET // <-- changed:  Combine M851 Z and Babystepping
   #if ENABLED(BABYSTEP_ZPROBE_OFFSET)
     //#define BABYSTEP_HOTEND_Z_OFFSET      // For multiple hotends, babystep relative Z offsets
-    //#define BABYSTEP_ZPROBE_GFX_OVERLAY   // Enable graphical overlay on Z-offset editor
+    #define BABYSTEP_ZPROBE_GFX_OVERLAY // <-- changed:  Enable graphical overlay on Z-offset editor
   #endif
 #endif
 
@@ -1551,10 +1548,10 @@
  * the probe to be unable to reach any points.
  */
 #if PROBE_SELECTED && !IS_KINEMATIC
-  //#define MIN_PROBE_EDGE_LEFT MIN_PROBE_EDGE
-  //#define MIN_PROBE_EDGE_RIGHT MIN_PROBE_EDGE
-  //#define MIN_PROBE_EDGE_FRONT MIN_PROBE_EDGE
-  //#define MIN_PROBE_EDGE_BACK MIN_PROBE_EDGE
+  #define MIN_PROBE_EDGE_LEFT -10 // <-- changed
+  #define MIN_PROBE_EDGE_RIGHT -8 // <-- changed
+  #define MIN_PROBE_EDGE_FRONT -9 // <-- changed
+  #define MIN_PROBE_EDGE_BACK -11 // <-- changed
 #endif
 
 #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_UBL)
@@ -1569,17 +1566,17 @@
  * Repeatedly attempt G29 leveling until it succeeds.
  * Stop after G29_MAX_RETRIES attempts.
  */
-//#define G29_RETRY_AND_RECOVER
+#define G29_RETRY_AND_RECOVER // <-- changed
 #if ENABLED(G29_RETRY_AND_RECOVER)
-  #define G29_MAX_RETRIES 3
+  #define G29_MAX_RETRIES 2 // <-- changed
   #define G29_HALT_ON_FAILURE
   /**
    * Specify the GCODE commands that will be executed when leveling succeeds,
    * between attempts, and after the maximum number of retries have been tried.
    */
-  #define G29_SUCCESS_COMMANDS "M117 Bed leveling done."
-  #define G29_RECOVER_COMMANDS "M117 Probe failed. Rewiping.\nG28\nG12 P0 S12 T0"
-  #define G29_FAILURE_COMMANDS "M117 Bed leveling failed.\nG0 Z10\nM300 P25 S880\nM300 P50 S0\nM300 P25 S880\nM300 P50 S0\nM300 P25 S880\nM300 P50 S0\nG4 S1"
+  #define G29_SUCCESS_COMMANDS "M117 Probe successful" // <-- changed
+  #define G29_RECOVER_COMMANDS "G0 Z10\nG12\nM109 R160\nM400\nM117 Probing bed" // <-- changed
+  #define G29_FAILURE_COMMANDS "M117 Bed leveling failed.\nG0 Z10\nG0 E0\nM300 P25 S880\nM300 P50 S0\nM300 P25 S880\nM300 P50 S0\nM300 P25 S880\nG4 S1" // <-- changed
 
 #endif
 
@@ -1646,7 +1643,7 @@
 #endif
 
 // Moves (or segments) with fewer steps than this will be joined with the next move
-#define MIN_STEPS_PER_SEGMENT 1 // <-- changed
+#define MIN_STEPS_PER_SEGMENT 6
 
 /**
  * Minimum delay before and after setting the stepper DIR (in ns)
@@ -1795,7 +1792,7 @@
  * Note that M207 / M208 / M209 settings are saved to EEPROM.
  *
  */
-//#define FWRETRACT
+#define FWRETRACT
 #if ENABLED(FWRETRACT)
   #define FWRETRACT_AUTORETRACT           // Override slicer retractions
   #if ENABLED(FWRETRACT_AUTORETRACT)
@@ -2034,10 +2031,10 @@
   #define INTERPOLATE       true  // Interpolate X/Y/Z_MICROSTEPS to 256
 
   #if AXIS_IS_TMC(X)
-    #define X_CURRENT       975 // <-- changed:  (mA) RMS current. Multiply by 1.414 for peak current.
+    #define X_CURRENT       800        // (mA) RMS current. Multiply by 1.414 for peak current.
     #define X_CURRENT_HOME  X_CURRENT  // (mA) RMS current for sensorless homing
     #define X_MICROSTEPS     16    // 0..256
-    #define X_RSENSE          0.12 // <-- changed
+    #define X_RSENSE          0.11
     #define X_CHAIN_POS      -1    // <=0 : Not chained. 1 : MCU MOSI connected. 2 : Next in chain, ...
   #endif
 
@@ -2050,10 +2047,10 @@
   #endif
 
   #if AXIS_IS_TMC(Y)
-    #define Y_CURRENT       975 // <-- changed
+    #define Y_CURRENT       800
     #define Y_CURRENT_HOME  Y_CURRENT
     #define Y_MICROSTEPS     16
-    #define Y_RSENSE          0.12 // <-- changed
+    #define Y_RSENSE          0.11
     #define Y_CHAIN_POS      -1
   #endif
 
@@ -2066,10 +2063,10 @@
   #endif
 
   #if AXIS_IS_TMC(Z)
-    #define Z_CURRENT       975 // <-- changed
+    #define Z_CURRENT       800
     #define Z_CURRENT_HOME  Z_CURRENT
     #define Z_MICROSTEPS     16
-    #define Z_RSENSE          0.12 // <-- changed
+    #define Z_RSENSE          0.11
     #define Z_CHAIN_POS      -1
   #endif
 
@@ -2098,9 +2095,9 @@
   #endif
 
   #if AXIS_IS_TMC(E0)
-    #define E0_CURRENT      960 // <-- changed
+    #define E0_CURRENT      800
     #define E0_MICROSTEPS    16
-    #define E0_RSENSE         0.12 // <-- changed
+    #define E0_RSENSE         0.11
     #define E0_CHAIN_POS     -1
   #endif
 
@@ -2178,7 +2175,7 @@
    * The default SW SPI pins are defined the respective pins files,
    * but you can override or define them here.
    */
-  #define TMC_USE_SW_SPI // <-- changed
+  //#define TMC_USE_SW_SPI
   //#define TMC_SW_MOSI       -1
   //#define TMC_SW_MISO       -1
   //#define TMC_SW_SCK        -1
@@ -2225,7 +2222,7 @@
    * Use Trinamic's ultra quiet stepping mode.
    * When disabled, Marlin will use spreadCycle stepping mode.
    */
-  //#define STEALTHCHOP_XY  // <-- changed
+  #define STEALTHCHOP_XY
   #define STEALTHCHOP_Z
   #define STEALTHCHOP_E
 
@@ -2243,7 +2240,7 @@
    * Define you own with
    * { <off_time[1..15]>, <hysteresis_end[-3..12]>, hysteresis_start[1..8] }
    */
-  #define CHOPPER_TIMING {3, -2, 6} // <-- changed
+  #define CHOPPER_TIMING CHOPPER_DEFAULT_12V
 
   /**
    * Monitor Trinamic drivers for error conditions,
@@ -2256,7 +2253,7 @@
    * M912 - Clear stepper driver overtemperature pre-warn condition flag.
    * M122 - Report driver parameters (Requires TMC_DEBUG)
    */
-  #define MONITOR_DRIVER_STATUS // <-- changed
+  //#define MONITOR_DRIVER_STATUS
 
   #if ENABLED(MONITOR_DRIVER_STATUS)
     #define CURRENT_STEP_DOWN     50  // [mA]
@@ -2271,11 +2268,11 @@
    * STEALTHCHOP_(XY|Z|E) must be enabled to use HYBRID_THRESHOLD.
    * M913 X/Y/Z/E to live tune the setting
    */
-  #define HYBRID_THRESHOLD // <-- changed
+  //#define HYBRID_THRESHOLD
 
-  #define X_HYBRID_THRESHOLD     72 // <-- changed:  [mm/s]
+  #define X_HYBRID_THRESHOLD     100  // [mm/s]
   #define X2_HYBRID_THRESHOLD    100
-  #define Y_HYBRID_THRESHOLD     72 // <-- changed
+  #define Y_HYBRID_THRESHOLD     100
   #define Y2_HYBRID_THRESHOLD    100
   #define Z_HYBRID_THRESHOLD       3
   #define Z2_HYBRID_THRESHOLD      3
@@ -2313,7 +2310,15 @@
    * IMPROVE_HOMING_RELIABILITY tunes acceleration and jerk when
    * homing and adds a guard period for endstop triggering.
    */
-  //#define SENSORLESS_HOMING  // <-- changed:  StallGuard capable drivers only
+  //#define SENSORLESS_HOMING // StallGuard capable drivers only
+
+  /**
+   * Use StallGuard2 to probe the bed with the nozzle.
+   *
+   * CAUTION: This could cause damage to machines that use a lead screw or threaded rod
+   *          to move the Z axis. Take extreme care when attempting to enable this feature.
+   */
+  //#define SENSORLESS_PROBING // StallGuard capable drivers only
 
   #if EITHER(SENSORLESS_HOMING, SENSORLESS_PROBING)
     // TMC2209: 0...255. TMC2130: -64...63
@@ -2335,7 +2340,7 @@
    * Enable M122 debugging command for TMC stepper drivers.
    * M122 S0/1 will enable continous reporting.
    */
-  #define TMC_DEBUG // <-- changed
+  //#define TMC_DEBUG
 
   /**
    * You can set your own advanced settings by filling in predefined functions.
@@ -2348,7 +2353,7 @@
    *   stepperY.intpol(0); \
    * }
    */
-  #define TMC_ADV() {stepperX.shaft(0);stepperX.semin(1);stepperX.semax(3);stepperY.shaft(0);stepperY.semin(1);stepperY.semax(3);stepperZ.shaft(0);stepperZ.semin(1);stepperZ.semax(3);stepperE0.shaft(0);stepperE0.semin(1);stepperE0.semax(3);} // <-- changed
+  #define TMC_ADV() {  }
 
 #endif // HAS_TRINAMIC_CONFIG
 
@@ -2414,7 +2419,7 @@
   #endif
 
   #if AXIS_IS_L64XX(Z)
-    #define Z_MICROSTEPS       16 // <-- changed
+    #define Z_MICROSTEPS       128
     #define Z_OVERCURRENT     2000
     #define Z_STALLCURRENT    1500
     #define Z_MAX_VOLTAGE      127
@@ -2909,7 +2914,7 @@
  *
  * Execute certain G-code commands immediately after power-on.
  */
-#define STARTUP_COMMANDS "G91\nM211 S0\nM120\nM400\nG0 Z400 F500\nG0 Z-5 F500\nM400\nG90\nM121\nM211 S1\nG28 Z0" // <-- changed
+//#define STARTUP_COMMANDS "M17 Z"
 
 /**
  * G-code Macros
@@ -2917,7 +2922,7 @@
  * Add G-codes M810-M819 to define and run G-code macros.
  * Macros are not saved to EEPROM.
  */
-#define GCODE_MACROS // <-- changed
+//#define GCODE_MACROS
 #if ENABLED(GCODE_MACROS)
   #define GCODE_MACROS_SLOTS       5  // Up to 10 may be used
   #define GCODE_MACROS_SLOT_SIZE  50  // Maximum length of a single macro
@@ -2965,7 +2970,7 @@
  */
 #define HOST_ACTION_COMMANDS // <-- changed
 #if ENABLED(HOST_ACTION_COMMANDS)
-  //#define HOST_PROMPT_SUPPORT
+  #define HOST_PROMPT_SUPPORT // <-- changed
 #endif
 
 /**
@@ -2973,7 +2978,7 @@
  *
  * Implement M486 to allow Marlin to skip objects
  */
-//#define CANCEL_OBJECTS
+#define CANCEL_OBJECTS
 
 /**
  * I2C position encoders for closed loop control.
@@ -3058,21 +3063,21 @@
 /**
  * Analog Joystick(s)
  */
-#define JOYSTICK // <-- changed
+//#define JOYSTICK
 #if ENABLED(JOYSTICK)
-  #define JOY_X_PIN    -1 // <-- changed:  RAMPS: Suggested pin A5  on AUX2
-  #define JOY_Y_PIN   -1 // <-- changed:  RAMPS: Suggested pin A10 on AUX2
-  #define JOY_Z_PIN   -1 // <-- changed:  RAMPS: Suggested pin A12 on AUX2
-  #define JOY_EN_PIN  -1 // <-- changed:  RAMPS: Suggested pin D44 on AUX2
+  #define JOY_X_PIN    5  // RAMPS: Suggested pin A5  on AUX2
+  #define JOY_Y_PIN   10  // RAMPS: Suggested pin A10 on AUX2
+  #define JOY_Z_PIN   12  // RAMPS: Suggested pin A12 on AUX2
+  #define JOY_EN_PIN  44  // RAMPS: Suggested pin D44 on AUX2
 
   //#define INVERT_JOY_X  // Enable if X direction is reversed
   //#define INVERT_JOY_Y  // Enable if Y direction is reversed
   //#define INVERT_JOY_Z  // Enable if Z direction is reversed
 
   // Use M119 with JOYSTICK_DEBUG to find reasonable values after connecting:
-  //#define JOY_X_LIMITS { 5600, 8190-100, 8190+100, 10800 } // <-- changed:  min, deadzone start, deadzone end, max
-  //#define JOY_Y_LIMITS { 5600, 8250-100, 8250+100, 11000 } // <-- changed
-  //#define JOY_Z_LIMITS { 4800, 8080-100, 8080+100, 11550 } // <-- changed
+  #define JOY_X_LIMITS { 5600, 8190-100, 8190+100, 10800 } // min, deadzone start, deadzone end, max
+  #define JOY_Y_LIMITS { 5600, 8250-100, 8250+100, 11000 }
+  #define JOY_Z_LIMITS { 4800, 8080-100, 8080+100, 11550 }
 #endif
 
 /**
