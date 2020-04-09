@@ -192,7 +192,7 @@ build_firmware() {
 
   # Compile the firmware
   echo
-  echo Building for $printer and $toolhead
+  echo "Building for $printer and $toolhead with board $motherboard_name ($motherboard_number)"
   echo
   EXTRA_OPTS='-Wfatal-errors'
   EXTRA_DEFS=''
