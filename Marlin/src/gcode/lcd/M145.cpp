@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 
 #include "../../inc/MarlinConfig.h"
 
-#if HAS_LCD_MENU
+#if HAS_HOTEND && HAS_LCD_MENU
 
 #include "../gcode.h"
 #include "../../lcd/ultralcd.h"
@@ -38,12 +38,12 @@
 void GcodeSuite::M145() {
   const uint8_t material = (uint8_t)parser.intval('S');
   if (material >= COUNT(ui.preheat_hotend_temp))
-    SERIAL_ERROR_MSG(MSG_ERR_MATERIAL_INDEX);
+    SERIAL_ERROR_MSG(STR_ERR_MATERIAL_INDEX);
   else {
     int v;
     if (parser.seenval('H')) {
       v = parser.value_int();
-      ui.preheat_hotend_temp[material] = constrain(v, EXTRUDE_MINTEMP, HEATER_0_MAXTEMP - 15);
+      ui.preheat_hotend_temp[material] = constrain(v, EXTRUDE_MINTEMP, HEATER_0_MAXTEMP - HOTEND_OVERSHOOT);
     }
     if (parser.seenval('F')) {
       v = parser.value_int();
@@ -52,10 +52,10 @@ void GcodeSuite::M145() {
     #if TEMP_SENSOR_BED != 0
       if (parser.seenval('B')) {
         v = parser.value_int();
-        ui.preheat_bed_temp[material] = constrain(v, BED_MINTEMP, BED_MAXTEMP - 10);
+        ui.preheat_bed_temp[material] = constrain(v, BED_MINTEMP, BED_MAX_TARGET);
       }
     #endif
   }
 }
 
-#endif // HAS_LCD_MENU
+#endif // HOTENDS && HAS_LCD_MENU

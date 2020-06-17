@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 
 /**
  * Arduino SdFat Library
- * Copyright (C) 2009 by William Greiman
+ * Copyright (c) 2009 by William Greiman
  *
  * This file is part of the Arduino Sd2Card Library
  */
@@ -33,7 +33,7 @@
 
 #include "SdVolume.h"
 
-#include "../Marlin.h"
+#include "../MarlinCore.h"
 
 #if !USE_MULTIPLE_CARDS
   // raw block cache
@@ -291,6 +291,16 @@ int32_t SdVolume::freeClusterCount() {
       for (uint16_t i = 0; i < n; i++)
         if (cacheBuffer_.fat32[i] == 0) free++;
     }
+    #ifdef ESP32
+      // Needed to reset the idle task watchdog timer on ESP32 as reading the complete FAT may easily
+      // block for 10+ seconds. yield() is insufficient since it blocks lower prio tasks (e.g., idle).
+      static millis_t nextTaskTime = 0;
+      const millis_t ms = millis();
+      if (ELAPSED(ms, nextTaskTime)) {
+        vTaskDelay(1);            // delay 1 tick (Minimum. Usually 10 or 1 ms depending on skdconfig.h)
+        nextTaskTime = ms + 1000; // tickle the task manager again in 1 second
+      }
+    #endif // ESP32
   }
   return free;
 }

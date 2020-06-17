@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 #if ENABLED(PRUSA_MMU2)
 
 #include "../../gcode.h"
-#include "../../../feature/prusa_MMU2/mmu2.h"
+#include "../../../feature/mmu2/mmu2.h"
 
 /**
  * M403: Set filament type for MMU2
@@ -41,7 +41,7 @@ void GcodeSuite::M403() {
          type = parser.intval('F', -1);
 
   if (WITHIN(index, 0, 4) && WITHIN(type, 0, 2))
-    mmu2.setFilamentType(index, type);
+    mmu2.set_filament_type(index, type);
   else
     SERIAL_ECHO_MSG("M403 - bad arguments.");
 }

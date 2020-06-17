@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,13 +24,11 @@
 #include "../inc/MarlinConfig.h"
 
 #if ENABLED(EEPROM_SETTINGS)
-  #include "../HAL/shared/persistent_store_api.h"
+  #include "../HAL/shared/eeprom_api.h"
 #endif
 
 class MarlinSettings {
   public:
-    MarlinSettings() { }
-
     static uint16_t datasize();
 
     static void reset();
@@ -40,9 +38,7 @@ class MarlinSettings {
       reset();
       #if ENABLED(EEPROM_SETTINGS)
         const bool success = save();
-        #if ENABLED(EEPROM_CHITCHAT)
-          if (success) report();
-        #endif
+        if (TERN0(EEPROM_CHITCHAT, success)) report();
         return success;
       #else
         return true;
@@ -55,8 +51,14 @@ class MarlinSettings {
     #endif
 
     #if ENABLED(EEPROM_SETTINGS)
+
       static bool load();      // Return 'true' if data was loaded ok
       static bool validate();  // Return 'true' if EEPROM data is ok
+
+      static inline void first_load() {
+        static bool loaded = false;
+        if (!loaded && load()) loaded = true;
+      }
 
       #if ENABLED(AUTO_BED_LEVELING_UBL) // Eventually make these available if any leveling system
                                          // That can store is enabled
@@ -65,7 +67,7 @@ class MarlinSettings {
         static uint16_t calc_num_meshes();
         static int mesh_slot_offset(const int8_t slot);
         static void store_mesh(const int8_t slot);
-        static void load_mesh(const int8_t slot, void * const into=NULL);
+        static void load_mesh(const int8_t slot, void * const into=nullptr);
 
         //static void delete_mesh();    // necessary if we have a MAT
         //static void defrag_meshes();  // "
@@ -73,13 +75,15 @@ class MarlinSettings {
     #else
       FORCE_INLINE
       static bool load() { reset(); report(); return true; }
+      FORCE_INLINE
+      static void first_load() { (void)load(); }
     #endif
 
     #if DISABLED(DISABLE_M503)
       static void report(const bool forReplay=false);
     #else
       FORCE_INLINE
-      static void report(const bool forReplay=false) { UNUSED(forReplay); }
+      static void report(const bool=false) {}
     #endif
 
   private:

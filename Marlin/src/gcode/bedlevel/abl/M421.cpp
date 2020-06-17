@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,11 @@
 #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
 
 #include "../../gcode.h"
-#include "../../../feature/bedlevel/abl/abl.h"
+#include "../../../feature/bedlevel/bedlevel.h"
+
+#if ENABLED(EXTENSIBLE_UI)
+  #include "../../../lcd/extui/ui_api.h"
+#endif
 
 /**
  * M421: Set a single Mesh Bed Leveling Z coordinate
@@ -46,17 +50,13 @@ void GcodeSuite::M421() {
              hasQ = !hasZ && parser.seen('Q');
 
   if (!hasI || !hasJ || !(hasZ || hasQ))
-    SERIAL_ERROR_MSG(MSG_ERR_M421_PARAMETERS);
+    SERIAL_ERROR_MSG(STR_ERR_M421_PARAMETERS);
   else if (!WITHIN(ix, 0, GRID_MAX_POINTS_X - 1) || !WITHIN(iy, 0, GRID_MAX_POINTS_Y - 1))
-    SERIAL_ERROR_MSG(MSG_ERR_MESH_XY);
+    SERIAL_ERROR_MSG(STR_ERR_MESH_XY);
   else {
     z_values[ix][iy] = parser.value_linear_units() + (hasQ ? z_values[ix][iy] : 0);
-    #if ENABLED(ABL_BILINEAR_SUBDIVISION)
-      bed_level_virt_interpolate();
-    #endif
-    #if ENABLED(EXTENSIBLE_UI)
-      ExtUI::onMeshUpdate(ix, iy, z_values[ix][iy]);
-    #endif
+    TERN_(ABL_BILINEAR_SUBDIVISION, bed_level_virt_interpolate());
+    TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(ix, iy, z_values[ix][iy]));
   }
 }
 

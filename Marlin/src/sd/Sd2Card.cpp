@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 
 /**
  * Arduino Sd2Card Library
- * Copyright (C) 2009 by William Greiman
+ * Copyright (c) 2009 by William Greiman
  * Updated with backports of the latest SdFat library from the same author
  *
  * This file is part of the Arduino Sd2Card Library
@@ -30,7 +30,7 @@
 
 #include "../inc/MarlinConfig.h"
 
-#if ENABLED(SDSUPPORT) && DISABLED(USB_FLASH_DRIVE_SUPPORT, SDIO_SUPPORT)
+#if ENABLED(SDSUPPORT) && NONE(USB_FLASH_DRIVE_SUPPORT, SDIO_SUPPORT)
 
 /* Enable FAST CRC computations - You can trade speed for FLASH space if
  * needed by disabling the following define */
@@ -38,7 +38,7 @@
 
 #include "Sd2Card.h"
 
-#include "../Marlin.h"
+#include "../MarlinCore.h"
 
 #if ENABLED(SD_CHECK_AND_RETRY)
   static bool crcSupported = true;
@@ -74,7 +74,7 @@
   #else
     static uint8_t CRC7(const uint8_t* data, uint8_t n) {
       uint8_t crc = 0;
-      for (uint8_t i = 0; i < n; i++) {
+      LOOP_L_N(i, n) {
         uint8_t d = data[i];
         d ^= crc << 1;
         if (d & 0x80) d ^= 9;
@@ -106,7 +106,7 @@ uint8_t Sd2Card::cardCommand(const uint8_t cmd, const uint32_t arg) {
     d[5] = CRC7(d, 5);
 
     // Send message
-    for (uint8_t k = 0; k < 6; k++) spiSend(d[k]);
+    LOOP_L_N(k, 6) spiSend(d[k]);
 
   #else
     // Send command
@@ -227,18 +227,14 @@ bool Sd2Card::eraseSingleBlockEnable() {
  * \return true for success, false for failure.
  * The reason for failure can be determined by calling errorCode() and errorData().
  */
-bool Sd2Card::init(const uint8_t sckRateID/*=0*/, const pin_t chipSelectPin/*=SD_CHIP_SELECT_PIN*/) {
+bool Sd2Card::init(const uint8_t sckRateID, const pin_t chipSelectPin) {
   errorCode_ = type_ = 0;
   chipSelectPin_ = chipSelectPin;
   // 16-bit init start time allows over a minute
   const millis_t init_timeout = millis() + SD_INIT_TIMEOUT;
   uint32_t arg;
 
-  // If init takes more than 4s it could trigger
-  // watchdog leading to a reboot loop.
-  #if ENABLED(USE_WATCHDOG)
-    watchdog_reset();
-  #endif
+  watchdog_refresh(); // In case init takes too long
 
   // Set pin modes
   extDigitalWrite(chipSelectPin_, HIGH);  // For some CPUs pinMode can write the wrong data so init desired data value first
@@ -250,12 +246,9 @@ bool Sd2Card::init(const uint8_t sckRateID/*=0*/, const pin_t chipSelectPin/*=SD
   spiInit(spiRate_);
 
   // Must supply min of 74 clock cycles with CS high.
-  for (uint8_t i = 0; i < 10; i++) spiSend(0xFF);
+  LOOP_L_N(i, 10) spiSend(0xFF);
 
-  // Initialization can cause the watchdog to timeout, so reinit it here
-  #if ENABLED(USE_WATCHDOG)
-    watchdog_reset();
-  #endif
+  watchdog_refresh(); // In case init takes too long
 
   // Command to go idle in SPI mode
   while ((status_ = cardCommand(CMD0, 0)) != R1_IDLE_STATE) {
@@ -269,10 +262,7 @@ bool Sd2Card::init(const uint8_t sckRateID/*=0*/, const pin_t chipSelectPin/*=SD
     crcSupported = (cardCommand(CMD59, 1) == R1_IDLE_STATE);
   #endif
 
-  // Initialization can cause the watchdog to timeout, so reinit it here
-  #if ENABLED(USE_WATCHDOG)
-    watchdog_reset();
-  #endif
+  watchdog_refresh(); // In case init takes too long
 
   // check SD version
   for (;;) {
@@ -282,7 +272,7 @@ bool Sd2Card::init(const uint8_t sckRateID/*=0*/, const pin_t chipSelectPin/*=SD
     }
 
     // Get the last byte of r7 response
-    for (uint8_t i = 0; i < 4; i++) status_ = spiRec();
+    LOOP_L_N(i, 4) status_ = spiRec();
     if (status_ == 0xAA) {
       type(SD_CARD_TYPE_SD2);
       break;
@@ -294,10 +284,7 @@ bool Sd2Card::init(const uint8_t sckRateID/*=0*/, const pin_t chipSelectPin/*=SD
     }
   }
 
-  // Initialization can cause the watchdog to timeout, so reinit it here
-  #if ENABLED(USE_WATCHDOG)
-    watchdog_reset();
-  #endif
+  watchdog_refresh(); // In case init takes too long
 
   // Initialize card and send host supports SDHC if SD2
   arg = type() == SD_CARD_TYPE_SD2 ? 0x40000000 : 0;
@@ -316,7 +303,7 @@ bool Sd2Card::init(const uint8_t sckRateID/*=0*/, const pin_t chipSelectPin/*=SD
     }
     if ((spiRec() & 0xC0) == 0xC0) type(SD_CARD_TYPE_SDHC);
     // Discard rest of ocr - contains allowed voltage range
-    for (uint8_t i = 0; i < 3; i++) spiRec();
+    LOOP_L_N(i, 3) spiRec();
   }
   chipDeselect();
 
