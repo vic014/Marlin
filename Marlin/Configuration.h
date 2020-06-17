@@ -10,10 +10,10 @@
 //#define STOCK_2208 // V2 Stock Board with TMC2208 Drivers
 //#define SKR13 // 32 bit board - assumes 2208 drivers
 //#define SKR14
-#define SKR14Turbo
-#define SKR_2209
+//#define SKR14Turbo
+//#define SKR_2209
 //#define E_8825
-#define SKR_UART // Configure SKR board with drivers in UART mode
+//#define SKR_UART // Configure SKR board with drivers in UART mode
 
 //#define SX2 // Small formfactor 200mm machine
 
