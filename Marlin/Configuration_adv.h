@@ -874,7 +874,7 @@
  * vibration and surface artifacts. The algorithm adapts to provide the best possible step smoothing at the
  * lowest stepping frequencies.
  */
-#if ENABLED(SKR13)
+#if ENABLED(SKRLPCBoard)
   #define ADAPTIVE_STEP_SMOOTHING
 #endif
 /**
@@ -1072,7 +1072,7 @@
    * If the machine reboots when resuming a print you may need to replace or
    * reformat the SD card. (Bad sectors delay startup triggering the watchdog.)
    */
-  #if ENABLED(SKR13)
+  #if ENABLED(SKRLPCBoard)
     #define POWER_LOSS_RECOVERY
   #endif
   #if ENABLED(POWER_LOSS_RECOVERY)
@@ -1298,11 +1298,14 @@
   //#define STATUS_ALT_FAN_BITMAP     // Use the alternative fan bitmap
   //#define STATUS_FAN_FRAMES 3       // :[0,1,2,3,4] Number of fan animation frames
   //#define STATUS_HEAT_PERCENT       // Show heating in a progress bar
-  #define BOOT_MARLIN_LOGO_SMALL    // Show a smaller Marlin logo on the Boot Screen (saving 399 bytes of flash)
-  //#define BOOT_MARLIN_LOGO_ANIMATED // Animated Marlin logo. Costs ~‭3260 (or ~940) bytes of PROGMEM.
+  #if DISABLED(SKRLPCBoard)
+    #define BOOT_MARLIN_LOGO_SMALL    // Show a smaller Marlin logo on the Boot Screen (saving 399 bytes of flash)
+  #else
+    #define BOOT_MARLIN_LOGO_ANIMATED // Animated Marlin logo. Costs ~‭3260 (or ~940) bytes of PROGMEM.
+  #endif
 
   // Frivolous Game Options
-  #if ENABLED(SKR13)
+  #if ENABLED(SKRLPCBoard)
     #define MARLIN_BRICKOUT
     #define MARLIN_INVADERS
     #define MARLIN_SNAKE
@@ -1725,7 +1728,7 @@
 
 // The number of linear motions that can be in the plan at any give time.
 // THE BLOCK_BUFFER_SIZE NEEDS TO BE A POWER OF 2 (e.g. 8, 16, 32) because shifts and ors are used to do the ring-buffering.
-#if ENABLED(SKR13)
+#if ENABLED(SKRLPCBoard)
   #define BLOCK_BUFFER_SIZE 64 // SD,LCD,Buttons take more memory, block buffer needs to be smaller
 #else
   #define BLOCK_BUFFER_SIZE 16 // maximize block buffer
@@ -1735,7 +1738,7 @@
 
 // The ASCII buffer for serial input
 #define MAX_CMD_SIZE 96
-#if ENABLED(SKR13)
+#if ENABLED(SKRLPCBoard)
   #define BUFSIZE 32
 #elif BOTH(GRAPHICSLCD, UBL)
   #define BUFSIZE 12

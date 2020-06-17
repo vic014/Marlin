@@ -5,20 +5,26 @@
 
 //#define FilamentSensorStd
 //#define FilamentSensorLerdge
-#define FilamentEncoder
+//#define FilamentEncoder
 
 //#define STOCK_2208 // V2 Stock Board with TMC2208 Drivers
 //#define SKR13 // 32 bit board - assumes 2208 drivers
-//#define SKR13_2209
+//#define SKR14
+#define SKR14Turbo
+#define SKR_2209
 //#define E_8825
-//#define SKR13_UART // Configure SKR board with drivers in UART mode
+#define SKR_UART // Configure SKR board with drivers in UART mode
 
 //#define SX2 // Small formfactor 200mm machine
 
 #define DUAL_Z
-#define GRAPHICSLCD
-#define UBL
+//#define GRAPHICSLCD
+//#define UBL
 
+
+#if ANY(SKR13, SKR14, SKR14Turbo)
+  #define SKRLPCBoard
+#endif
 /**
  * Marlin 3D Printer Firmware
  * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
@@ -42,7 +48,7 @@
  */
 #pragma once
 
-#if DISABLED(SKR13)
+#if DISABLED(SKRLPCBoard)
   #define Y_STOP_PIN 14
 #endif
 /**
@@ -135,7 +141,7 @@
  * Select a secondary serial port on the board to use for communication with the host.
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#if ENABLED(SKR13)
+#if ENABLED(SKRLPCBoard)
   #define SERIAL_PORT_2 -1
 #endif
 /**
@@ -156,6 +162,10 @@
 #ifndef MOTHERBOARD
   #if ENABLED(SKR13)
     #define MOTHERBOARD BOARD_BTT_SKR_V1_3
+  #elif ENABLED(SKR14)
+    #define MOTHERBOARD BOARD_BTT_SKR_V1_4
+  #elif ENABLED(SKR14Turbo)
+    #define MOTHERBOARD BOARD_BTT_SKR_V1_4_TURBO
   #else
     #define MOTHERBOARD BOARD_RAMPS_14_EFB
   #endif
@@ -715,13 +725,13 @@
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'L6474', 'POWERSTEP01', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
 
-#if ENABLED(SKR13, E_8825)
+#if ENABLED(SKRLPCBoard, E_8825)
   #define E0_DRIVER_TYPE DRV8825
   #define E1_DRIVER_TYPE DRV8825
 #endif
 
-#if ANY(SKR13, STOCK_2208) && DISABLED(SKR13_UART)
-  #if ENABLED(SKR13_2209)
+#if ANY(SKRLPCBoard, STOCK_2208) && DISABLED(SKR_UART)
+  #if ENABLED(SKR_2209)
     #define X_DRIVER_TYPE  TMC2209_STANDALONE
     #define Y_DRIVER_TYPE  TMC2209_STANDALONE
     #define Z_DRIVER_TYPE  TMC2209_STANDALONE
@@ -740,8 +750,8 @@
       #define E1_DRIVER_TYPE TMC2208_STANDALONE
     #endif
   #endif
-#elif ENABLED(SKR13, SKR13_UART)
-  #if ENABLED(SKR13_2209)
+#elif ENABLED(SKRLPCBoard, SKR_UART)
+  #if ENABLED(SKR_2209)
     #define X_DRIVER_TYPE  TMC2209
     #define Y_DRIVER_TYPE  TMC2209
     #define Z_DRIVER_TYPE  TMC2209
@@ -877,7 +887,7 @@
  * When changing speed and direction, if the difference is less than the
  * value set here, it may happen instantaneously.
  */
-//#define CLASSIC_JERK
+#define CLASSIC_JERK
 #if ENABLED(CLASSIC_JERK)
   #define DEFAULT_XJERK 10.0
   #define DEFAULT_YJERK 10.0
@@ -1162,7 +1172,7 @@
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#if ANY(SKR13, STOCK_2208)
+#if ANY(SKRLPCBoard, STOCK_2208)
   #define INVERT_X_DIR true
   #define INVERT_Y_DIR true
   #define INVERT_Z_DIR true
@@ -1175,7 +1185,7 @@
 // @section extruder
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
-#if (ENABLED(BondtechBMG, CR10SPro_GearedExtruder) && DISABLED(SKR13)) || (DISABLED(BondtechBM, CR10SPro_GearedExtruderG) && ANY(SKR13, STOCK_2208))
+#if (ENABLED(BondtechBMG, CR10SPro_GearedExtruder) && DISABLED(SKRLPCBoard)) || (DISABLED(BondtechBM, CR10SPro_GearedExtruderG) && ANY(SKRLPCBoard, STOCK_2208))
   #define INVERT_E0_DIR true
 #else
   #define INVERT_E0_DIR false
@@ -1259,7 +1269,7 @@
 #endif
 
 #if EITHER(MIN_SOFTWARE_ENDSTOPS, MAX_SOFTWARE_ENDSTOPS)
-  //#define SOFT_ENDSTOPS_MENU_ITEM  // Enable/Disable software endstops from the LCD
+  #define SOFT_ENDSTOPS_MENU_ITEM  // Enable/Disable software endstops from the LCD
 #endif
 
 /**
@@ -1284,7 +1294,7 @@
   #define FIL_RUNOUT_PULLUP          // Use internal pullup for filament runout pins.
   //#define FIL_RUNOUT_PULLDOWN      // Use internal pulldown for filament runout pins.
 
-  #if DISABLED(SKR13)
+  #if DISABLED(SKRLPCBoard)
     #define FIL_RUNOUT_PIN 2
   #endif
   // Set one or more commands to execute on filament runout.
@@ -1473,7 +1483,7 @@
 #endif
 
 // Add a menu item to move between bed corners for manual bed adjustment
-//#define LEVEL_BED_CORNERS
+#define LEVEL_BED_CORNERS
 
 #if ENABLED(LEVEL_BED_CORNERS)
   #define LEVEL_CORNERS_INSET_LFRB { 30, 30, 30, 30 } // (mm) Left, Front, Right, Back insets
