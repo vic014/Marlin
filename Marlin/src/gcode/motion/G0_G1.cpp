@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -23,7 +23,7 @@
 #include "../gcode.h"
 #include "../../module/motion.h"
 
-#include "../../Marlin.h"
+#include "../../MarlinCore.h"
 
 #if BOTH(FWRETRACT, FWRETRACT_AUTORETRACT)
   #include "../../feature/fwretract.h"
@@ -35,7 +35,7 @@
   #include "../../module/stepper.h"
 #endif
 
-extern float destination[XYZE];
+extern xyze_pos_t destination;
 
 #if ENABLED(VARIABLE_G0_FEEDRATE)
   feedRate_t fast_move_feedrate = MMM_TO_MMS(G0_FEEDRATE);
@@ -87,12 +87,12 @@ void GcodeSuite::G0_G1(
       if (MIN_AUTORETRACT <= MAX_AUTORETRACT) {
         // When M209 Autoretract is enabled, convert E-only moves to firmware retract/recover moves
         if (fwretract.autoretract_enabled && parser.seen('E') && !(parser.seen('X') || parser.seen('Y') || parser.seen('Z'))) {
-          const float echange = destination[E_AXIS] - current_position[E_AXIS];
+          const float echange = destination.e - current_position.e;
           // Is this a retract or recover move?
           if (WITHIN(ABS(echange), MIN_AUTORETRACT, MAX_AUTORETRACT) && fwretract.retracted[active_extruder] == (echange > 0.0)) {
-            current_position[E_AXIS] = destination[E_AXIS]; // Hide a G1-based retract/recover from calculations
-            sync_plan_position_e();                         // AND from the planner
-            return fwretract.retract(echange < 0.0);        // Firmware-based retract/recover (double-retract ignored)
+            current_position.e = destination.e;       // Hide a G1-based retract/recover from calculations
+            sync_plan_position_e();                   // AND from the planner
+            return fwretract.retract(echange < 0.0);  // Firmware-based retract/recover (double-retract ignored)
           }
         }
       }
@@ -100,9 +100,9 @@ void GcodeSuite::G0_G1(
     #endif // FWRETRACT
 
     #if IS_SCARA
-      fast_move ? prepare_fast_move_to_destination() : prepare_move_to_destination();
+      fast_move ? prepare_fast_move_to_destination() : prepare_line_to_destination();
     #else
-      prepare_move_to_destination();
+      prepare_line_to_destination();
     #endif
 
     #ifdef G0_FEEDRATE
@@ -118,7 +118,7 @@ void GcodeSuite::G0_G1(
       #endif
       if (_MOVE_SYNC) {
         planner.synchronize();
-        SERIAL_ECHOLNPGM(MSG_Z_MOVE_COMP);
+        SERIAL_ECHOLNPGM(STR_Z_MOVE_COMP);
       }
     #endif
   }

@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -34,7 +34,7 @@
 inline void G38_single_probe(const uint8_t move_value) {
   endstops.enable(true);
   G38_move = move_value;
-  prepare_move_to_destination();
+  prepare_line_to_destination();
   planner.synchronize();
   G38_move = 0;
   endstops.hit_on_purpose();
@@ -48,7 +48,7 @@ inline bool G38_run_probe() {
 
   #if MULTIPLE_PROBING > 1
     // Get direction of move and retract
-    float retract_mm[XYZ];
+    xyz_float_t retract_mm;
     LOOP_XYZ(i) {
       const float dist = destination[i] - current_position[i];
       retract_mm[i] = ABS(dist) < G38_MINIMUM_MOVE ? 0 : home_bump_mm((AxisEnum)i) * (dist > 0 ? -1 : 1);
@@ -75,16 +75,15 @@ inline bool G38_run_probe() {
 
     #if MULTIPLE_PROBING > 1
       // Move away by the retract distance
-      set_destination_from_current();
-      LOOP_XYZ(i) destination[i] += retract_mm[i];
+      destination = current_position + retract_mm;
       endstops.enable(false);
-      prepare_move_to_destination();
+      prepare_line_to_destination();
       planner.synchronize();
 
       REMEMBER(fr, feedrate_mm_s, feedrate_mm_s * 0.25);
 
       // Bump the target more slowly
-      LOOP_XYZ(i) destination[i] -= retract_mm[i] * 2;
+      destination -= retract_mm * 2;
 
       G38_single_probe(move_value);
     #endif

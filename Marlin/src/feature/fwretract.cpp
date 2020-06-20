@@ -1,6 +1,6 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
  * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
@@ -73,7 +73,7 @@ void FWRetract::reset() {
   settings.swap_retract_recover_feedrate_mm_s = RETRACT_RECOVER_FEEDRATE_SWAP;
   current_hop = 0.0;
 
-  for (uint8_t i = 0; i < EXTRUDERS; ++i) {
+  LOOP_L_N(i, EXTRUDERS) {
     retracted[i] = false;
     #if EXTRUDERS > 1
       retracted_swap[i] = false;
@@ -117,14 +117,14 @@ void FWRetract::retract(const bool retracting
       " swapping ", swapping,
       " active extruder ", active_extruder
     );
-    for (uint8_t i = 0; i < EXTRUDERS; ++i) {
+    LOOP_L_N(i, EXTRUDERS) {
       SERIAL_ECHOLNPAIR("retracted[", i, "] ", retracted[i]);
       #if EXTRUDERS > 1
         SERIAL_ECHOLNPAIR("retracted_swap[", i, "] ", retracted_swap[i]);
       #endif
     }
-    SERIAL_ECHOLNPAIR("current_position[z] ", current_position[Z_AXIS]);
-    SERIAL_ECHOLNPAIR("current_position[e] ", current_position[E_AXIS]);
+    SERIAL_ECHOLNPAIR("current_position.z ", current_position.z);
+    SERIAL_ECHOLNPAIR("current_position.e ", current_position.e);
     SERIAL_ECHOLNPAIR("current_hop ", current_hop);
   //*/
 
@@ -136,7 +136,7 @@ void FWRetract::retract(const bool retracting
               );
 
   // The current position will be the destination for E and Z moves
-  set_destination_from_current();
+  destination = current_position;
 
   #if ENABLED(RETRACT_SYNC_MIXING)
     const uint8_t old_mixing_tool = mixer.get_current_vtool();
@@ -147,7 +147,7 @@ void FWRetract::retract(const bool retracting
   if (retracting) {
     // Retract by moving from a faux E position back to the current E position
     current_retract[active_extruder] = base_retract;
-    prepare_internal_move_to_destination(  // set_current_to_destination
+    prepare_internal_move_to_destination(                 // set current to destination
       settings.retract_feedrate_mm_s
       #if ENABLED(RETRACT_SYNC_MIXING)
         * (MIXING_STEPPERS)
@@ -171,7 +171,7 @@ void FWRetract::retract(const bool retracting
 
     const float extra_recover = swapping ? settings.swap_retract_recover_extra : settings.retract_recover_extra;
     if (extra_recover) {
-      current_position[E_AXIS] -= extra_recover;          // Adjust the current E position by the extra amount to recover
+      current_position.e -= extra_recover;          // Adjust the current E position by the extra amount to recover
       sync_plan_position_e();                             // Sync the planner position so the extra amount is recovered
     }
 
@@ -201,14 +201,14 @@ void FWRetract::retract(const bool retracting
     SERIAL_ECHOLNPAIR("retracting ", retracting);
     SERIAL_ECHOLNPAIR("swapping ", swapping);
     SERIAL_ECHOLNPAIR("active_extruder ", active_extruder);
-    for (uint8_t i = 0; i < EXTRUDERS; ++i) {
+    LOOP_L_N(i, EXTRUDERS) {
       SERIAL_ECHOLNPAIR("retracted[", i, "] ", retracted[i]);
       #if EXTRUDERS > 1
         SERIAL_ECHOLNPAIR("retracted_swap[", i, "] ", retracted_swap[i]);
       #endif
     }
-    SERIAL_ECHOLNPAIR("current_position[z] ", current_position[Z_AXIS]);
-    SERIAL_ECHOLNPAIR("current_position[e] ", current_position[E_AXIS]);
+    SERIAL_ECHOLNPAIR("current_position.z ", current_position.z);
+    SERIAL_ECHOLNPAIR("current_position.e ", current_position.e);
     SERIAL_ECHOLNPAIR("current_hop ", current_hop);
   //*/
 }
