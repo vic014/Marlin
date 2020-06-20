@@ -31,7 +31,6 @@
 //#define E_4988
 //#define E_2209_Uart
 
-
 //#define SKR13
 //#define SKR14
 //#define SKR14Turbo
@@ -57,13 +56,13 @@
  *
  */
 
-#define E3DHemeraExtruder
+//#define E3DHemeraExtruder
 
 /**
- * Enable if you install a filament runout sensor from www.formbotusa.com
+ * Enable if you install a filament runout sensor from www.tinymachines3d.com
  */
 //#define RunoutSensor
-#define RunoutEncoder
+//#define RunoutEncoder
 
 //#define tallVersion // For 700mm version
 
