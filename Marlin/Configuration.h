@@ -1,9 +1,9 @@
-//#define ABL_BLTOUCH // Replaces RGB LED
-//#define GraphicalLCD // Will work next to MKS TFT
-//#define TMC_2209 // Defaults to TMC2100
-//#define ABL_UBL // Defaults to Bilinear
-//#define RunoutSensor // Tinymachines Lerdge Sensor
-//#define RELOCATE_LED // Since the bltouch by default removed the LED, set this if you simply moved them off the hotend
+#define ABL_BLTOUCH // Replaces RGB LED
+#define GraphicalLCD // Will work next to MKS TFT
+#define TMC_2209 // Defaults to TMC2100
+#define ABL_UBL // Defaults to Bilinear
+#define RunoutSensor // Tinymachines Lerdge Sensor
+#define RELOCATE_LED // Since the bltouch by default removed the LED, set this if you simply moved them off the hotend
 //#define E3DHermeaExtruder
 
 //#define SKR13
@@ -1254,6 +1254,7 @@
   #define FIL_RUNOUT_INVERTING false // Set to true to invert the logic of the sensor.
   #define FIL_RUNOUT_PULLUP          // Use internal pullup for filament runout pins.
   //#define FIL_RUNOUT_PULLDOWN      // Use internal pulldown for filament runout pins.
+  #define FIL_RUNOUT_PIN 2 //X-Max
 
   // Set one or more commands to execute on filament runout.
   // (After 'M412 H' Marlin will ask the host to handle the process.)
