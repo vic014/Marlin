@@ -26,6 +26,7 @@
  *
  * LCD Menu Messages
  * See also https://marlinfw.org/docs/development/lcd_language.html
+ *
  */
 
 #define en 1234
@@ -67,9 +68,7 @@ namespace Language_en {
   PROGMEM Language_Str MSG_AUTO_HOME_Z                     = _UxGT("Home Z");
   PROGMEM Language_Str MSG_AUTO_Z_ALIGN                    = _UxGT("Auto Z-Align");
   PROGMEM Language_Str MSG_ASSISTED_TRAMMING               = _UxGT("Assisted Tramming");
-  PROGMEM Language_Str MSG_ITERATION                       = _UxGT("G34 Iteration: %i");
-  PROGMEM Language_Str MSG_DECREASING_ACCURACY             = _UxGT("Accuracy Decreasing!");
-  PROGMEM Language_Str MSG_ACCURACY_ACHIEVED               = _UxGT("Accuracy Achieved");
+  PROGMEM Language_Str DECREASING_ACCURACY                 = _UxGT("Decreasing accuracy detected.");
   PROGMEM Language_Str MSG_LEVEL_BED_HOMING                = _UxGT("Homing XYZ");
   PROGMEM Language_Str MSG_LEVEL_BED_WAITING               = _UxGT("Click to Begin");
   PROGMEM Language_Str MSG_LEVEL_BED_NEXT_POINT            = _UxGT("Next Point");
@@ -368,7 +367,6 @@ namespace Language_en {
   PROGMEM Language_Str MSG_PAUSING                         = _UxGT("Pausing...");
   PROGMEM Language_Str MSG_PAUSE_PRINT                     = _UxGT("Pause Print");
   PROGMEM Language_Str MSG_RESUME_PRINT                    = _UxGT("Resume Print");
-  PROGMEM Language_Str MSG_HOST_START_PRINT                = _UxGT("Host Start");
   PROGMEM Language_Str MSG_STOP_PRINT                      = _UxGT("Stop Print");
   PROGMEM Language_Str MSG_PRINTING_OBJECT                 = _UxGT("Printing Object");
   PROGMEM Language_Str MSG_CANCEL_OBJECT                   = _UxGT("Cancel Object");
