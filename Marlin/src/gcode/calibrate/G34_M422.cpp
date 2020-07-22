@@ -169,6 +169,7 @@ void GcodeSuite::G34() {
       if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("> probing all positions.");
 
       SERIAL_ECHOLNPAIR("\nITERATION: ", int(iteration + 1));
+      ui.set_status("\nITERATION: ", int(iteration + 1));
 
       // Initialize minimum value
       z_measured_min =  100000.0f;
@@ -190,7 +191,8 @@ void GcodeSuite::G34() {
         // current_position.z has been manually altered in the "dirty trick" above.
         const float z_probed_height = probe.probe_at_point(z_stepper_align.xy[iprobe], raise_after, 0, true, false);
         if (isnan(z_probed_height)) {
-          SERIAL_ECHOLNPGM("Probing failed.");
+          SERIAL_ECHOLNPGM(MSG_LCD_PROBING_FAILED);
+          ui.set_status_P(MSG_LCD_PROBING_FAILED)
           err_break = true;
           break;
         }
@@ -249,6 +251,13 @@ void GcodeSuite::G34() {
           , " Z3-Z1=", ABS(z_measured[2] - z_measured[0])
         #endif
       );
+      ui.set_status("\n"
+        "DIFFERENCE Z1-Z2=", ABS(z_measured[0] - z_measured[1])
+        #if NUM_Z_STEPPER_DRIVERS == 3
+          , " Z2-Z3=", ABS(z_measured[1] - z_measured[2])
+          , " Z3-Z1=", ABS(z_measured[2] - z_measured[0])
+        #endif
+      );
 
       #if ENABLED(Z_STEPPER_ALIGN_KNOWN_STEPPER_POSITIONS)
         // Check if the applied corrections go in the correct direction.
@@ -267,7 +276,8 @@ void GcodeSuite::G34() {
 
         // If it's getting worse, stop and throw an error
         if (last_z_align_level_indicator < z_align_level_indicator * 0.7f) {
-          SERIAL_ECHOLNPGM("Decreasing accuracy detected.");
+          SERIAL_ECHOLNPGM(DECREASING_ACCURACY);
+          ui.set_status_P(DECREASING_ACCURACY);
           err_break = true;
           break;
         }
@@ -291,7 +301,8 @@ void GcodeSuite::G34() {
 
           // Check for less accuracy compared to last move
           if (last_z_align_move[zstepper] < z_align_abs * 0.7f) {
-            SERIAL_ECHOLNPGM("Decreasing accuracy detected.");
+            SERIAL_ECHOLNPGM(DECREASING_ACCURACY);
+            ui.set_status_P(DECREASING_ACCURACY);
             if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("> Z", int(zstepper + 1), " last_z_align_move = ", last_z_align_move[zstepper]);
             if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("> Z", int(zstepper + 1), " z_align_abs = ", z_align_abs);
             adjustment_reverse = !adjustment_reverse;
@@ -329,7 +340,11 @@ void GcodeSuite::G34() {
 
       if (err_break) break;
 
-      if (success_break) { SERIAL_ECHOLNPGM("Target accuracy achieved."); break; }
+      if (success_break) {
+        SERIAL_ECHOLNPGM("Target accuracy achieved.");
+        ui.set_status_P(PGM_P("Target accuracy achieved."));
+        break;
+      }
 
     } // for (iteration)
 
@@ -468,5 +483,127 @@ void GcodeSuite::M422() {
 
   pos_dest[position_index] = pos;
 }
+
+#elif ENABLED(MECHANICAL_GANTRY_CALIBRATION)
+  void GcodeSuite::G34() {
+
+    if (axis_unhomed_error()) return;
+
+    TEMPORARY_SOFT_ENDSTOP_STATE(false);
+    TEMPORARY_BED_LEVELING_STATE(false);
+
+    #ifdef GANTRY_CALIBRATION_COMMANDS_PRE
+      gcode.process_subcommands_now_P(PSTR(GANTRY_CALIBRATION_COMMANDS_PRE));
+    #endif
+
+    // Store current motor settings, then apply reduced value
+    #if DAC_STEPPER_CURRENT
+      const float target_current = parserfloatval('S', GANTRY_CALIBRATION_CURRENT);
+      const float previous_current = dac_amps(Z_AXIS, target_current);
+    else
+      const int16_t target_current = parser.intval('S', GANTRY_CALIBRATION_CURRENT);
+    #endif
+
+    #if HAS_DIGIPOTSS
+      const uint32_t previous_current = motor_current_setting[Z_AXIS];
+      stepper.digipot_current(Z_AXIS, target_current);
+    #elif HAS_MOTOR_CURRENT_PWM
+      const uint32_t previous_current = motor_current_setting[Z_AXIS];
+      stepper.digipot_current(1, target_current);
+    #if DAC_STEPPER_CURRENT
+      dac_current_raw(Z_AXIS, target_current);
+    #elif ENABLED(HAS_I2C_DIGIPOT)
+      previous_current = dac_amps(Z_AXIS);
+      digipot_i2c_set_current(Z_AXIS, target_current)
+    #elif HAS_TRINAMIC_CONFIG
+      static uint16_t previous_current_arr[NUM_Z_STEPPER_DRIVERS];
+      #if AXIS_IS_TMC(Z)
+          previous_current_arr[0] = stepperZ.getMilliamps();
+          stepperZ.rms_current(target_current);
+        #endif
+        #if AXIS_IS_TMC(Z2)
+          previous_current_arr[1] = stepperZ2.getMilliamps();
+          stepperZ2.rms_current(target_current);
+        #endif
+        #if AXIS_IS_TMC(Z3)
+          previous_current_arr[2] = stepperZ3.getMilliamps();
+          stepperZ3.rms_current(target_current);
+        #endif
+        #if AXIS_IS_TMC(Z4)
+          previous_current_arr[3] = stepperZ4.getMilliamps();
+          stepperZ4.rms_current(target_current);
+        #endif
+    #endif
+
+    // Move XY to safe position
+    #ifdef GANTRY_CALIBRATION_SAFE_POSITION
+      xy_pos_t safe_pos = GANTRY_CALIBRATION_SAFE_POSITION;
+      current_position[X_AXIS] = safe_pos[X_AXIS];
+      current_position[Y_AXIS] = safe_pos[Y_AXIS];
+      do_blocking_move_to(current_position, MMM_TO_MMS(GANTRY_CALIBRATION_XY_PARK_FEEDRATE);
+      planner.synchronize();
+    #endif
+
+    const uint16_t move_distance = parser.intval('Z', GANTRY_CALIBRATION_EXTRA_HEIGHT);
+
+    // Move Z to pounce position
+    #if GANTRY_CALIBRATION_DIRECTION == 1
+      current_position[Z_AXIS] = (Z_MAX_POS - move_distance);
+    #else
+      current_position[Z_AXIS] = (Z_MIN_POS + move_distance);
+    #endif
+
+    do_blocking_move_to(current_position, MMM_TO_MMS(HOMING_FEEDRATE_Z);
+    planner.synchronize();
+
+    // Do Final Z move to adjust
+    #if GANTRY_CALIBRATION_DIRECTION == 1
+      current_position[Z_AXIS] = (Z_MAX_POS + move_distance);
+    #else
+      current_position[Z_AXIS] = (Z_MIN_POS - move_distance);
+    #endif
+
+    do_blocking_move_to(current_position, MMM_TO_MMS(GANTRY_CALIBRATION_FEEDRATE);
+    planner.synchronize();
+
+    // Back off end plate, back to normal motion range
+    #if GANTRY_CALIBRATION_DIRECTION == 1
+      current_position[Z_AXIS] = (Z_MAX_POS - move_distance);
+    #else
+      current_position[Z_AXIS] = (Z_MIN_POS + move_distance);
+    #endif
+
+    do_blocking_move_to(current_position, MMM_TO_MMS(GANTRY_CALIBRATION_FEEDRATE);
+    planner.synchronize();
+
+    // Reset current to original values
+    #if HAS_DIGIPOTSS
+      stepper.digipot_current(Z_AXIS, previous_current);
+    #elif HAS_MOTOR_CURRENT_PWM
+      stepper.digipot_current(1, previous_current);
+    #if DAC_STEPPER_CURRENT
+      dac_current_raw(Z_AXIS, previous_current);
+    #elif ENABLED(HAS_I2C_DIGIPOT)
+      digipot_i2c_set_current(Z_AXIS, previous_current)
+    #elif HAS_TRINAMIC_CONFIG
+      static uint16_t previous_current_arr[NUM_Z_STEPPER_DRIVERS];
+      #if AXIS_IS_TMC(Z)
+          stepperZ.rms_current(previous_current_arr[0]);
+        #endif
+        #if AXIS_IS_TMC(Z2)
+          stepperZ2.rms_current(previous_current_arr[1]);
+        #endif
+        #if AXIS_IS_TMC(Z3)
+          stepperZ3.rms_current(previous_current_arr[2]);
+        #endif
+        #if AXIS_IS_TMC(Z4)
+          stepperZ4.rms_current(previous_current_arr[3]);
+        #endif
+    #endif
+
+    #ifdef GANTRY_CALIBRATION_COMMANDS_POST
+      gcode.process_subcommands_now_P(PSTR(GANTRY_CALIBRATION_COMMANDS_POST));
+    #endif
+  }
 
 #endif // Z_STEPPER_AUTO_ALIGN
