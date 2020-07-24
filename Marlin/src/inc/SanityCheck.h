@@ -422,7 +422,7 @@
 #elif defined(CHAMBER_HEATER_PIN)
   #error "CHAMBER_HEATER_PIN is now HEATER_CHAMBER_PIN. Please update your configuration and/or pins."
 #elif defined(TMC_Z_CALIBRATION)
-  #error "TMC_Z_CALIBRATION has been deprecated in favor of Z_STEPPER_AUTO_ALIGN. Please update your configuration."
+  #error "TMC_Z_CALIBRATION has been deprecated in favor of MECHANICAL_GANTRY_CALIBRATION. Please update your configuration."
 #elif defined(Z_MIN_PROBE_ENDSTOP)
   #error "Z_MIN_PROBE_ENDSTOP is no longer required. Please remove it from Configuration.h."
 #elif defined(DUAL_NOZZLE_DUPLICATION_MODE)
@@ -2730,6 +2730,28 @@ static_assert(   _ARR_TEST(3,0) && _ARR_TEST(3,1) && _ARR_TEST(3,2)
     #error "Z_STEPPER_AUTO_ALIGN requires a Z-bed probe."
   #elif ENABLED(Z_STEPPER_ALIGN_KNOWN_STEPPER_POSITIONS) && NUM_Z_STEPPER_DRIVERS < 3
     #error "Z_STEPPER_ALIGN_KNOWN_STEPPER_POSITIONS requires NUM_Z_STEPPER_DRIVERS to be 3 or 4."
+  #endif
+#endif
+
+#if ENABLED(MECHANICAL_GANTRY_CALIBRATION)
+  #if NONE(DAC_STEPPER_CURRENT, HAS_DIGIPOTSS, DAC_STEPPER_CURRENT, HAS_TRINAMIC_CONFIG)
+    #error "It is highly reccomended to have adjustable current drivers to prevent damage. Disable this line to continue anyway."
+  #else
+    #ifndef GANTRY_CALIBRATION_CURRENT
+      #error "MECHANICAL_GANTRY_CALIBRATION Requires GANTRY_CALIBRATION_CURRENT to be set."
+    #endif
+    #ifndef GANTRY_CALIBRATION_EXTRA_HEIGHT
+      #error "MECHANICAL_GANTRY_CALIBRATION Requires GANTRY_CALIBRATION_EXTRA_HEIGHT to be set."
+    #endif
+    #ifndef GANTRY_CALIBRATION_DIRECTION
+      #error "MECHANICAL_GANTRY_CALIBRATION Requires GANTRY_CALIBRATION_DIRECTION to be set."
+    #endif
+    #ifndef GANTRY_CALIBRATION_FEEDRATE
+      #error "MECHANICAL_GANTRY_CALIBRATION Requires GANTRY_CALIBRATION_FEEDRATE to be set."
+    #endif
+  #endif
+  #if defined(GANTRY_CALIBRATION_SAFE_POSITION) && !defined(GANTRY_CALIBRATION_XY_PARK_FEEDRATE)
+    #error "GANTRY_CALIBRATION_SAFE_POSITION Requires GANTRY_CALIBRATION_XY_PARK_FEEDRATE to be set."
   #endif
 #endif
 
