@@ -72,6 +72,7 @@
  * Currently only supported by DUE platform
  */
 #if ENABLED(TazPro)
-#define USB_DEVICE_VENDOR_ID 0x27b1 // <-- changed
-#define USB_DEVICE_PRODUCT_ID 0x0001 // <-- changed
+  #define USB_DEVICE_VENDOR_ID 0x27b1 // <-- changed
+  #define USB_DEVICE_PRODUCT_ID 0x0001 // <-- changed
+#endif
 //#define  USB_DEVICE_MANUFACTURE_NAME    WEBSITE_URL

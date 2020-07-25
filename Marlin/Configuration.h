@@ -1,6 +1,6 @@
 //#define Mini
 //#define MiniV2
-#define Taz6
+//#define Taz6
 //#define Workhorse
 //#define TazPro
 
@@ -78,7 +78,7 @@
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "Lulzbot" // Who made the changes.
-//#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
+#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 /**
  * *** VENDORS PLEASE READ ***
@@ -92,9 +92,7 @@
  */
 
 // Show the Marlin bootscreen on startup. ** ENABLE FOR PRODUCTION **
-#if DISABLED(Mini)
-  #define SHOW_BOOTSCREEN
-#endif
+#define SHOW_BOOTSCREEN
 
 // Show the bitmap in Marlin/_Bootscreen.h on startup.
 #define SHOW_CUSTOM_BOOTSCREEN
@@ -173,7 +171,7 @@
 // This defines the number of extruders
 // :[1, 2, 3, 4, 5, 6, 7, 8]
 #if ENABLED(TazPro)
-  #define EXTRUDERS 1
+  #define EXTRUDERS 2
 #else
   #define EXTRUDERS 1
 #endif
@@ -577,7 +575,7 @@
  * When set to any value below 255, enables a form of PWM to the bed that acts like a divider
  * so don't use it unless you are OK with PWM on your bed. (See the comment on enabling PIDTEMPBED)
  */
-if ANY(Workhorse, Taz6)
+#if ANY(Workhorse, Taz6)
   #define MAX_BED_POWER 206 // limits duty cycle to bed; 255=full current
 #else
   #define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
@@ -728,7 +726,7 @@ if ANY(Workhorse, Taz6)
 #endif
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-#if ANY(Mini, TazPro)
+#if ANY(Mini, MiniV2, TazPro)
   #define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
 #else
   #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -740,7 +738,7 @@ if ANY(Workhorse, Taz6)
 #endif
 #define Z_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
 #define X_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
-#if ANY(Mini, MiniV2)
+#if ANY(Mini, MiniV2, TazPro)
   #define Y_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
 #else
   #define Y_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -804,7 +802,7 @@ if ANY(Workhorse, Taz6)
  *
  * :[2,3,4,5,6,7]
  */
-#if NONE(WTazPro, orkhorse)
+#if NONE(TazPro, Workhorse, MiniV2)
   #define ENDSTOP_NOISE_THRESHOLD 2
 #endif
 
@@ -1243,7 +1241,7 @@ if ANY(Workhorse, Taz6)
 #else
   #define Y_HOME_DIR 1
 #endif
-#if ANY(Mini, MiniV2, TazPro)
+#if ANY(Mini, MiniV2, TazPro, Workhorse)
   #define Z_HOME_DIR 1
 #else
   #define Z_HOME_DIR -1
@@ -1564,7 +1562,7 @@ if ANY(Workhorse, Taz6)
 // - Move the Z probe (or nozzle) to a defined XY point before Z Homing.
 // - Prevent Z homing when the Z probe is outside bed area.
 //
-#if ANY(Mini,Taz6)
+#if ENABLED(Taz6)
   #define Z_SAFE_HOMING
 #endif
 
@@ -1714,7 +1712,7 @@ if ANY(Workhorse, Taz6)
 
 #if ENABLED(NOZZLE_PARK_FEATURE)
   // Specify a park position as { X, Y, Z_raise }
-  #define NOZZLE_PARK_POINT { X_CENTER, (Y_MAX - 5), 5 }
+  #define NOZZLE_PARK_POINT { X_CENTER, (Y_MAX_POS - 5), 5 }
   //#define NOZZLE_PARK_X_ONLY          // X move only is required to park
   //#define NOZZLE_PARK_Y_ONLY          // Y move only is required to park
   #define NOZZLE_PARK_Z_RAISE_MIN   2   // (mm) Always raise Z by at least this distance
@@ -2516,12 +2514,14 @@ if ANY(Workhorse, Taz6)
  * Set this manually if there are extra servos needing manual control.
  * Leave undefined or set to 0 to entirely disable the servo subsystem.
  */
-//#define NUM_SERVOS 3 // Servo index starts with 0 for M280 command
+#if ENABLED(TazPro)
+  #define NUM_SERVOS 2 // Servo index starts with 0 for M280 command
+#endif
 
 // (ms) Delay  before the next move will start, to give the servo time to reach its target angle.
 // 300ms is a good value but you can try less delay.
 // If the servo can't reach the requested position, increase it.
-#define SERVO_DELAY { 300 }
+#define SERVO_DELAY { 300, 300 }
 
 // Only power servos during movement, otherwise leave off to prevent jitter
 //#define DEACTIVATE_SERVOS_AFTER_MOVE
