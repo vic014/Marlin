@@ -32,9 +32,9 @@
 
 #ifdef SHOW_CUSTOM_BOOTSCREEN
   #ifdef TOUCH_UI_PORTRAIT
-    #include "../theme/_bootscreen_portrait.h"
+    #include "../theme/bootscreen_logo_portrait.h"
   #else
-    #include "../theme/_bootscreen_landscape.h"
+    #include "../theme/bootscreen_landscape.h"
   #endif
 #else
   #ifdef TOUCH_UI_PORTRAIT
