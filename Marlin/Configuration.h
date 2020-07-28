@@ -4,7 +4,7 @@
 //#define Workhorse
 //#define TazPro
 
-#define TazDualZ
+//#define TazDualZ
 
 /**
  * Marlin 3D Printer Firmware
