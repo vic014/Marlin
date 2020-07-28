@@ -152,15 +152,19 @@
 // Name displayed in the LCD "Ready" message and Info menu
 #if ENABLED(Mini)
   #define CUSTOM_MACHINE_NAME "Mini"
+  #define MACHINE_UUID "351487b6-ca9a-4c1a-8765-d668b1da6585" // <-- changed
 #elif ENABLED(MiniV2)
   #define CUSTOM_MACHINE_NAME "Mini 2"
   #define MACHINE_UUID "e5502411-d46d-421d-ba3a-a20126d7930f" // <-- changed
 #elif ENABLED(Taz6)
   #define CUSTOM_MACHINE_NAME "Taz 6"
+  #define MACHINE_UUID "845f003c-aebd-4e53-a6b9-7d0984fde609" // <-- changed
 #elif ENABLED(Workhorse)
-  #define CUSTOM_MACHINE_NAME "Workhorse"
+  #define CUSTOM_MACHINE_NAME "Taz Workhorse"
+  #define MACHINE_UUID "5ee798fb-4062-4d35-8224-5e846ffb45a5" // <-- changed
 #elif ENABLED(TazPro)
   #define CUSTOM_MACHINE_NAME "Taz Pro"
+  #define MACHINE_UUID "a952577d-8722-483a-999d-acdc9e772b7b" // <-- changed
 #endif
 
 // Printer's unique ID, used by some programs to differentiate between machines.
@@ -1152,8 +1156,8 @@
 #define Z_PROBE_LOW_POINT          -3 // Farthest distance below the trigger-point to go before stopping
 
 // For M851 give a range for adjusting the Z probe offset
-#define Z_PROBE_OFFSET_RANGE_MIN -9
-#define Z_PROBE_OFFSET_RANGE_MAX 9
+#define Z_PROBE_OFFSET_RANGE_MIN -3
+#define Z_PROBE_OFFSET_RANGE_MAX 5
 
 // Enable the M48 repeatability test to test probe accuracy
 //#define Z_MIN_PROBE_REPEATABILITY_TEST
@@ -1463,8 +1467,9 @@
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   // Probe along the Y axis, advancing X after each column
-  //#define PROBE_Y_FIRST
-
+  #if ANY(Mini, MiniV2)
+    #define PROBE_Y_FIRST
+  #endif
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
 
     // Beyond the probed grid, continue the implied tilt?
@@ -1762,8 +1767,6 @@
 #define NOZZLE_CLEAN_FEATURE
 
 #if ENABLED(NOZZLE_CLEAN_FEATURE)
-  #define CLEAN_SCRIPT "M117 Hot end heating...\nM104 S170\nG28 O1\nM117 Wiping nozzle\nT0\nG1 X-17 Y25 Z10 F4000\nM109 R170\nG1 Z1\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400\nM106 S255\nG0 X-10.0 Y-9.0M109 R160\nM107"
-
   // Default number of pattern repetitions
   #define NOZZLE_CLEAN_STROKES  12
 
@@ -1794,7 +1797,17 @@
   //#define NOZZLE_CLEAN_NO_Z
 
   // Explicit wipe G-code script applies to a G12 with no arguments.
-  //#define WIPE_SEQUENCE_COMMANDS "G1 X-17 Y25 Z10 F4000\nG1 Z1\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400\nG0 X-10.0 Y-9.0"
+#if ENABLED(MiniV2)
+  #define WIPE_SEQUENCE_COMMANDS "M117 Hot end heating...\nM104 S170\nG28 O1\nM117 Wiping nozzle\nT0\nG1 X115 Y175 Z10 F4000\nM109 R170\nG1 Z1\nM114\nG1 X115 Y175\nG1 X45 Y175\nG1 X115 Y175\nG1 X45 Y175\nG1 X115 Y175\nG1 X45 Y175\nG1 X115 Y175\nG1 X45 Y175\nG1 X115 Y175\nG1 X45 Y175\nG1 X115 Y175\nG1 X45 Y175\nG1 Z15\nM400\nM106 S255\nG0 X-3.0 Y168.8M109 R160\nM107"
+#elif ENABLED(Mini)
+  #define WIPE_SEQUENCE_COMMANDS "M117 Hot end heating...\nM104 S170\nG28 O1\nM117 Wiping nozzle\nT0\nG1 X115 Y175 Z10 F4000\nM109 R170\nG1 Z1\nM114\nG1 X115 Y175\nG1 X45 Y175\nG1 X115 Y175\nG1 X45 Y175\nG1 X115 Y175\nG1 X45 Y175\nG1 X115 Y175\nG1 X45 Y175\nG1 X115 Y175\nG1 X45 Y175\nG1 X115 Y175\nG1 X45 Y175\nG1 Z15\nM400\nM106 S255\nG0 X0.0 Y168.8M109 R160\nM107"
+#elif ENABLED(Taz6)
+  #define WIPE_SEQUENCE_COMMANDS "M117 Hot end heating...\nM104 S170\nG28 O1\nM117 Wiping nozzle\nT0\nG1 X-17 Y25 Z10 F4000\nM109 R170\nG1 Z1\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400\nM106 S255\nG0 X-10 Y-9M109 R160\nM107"
+#elif ENABLED(Workhorse)
+  #define WIPE_SEQUENCE_COMMANDS "M117 Hot end heating...\nM104 S170\nG28 O1\nM117 Wiping nozzle\nT0\nG1 X-17 Y25 Z10 F4000\nM109 R170\nG1 Z1\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400\nM106 S255\nG0 X-10.0 Y-9.0M109 R160\nM107"
+#elif ENABLED(TazPro)
+  #define WIPE_SEQUENCE_COMMANDS "M117 Hot end heating...\nM104 S170 T0\nM104 S170 T1\nG28 O1\nM117 Wiping nozzle\nT0\nG1 X-17 Y25 Z10 F4000\nM109 R170 T0\nM109 R170 T1\nG1 Z1\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400\nG0 X150 F5000\nT1\nG1 X297 Y25 Z10 F4000\nM109 R170 T0\nM109 R170 T1\nG1 Z1\nM114\nG1 X297 Y25\nG1 X297 Y95\nG1 X297 Y25\nG1 X297 Y95\nG1 X297 Y25\nG1 X297 Y95\nG1 X297 Y25\nG1 X297 Y95\nG1 X297 Y25\nG1 X297 Y95\nG1 X297 Y25\nG1 X297 Y95\nG1 Z15\nM400\nM106 S255 \nG0 X150 F5000\nT0\nM106 S255\nG0 X-10.0 Y-9.0M109 R160 T0\nM109 R160 T1\nM107"
+#endif
 
 #endif
 
@@ -2405,7 +2418,7 @@
 // @section extras
 
 // Increase the FAN PWM frequency. Removes the PWM noise but increases heating in the FET/Arduino
-#if ENABLED(MiniV2)
+#if ANY(Mini, MiniV2, Taz6, Workhorse)
   #define FAST_PWM_FAN
 #endif
 
