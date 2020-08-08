@@ -41,6 +41,8 @@
 //#define autoCalibrationKit
 
 
+//#define SKR12Pro
+
 //////////////////////////////////DO not edit below here unless you know what youre doing!  //////////////////////////////////
 
 /**
@@ -166,13 +168,19 @@
  *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-#define SERIAL_PORT 0
+#if ENABLED(SKR12Pro)
+  #define SERIAL_PORT -1
+#else
+  #define SERIAL_PORT 0
+#endif
 
 /**
  * Select a secondary serial port on the board to use for communication with the host.
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-//#define SERIAL_PORT_2 -1
+#if ENABLED(SKR12Pro)
+  #define SERIAL_PORT_2 1
+#endif
 
 /**
  * This setting determines the communication speed of the printer.
@@ -190,11 +198,13 @@
 
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-#if ENABLED(TREX3)
-  #define MOTHERBOARD BOARD_FORMBOT_TREX3
-#else
-  #define MOTHERBOARD BOARD_FORMBOT_TREX2PLUS
-#endif
+  #if ENABLED(SKR12Pro)
+    #define MOTHERBOARD BOARD_BTT_SKR_PRO_V1_2
+  #elif ENABLED(TREX3)
+    #define MOTHERBOARD BOARD_FORMBOT_TREX3
+  #else
+    #define MOTHERBOARD BOARD_FORMBOT_TREX2PLUS
+  #endif
 #endif
 
 // Optional custom name for your RepStrap or other custom machine
@@ -620,7 +630,7 @@
  * heater. If your configuration is significantly different than this and you don't understand
  * the issues involved, don't use bed PID until someone else verifies that your hardware works.
  */
-//#define PIDTEMPBED
+#define PIDTEMPBED
 
 //#define BED_LIMIT_SWITCHING
 
@@ -782,38 +792,58 @@
  *          TMC5130, TMC5130_STANDALONE, TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'L6474', 'POWERSTEP01', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
-#if ENABLED(X_2208)
-  #define X_DRIVER_TYPE  TMC2208_STANDALONE
-  #define X2_DRIVER_TYPE TMC2208_STANDALONE
+
+#if ENABLED(SKR12Pro)
+  #if ENABLED(TMC2209Upgrade)
+    #define X_DRIVER_TYPE  TMC2209
+    #define X2_DRIVER_TYPE TMC2209
+    #define Y_DRIVER_TYPE  TMC2209
+    #define Z_DRIVER_TYPE  TMC2209
+    #define E0_DRIVER_TYPE TMC2209
+    #define E1_DRIVER_TYPE TMC2209
+  #else
+    #define X_DRIVER_TYPE  TMC2208
+    #define X2_DRIVER_TYPE TMC2208
+    #define Y_DRIVER_TYPE  TMC2208
+    #define Z_DRIVER_TYPE  TMC2208
+    #define E0_DRIVER_TYPE TMC2208
+    #define E1_DRIVER_TYPE TMC2208
+  #endif
 #else
-  #define X_DRIVER_TYPE  A4988
-  #define X2_DRIVER_TYPE A4988
+  #if ENABLED(X_2208)
+    #define X_DRIVER_TYPE  TMC2208_STANDALONE
+    #define X2_DRIVER_TYPE TMC2208_STANDALONE
+  #else
+    #define X_DRIVER_TYPE  A4988
+    #define X2_DRIVER_TYPE A4988
+  #endif
+  #if ENABLED(Y_2208)
+    #define Y_DRIVER_TYPE  TMC2208_STANDALONE
+  #elif ENABLED(Y_4988)
+    #define Y_DRIVER_TYPE  A4988
+  #else
+    #define Y_DRIVER_TYPE  DRV8825
+  #endif
+  #if ENABLED(Z_2208)
+    #define Z_DRIVER_TYPE  TMC2208_STANDALONE
+  #elif ENABLED(Z_4988)
+    #define Z_DRIVER_TYPE A4988
+  #else
+    #define Z_DRIVER_TYPE  DRV8825
+  #endif
+  //#define Y2_DRIVER_TYPE A4988
+  //#define Z2_DRIVER_TYPE A4988
+  //#define Z3_DRIVER_TYPE A4988
+  //#define Z4_DRIVER_TYPE A4988
+  #if ENABLED(E_2208)
+    #define E0_DRIVER_TYPE TMC2208_STANDALONE
+    #define E1_DRIVER_TYPE TMC2208_STANDALONE
+  #else
+    #define E0_DRIVER_TYPE DRV8825
+    #define E1_DRIVER_TYPE DRV8825
+  #endif
 #endif
-#if ENABLED(Y_2208)
-  #define Y_DRIVER_TYPE  TMC2208_STANDALONE
-#elif ENABLED(Y_4988)
-  #define Y_DRIVER_TYPE  A4988
-#else
-  #define Y_DRIVER_TYPE  DRV8825
-#endif
-#if ENABLED(Z_2208)
-  #define Z_DRIVER_TYPE  TMC2208_STANDALONE
-#elif ENABLED(Z_4988)
-  #define Z_DRIVER_TYPE A4988
-#else
-  #define Z_DRIVER_TYPE  DRV8825
-#endif
-//#define Y2_DRIVER_TYPE A4988
-//#define Z2_DRIVER_TYPE A4988
-//#define Z3_DRIVER_TYPE A4988
-//#define Z4_DRIVER_TYPE A4988
-#if ENABLED(E_2208)
-  #define E0_DRIVER_TYPE  TMC2208_STANDALONE
-  #define E1_DRIVER_TYPE TMC2208_STANDALONE
-#else
-  #define E0_DRIVER_TYPE DRV8825
-  #define E1_DRIVER_TYPE DRV8825
-#endif
+
 //#define E2_DRIVER_TYPE A4988
 //#define E3_DRIVER_TYPE A4988
 //#define E4_DRIVER_TYPE A4988
@@ -860,7 +890,7 @@
  * following movement settings. If fewer factors are given than the
  * total number of extruders, the last value applies to the rest.
  */
-//#define DISTINCT_E_FACTORS
+#define DISTINCT_E_FACTORS
 
 /**
  * Default Axis Steps Per Unit (steps/mm)
@@ -881,7 +911,7 @@
   #define Z_STEPSMM 1600
 #endif
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, Y_STEPSMM, Z_STEPSMM, 93 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, Y_STEPSMM, Z_STEPSMM, 93, 93 }
 
 /**
  * Default Max Feed Rate (mm/s)
@@ -893,7 +923,7 @@
 #else
   #define Y_MAXFEED 150
 #endif
-#define DEFAULT_MAX_FEEDRATE          { 200, Y_MAXFEED, 8, 75 }
+#define DEFAULT_MAX_FEEDRATE          { 200, Y_MAXFEED, 8, 75, 75 }
 
 #define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -906,7 +936,7 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 750, 500, 400, 3000 }
+#define DEFAULT_MAX_ACCELERATION      { 750, 500, 400, 3000, 3000 }
 
 #define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -943,7 +973,7 @@
 
   //#define LIMITED_JERK_EDITING        // Limit edit via M205 or LCD to DEFAULT_aJERK * 2
   #if ENABLED(LIMITED_JERK_EDITING)
-    #define MAX_JERK_EDIT_VALUES { 20, 20, 0.6, 10 } // ...or, set your own edit limits
+    #define MAX_JERK_EDIT_VALUES { 20, 20, 0.6, 10, 10 } // ...or, set your own edit limits
   #endif
 #endif
 
@@ -1236,17 +1266,17 @@
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#if ENABLED(X_2208)
+#if ANY(X_2208, SKR12Pro)
   #define INVERT_X_DIR true
 #else
   #define INVERT_X_DIR false
 #endif
-#if ENABLED(Y_2208)
+#if ANY(Y_2208, SKR12Pro)
   #define INVERT_Y_DIR true
 #else
   #define INVERT_Y_DIR false
 #endif
-#if ENABLED(Z_2208)
+#if ANY(Z_2208, SKR12Pro)
   #define INVERT_Z_DIR false
 #else
   #define INVERT_Z_DIR true
@@ -1254,7 +1284,7 @@
 // @section extruder
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
-#if ENABLED(E_2208) && DISABLED(TREX3)
+#if ANY(E_2208, SKR12Pro) && DISABLED(TREX3)
   #define INVERT_E0_DIR true
   #define INVERT_E1_DIR false
 #else
@@ -1796,11 +1826,11 @@
   // Move the nozzle to the initial position after cleaning
   #define NOZZLE_CLEAN_GOBACK
 
-  // For a purge/clean station that's always at the gantry height (thus no Z move)
-  //#define NOZZLE_CLEAN_NO_Z
+  // Enable for a purge/clean station that's always at the gantry height (thus no Z move)
+  #define NOZZLE_CLEAN_NO_Z
 
   // For a purge/clean station mounted on the X axis
-  //#define NOZZLE_CLEAN_NO_Y
+  #define NOZZLE_CLEAN_NO_Y
 
   // Explicit wipe G-code script applies to a G12 with no arguments.
   //#define WIPE_SEQUENCE_COMMANDS "G1 X-17 Y25 Z10 F4000\nG1 Z1\nM114\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 X-17 Y25\nG1 X-17 Y95\nG1 Z15\nM400\nG0 X-10.0 Y-9.0"
@@ -2483,7 +2513,7 @@
 // Use software PWM to drive the fan, as for the heaters. This uses a very low frequency
 // which is not as annoying as with the hardware PWM. On the other hand, if this frequency
 // is too low, you should also increment SOFT_PWM_SCALE.
-#if ENABLED(TREX3)
+#if ENABLED(TREX3) && DISABLED(SKR12Pro)
   #define FAN_SOFT_PWM
 #endif
 // Incrementing this by 1 will double the software PWM frequency,

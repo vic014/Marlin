@@ -450,7 +450,10 @@
  * Multiple extruders can be assigned to the same pin in which case
  * the fan will turn on when any selected extruder is above the threshold.
  */
-#if ENABLED(TREX3)
+#if BOTH(SKR12Pro, TREX3)
+  #define E0_AUTO_FAN_PIN  FAN2_PIN
+  #define E1_AUTO_FAN_PIN  FAN2_PIN
+#elif ENABLED(TREX3)
   #define E0_AUTO_FAN_PIN  6
   #define E1_AUTO_FAN_PIN  45
 #else
@@ -487,7 +490,9 @@
  */
 #define CASE_LIGHT_ENABLE
 #if ENABLED(CASE_LIGHT_ENABLE)
-  //#define CASE_LIGHT_PIN 4                  // Override the default pin if needed
+  #if ENABLED(SKR12Pro)
+    #define CASE_LIGHT_PIN HEATER_2_PIN                  // Override the default pin if needed
+  #endif
   #define INVERT_CASE_LIGHT false             // Set true if Case Light is ON when pin is LOW
   #define CASE_LIGHT_DEFAULT_ON true          // Set default power-up state on
   #define CASE_LIGHT_DEFAULT_BRIGHTNESS 255   // Set default power-up brightness (0-255, requires PWM pin)
@@ -848,7 +853,11 @@
 // Increase the slowdown divisor for larger buffer sizes.
 #define SLOWDOWN
 #if ENABLED(SLOWDOWN)
-  #define SLOWDOWN_DIVISOR 2
+  #if ENABLED(SKR12Pro)
+    #define SLOWDOWN_DIVISOR 6
+  #else
+    #define SLOWDOWN_DIVISOR 2
+  #endif
 #endif
 
 /**
@@ -932,7 +941,9 @@
   #define CALIBRATION_NOZZLE_OUTER_DIAMETER      2.0  // mm
 
   // Uncomment to enable reporting (required for "G425 V", but consumes PROGMEM).
-  //#define CALIBRATION_REPORTING
+  #if ENABLED(SKR12Pro)
+    #define CALIBRATION_REPORTING
+  #endif
 
   // The true location and dimension the cube/bolt/washer on the bed.
   #define CALIBRATION_OBJECT_CENTER     { 264.0, 25.0,  12.5 } // mm
@@ -951,7 +962,11 @@
 
   // Define the pin to read during calibration
   #ifndef CALIBRATION_PIN
-    #define CALIBRATION_PIN 58 // Override in pins.h or set to -1 to use your Z endstop
+    #if ENABLED(SKR12Pro)
+      #define CALIBRATION_PIN Z_MAX
+    #else
+      #define CALIBRATION_PIN 58 // Override in pins.h or set to -1 to use your Z endstop
+    #endif
     #define CALIBRATION_PIN_INVERTING true // Set to true to invert the pin
     //#define CALIBRATION_PIN_PULLDOWN
     #define CALIBRATION_PIN_PULLUP
@@ -1319,7 +1334,9 @@
    *
    * :[ 'LCD', 'ONBOARD', 'CUSTOM_CABLE' ]
    */
-  //#define SDCARD_CONNECTION LCD
+  #if ENABLED(SKR12Pro)
+    #define SDCARD_CONNECTION ONBOARD
+  #endif
 
 #endif // SDSUPPORT
 
@@ -1402,8 +1419,11 @@
   //#define STATUS_ALT_FAN_BITMAP     // Use the alternative fan bitmap
   //#define STATUS_FAN_FRAMES 3       // :[0,1,2,3,4] Number of fan animation frames
   //#define STATUS_HEAT_PERCENT       // Show heating in a progress bar
-  #define BOOT_MARLIN_LOGO_SMALL    // Show a smaller Marlin logo on the Boot Screen (saving 399 bytes of flash)
-  //#define BOOT_MARLIN_LOGO_ANIMATED // Animated Marlin logo. Costs ~‭3260 (or ~940) bytes of PROGMEM.
+  #if DISABLED(SKR12Pro)
+    #define BOOT_MARLIN_LOGO_SMALL    // Show a smaller Marlin logo on the Boot Screen (saving 399 bytes of flash)
+  #else
+    #define BOOT_MARLIN_LOGO_ANIMATED // Animated Marlin logo. Costs ~‭3260 (or ~940) bytes of PROGMEM.
+  #endif
 
   // Frivolous Game Options
   //#define MARLIN_BRICKOUT
@@ -1634,7 +1654,7 @@
  * See https://marlinfw.org/docs/features/lin_advance.html for full instructions.
  */
 #if DISABLED(E_2208) || ENABLED(E_Spreadcycle)
-  #define LIN_ADVANCE
+  //#define LIN_ADVANCE
 #endif
 #if ENABLED(LIN_ADVANCE)
   //#define EXTRA_LIN_ADVANCE_K // Enable for second linear advance constants
@@ -1776,7 +1796,7 @@
 //
 // G2/G3 Arc Support
 //
-#if DISABLED(autoCalibrationKit)
+#if DISABLED(autoCalibrationKit, SKR12Pro)
   #define ARC_SUPPORT               // Disable this feature to save ~3226 bytes
 #endif
 #if ENABLED(ARC_SUPPORT)
@@ -1874,7 +1894,9 @@
 
 // The number of linear moves that can be in the planner at once.
 // The value of BLOCK_BUFFER_SIZE must be a power of 2 (e.g. 8, 16, 32)
-#if BOTH(SDSUPPORT, DIRECT_STEPPING)
+#if ENABLED(SKR12Pro)
+  #define BLOCK_BUFFER_SIZE  64
+#elif BOTH(SDSUPPORT, DIRECT_STEPPING)
   #define BLOCK_BUFFER_SIZE  8
 #elif ENABLED(SDSUPPORT)
   #define BLOCK_BUFFER_SIZE 16
@@ -1886,7 +1908,11 @@
 
 // The ASCII buffer for serial input
 #define MAX_CMD_SIZE 96
-#define BUFSIZE 4
+#if ENABLED(SKR12Pro)
+  #define BUFSIZE 16
+#else
+  #define BUFSIZE 4
+#endif
 
 // Transmission to Host Buffer Size
 // To save 386 bytes of PROGMEM (and TX_BUFFER_SIZE+3 bytes of RAM) set to 0.
@@ -1974,7 +2000,7 @@
  * Note that M207 / M208 / M209 settings are saved to EEPROM.
  *
  */
-#if ENABLED(ABL_Bilinear)
+#if ANY(ABL_Bilinear, SKR12Pro)
   #define FWRETRACT
 #endif
 #if ENABLED(FWRETRACT)
@@ -2463,7 +2489,7 @@
    * Define you own with
    * { <off_time[1..15]>, <hysteresis_end[-3..12]>, hysteresis_start[1..8] }
    */
-  #define CHOPPER_TIMING CHOPPER_DEFAULT_12V
+  #define CHOPPER_TIMING CHOPPER_DEFAULT_24V
 
   /**
    * Monitor Trinamic drivers
@@ -2476,7 +2502,7 @@
    * M912 - Clear stepper driver overtemperature pre-warn condition flag.
    * M122 - Report driver parameters (Requires TMC_DEBUG)
    */
-  //#define MONITOR_DRIVER_STATUS
+  #define MONITOR_DRIVER_STATUS
 
   #if ENABLED(MONITOR_DRIVER_STATUS)
     #define CURRENT_STEP_DOWN     50  // [mA]
@@ -2491,7 +2517,7 @@
    * STEALTHCHOP_(XY|Z|E) must be enabled to use HYBRID_THRESHOLD.
    * M913 X/Y/Z/E to live tune the setting
    */
-  //#define HYBRID_THRESHOLD
+  #define HYBRID_THRESHOLD
 
   #define X_HYBRID_THRESHOLD     100  // [mm/s]
   #define X2_HYBRID_THRESHOLD    100
@@ -2567,7 +2593,7 @@
    * Beta feature!
    * Create a 50/50 square wave step pulse optimal for stepper drivers.
    */
-  //#define SQUARE_WAVE_STEPPING
+  #define SQUARE_WAVE_STEPPING
 
   /**
    * Enable M122 debugging command for TMC stepper drivers.
@@ -2897,6 +2923,9 @@
     //#define SPINDLE_LASER_FREQUENCY       2500   // (Hz) Spindle/laser frequency (only on supported HALs: AVR and LPC)
   #endif
 
+  #if ENABLED(SKR12Pro)
+    #define SPINDLE_LASER_ENA_PIN PE4
+  #endif
   /**
    * Speed / Power can be set ('M3 S') and displayed in terms of:
    *  - PWM255  (S0 - S255)
@@ -3276,7 +3305,9 @@
  *
  * Implement M486 to allow Marlin to skip objects
  */
-//#define CANCEL_OBJECTS
+#if ENABLED(SKR12Pro)
+  #define CANCEL_OBJECTS
+#endif
 
 /**
  * I2C position encoders for closed loop control.
