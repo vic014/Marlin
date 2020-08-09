@@ -249,8 +249,12 @@ class Stepper {
       #ifndef PWM_MOTOR_CURRENT
         #define PWM_MOTOR_CURRENT DEFAULT_PWM_MOTOR_CURRENT
       #endif
-      static uint32_t motor_current_setting[3];
       static bool initialized;
+      static uint32_t motor_current_setting[3];
+    #elif HAS_DIGIPOTSS
+      static bool initialized;
+      static constexpr uint32_t digipot_count[] = DIGIPOT_MOTOR_CURRENT;
+      static uint32_t motor_current_setting[COUNT(digipot_count)]; // Initialized by settings.load()
     #endif
 
   private:
@@ -587,7 +591,7 @@ class Stepper {
       static int32_t _eval_bezier_curve(const uint32_t curr_step);
     #endif
 
-    #if HAS_DIGIPOTSS || HAS_MOTOR_CURRENT_PWM
+    #if HAS_MOTOR_CURRENT_PWM || HAS_DIGIPOTSS
       static void digipot_init();
     #endif
 
