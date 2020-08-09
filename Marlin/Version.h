@@ -34,7 +34,7 @@
  * Verbose version identifier which should contain a reference to the location
  * from where the binary was downloaded or the source code was compiled.
  */
-#define DETAILED_BUILD_VERSION SHORT_BUILD_VERSION " Rev1"
+#define DETAILED_BUILD_VERSION SHORT_BUILD_VERSION " Rev2"
 
 /**
  * The STRING_DISTRIBUTION_DATE represents when the binary file was built,
@@ -72,18 +72,7 @@
  * Currently only supported by DUE platform
  */
 #if ENABLED(TazPro)
-<<<<<<< HEAD
-<<<<<<< HEAD
   #define USB_DEVICE_VENDOR_ID 0x27b1 // <-- changed
   #define USB_DEVICE_PRODUCT_ID 0x0001 // <-- changed
 #endif
-=======
-#define USB_DEVICE_VENDOR_ID 0x27b1 // <-- changed
-#define USB_DEVICE_PRODUCT_ID 0x0001 // <-- changed
->>>>>>> d5e2679258... Finish main config
-=======
-  #define USB_DEVICE_VENDOR_ID 0x27b1 // <-- changed
-  #define USB_DEVICE_PRODUCT_ID 0x0001 // <-- changed
-#endif
->>>>>>> 42d532106b... Finish Configs
 //#define  USB_DEVICE_MANUFACTURE_NAME    WEBSITE_URL
