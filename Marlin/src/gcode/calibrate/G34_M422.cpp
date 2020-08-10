@@ -170,7 +170,9 @@ void GcodeSuite::G34() {
       if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("> probing all positions.");
 
       SERIAL_ECHOLNPAIR("\nITERATION: ", int(iteration + 1));
-      ui.set_status("\nITERATION: ", int(iteration + 1));
+      #if HAS_DISPLAY
+        ui.set_status("\nITERATION: ", int(iteration + 1));
+      #endif
 
       // Initialize minimum value
       z_measured_min =  100000.0f;
@@ -193,7 +195,9 @@ void GcodeSuite::G34() {
         const float z_probed_height = probe.probe_at_point(z_stepper_align.xy[iprobe], raise_after, 0, true, false);
         if (isnan(z_probed_height)) {
           SERIAL_ECHOLNPGM(MSG_LCD_PROBING_FAILED);
-          ui.set_status_P(MSG_LCD_PROBING_FAILED)
+          #if HAS_DISPLAY
+            ui.set_status_P(MSG_LCD_PROBING_FAILED)
+          #endif
           err_break = true;
           break;
         }
@@ -252,13 +256,15 @@ void GcodeSuite::G34() {
           , " Z3-Z1=", ABS(z_measured[2] - z_measured[0])
         #endif
       );
-      ui.set_status("\n"
-        "DIFFERENCE Z1-Z2=", ABS(z_measured[0] - z_measured[1])
-        #if NUM_Z_STEPPER_DRIVERS == 3
-          , " Z2-Z3=", ABS(z_measured[1] - z_measured[2])
-          , " Z3-Z1=", ABS(z_measured[2] - z_measured[0])
-        #endif
-      );
+      #if HAS_DISPLAY
+        ui.set_status("\n"
+          "DIFFERENCE Z1-Z2=", ABS(z_measured[0] - z_measured[1])
+          #if NUM_Z_STEPPER_DRIVERS == 3
+            , " Z2-Z3=", ABS(z_measured[1] - z_measured[2])
+            , " Z3-Z1=", ABS(z_measured[2] - z_measured[0])
+          #endif
+        );
+      #endif
 
       #if ENABLED(Z_STEPPER_ALIGN_KNOWN_STEPPER_POSITIONS)
         // Check if the applied corrections go in the correct direction.
@@ -278,7 +284,9 @@ void GcodeSuite::G34() {
         // If it's getting worse, stop and throw an error
         if (last_z_align_level_indicator < z_align_level_indicator * 0.7f) {
           SERIAL_ECHOLNPGM(DECREASING_ACCURACY);
-          ui.set_status_P(DECREASING_ACCURACY);
+          #if HAS_DISPLAY
+            ui.set_status_P(DECREASING_ACCURACY);
+          #endif
           err_break = true;
           break;
         }
@@ -303,7 +311,9 @@ void GcodeSuite::G34() {
           // Check for less accuracy compared to last move
           if (last_z_align_move[zstepper] < z_align_abs * 0.7f) {
             SERIAL_ECHOLNPGM(DECREASING_ACCURACY);
-            ui.set_status_P(DECREASING_ACCURACY);
+            #if HAS_DISPLAY
+              ui.set_status_P(DECREASING_ACCURACY);
+            #endif
             if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("> Z", int(zstepper + 1), " last_z_align_move = ", last_z_align_move[zstepper]);
             if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("> Z", int(zstepper + 1), " z_align_abs = ", z_align_abs);
             adjustment_reverse = !adjustment_reverse;
@@ -343,7 +353,9 @@ void GcodeSuite::G34() {
 
       if (success_break) {
         SERIAL_ECHOLNPGM("Target accuracy achieved.");
-        ui.set_status_P(PGM_P("Target accuracy achieved."));
+        #if HAS_DISPLAY
+          ui.set_status_P(PGM_P("Target accuracy achieved."));
+        #endif
         break;
       }
 
