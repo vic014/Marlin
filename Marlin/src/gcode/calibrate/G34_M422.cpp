@@ -609,7 +609,6 @@ void GcodeSuite::M422() {
     #elif ENABLED(HAS_I2C_DIGIPOT)
       digipot_i2c_set_current(Z_AXIS, previous_current)
     #elif HAS_TRINAMIC_CONFIG
-      static uint16_t previous_current_arr[NUM_Z_STEPPER_DRIVERS];
       #if AXIS_IS_TMC(Z)
         stepperZ.rms_current(previous_current_arr[0]);
       #endif
