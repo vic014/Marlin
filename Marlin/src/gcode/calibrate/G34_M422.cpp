@@ -541,22 +541,22 @@ void GcodeSuite::M422() {
 
     if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Reducing Current");
     // Store current motor settings, then apply reduced value
-    #if HAS_DIGIPOTSS
+    #if HAS_MOTOR_CURRENT_SPI
       const uint16_t target_current = parser.intval('S', GANTRY_CALIBRATION_CURRENT);
       const uint32_t previous_current = stepper.motor_current_setting[Z_AXIS];
-      stepper.digipot_current(Z_AXIS, target_current);
+      stepper.set_digipot_current(Z_AXIS, target_current);
     #elif HAS_MOTOR_CURRENT_PWM
       const uint16_t target_current = parser.intval('S', GANTRY_CALIBRATION_CURRENT);
       const uint32_t previous_current = stepper.motor_current_setting[Z_AXIS];
-      stepper.digipot_current(1, target_current);
-    #elif DAC_STEPPER_CURRENT
+      stepper.set_digipot_current(1, target_current);
+    #elif HAS_MOTOR_CURRENT_DAC
       const float target_current = parser.floatval('S', GANTRY_CALIBRATION_CURRENT);
       const float previous_current = dac_amps(Z_AXIS, target_current);
-      dac_current_raw(Z_AXIS, target_current);
-    #elif ENABLED(HAS_I2C_DIGIPOT)
+      stepper_dac.set_current_value(Z_AXIS, target_current);
+    #elif ENABLED(HAS_MOTOR_CURRENT_I2C)
       const uint16_t target_current = parser.intval('S', GANTRY_CALIBRATION_CURRENT);
       previous_current = dac_amps(Z_AXIS);
-      digipot_i2c_set_current(Z_AXIS, target_current)
+      digipot_i2c.set_current(Z_AXIS, target_current)
     #elif HAS_TRINAMIC_CONFIG
       const uint16_t target_current = parser.intval('S', GANTRY_CALIBRATION_CURRENT);
       static uint16_t previous_current_arr[NUM_Z_STEPPER_DRIVERS];
@@ -604,14 +604,14 @@ void GcodeSuite::M422() {
 
     if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Restore Current");
     // Reset current to original values
-    #if HAS_DIGIPOTSS
-      stepper.digipot_current(Z_AXIS, previous_current);
+    #if HAS_MOTOR_CURRENT_SPI
+      stepper.set_digipot_current(Z_AXIS, previous_current);
     #elif HAS_MOTOR_CURRENT_PWM
-      stepper.digipot_current(1, previous_current);
-    #elif DAC_STEPPER_CURRENT
-      dac_current_raw(Z_AXIS, previous_current);
-    #elif ENABLED(HAS_I2C_DIGIPOT)
-      digipot_i2c_set_current(Z_AXIS, previous_current)
+      stepper.set_digipot_current(1, previous_current);
+    #elif HAS_MOTOR_CURRENT_DAC
+      stepper_dac.set_current_value(Z_AXIS, previous_current);
+    #elif ENABLED(HAS_MOTOR_CURRENT_I2C)
+      digipot_i2c.set_current(Z_AXIS, previous_current)
     #elif HAS_TRINAMIC_CONFIG
       #if AXIS_IS_TMC(Z)
         stepperZ.rms_current(previous_current_arr[0]);
