@@ -369,7 +369,7 @@ typedef struct SettingsDataStruct {
   #if HAS_DIGIPOTSS
     uint32_t motor_current_setting[COUNT(stepper.motor_current_setting)];
   #else
-    uint32_t motor_current_setting[3];                    // M907 X Z E
+    uint32_t motor_current_setting[3];                  // M907 X Z E
   #endif
 
   //
@@ -2115,19 +2115,19 @@ void MarlinSettings::postprocess() {
       // Motor Current PWM
       //
       {
-        SERIAL_ECHOLN("DIGIPOTS Loading");
+        _FIELD_TEST(motor_current_setting);
         #if HAS_DIGIPOTSS
           uint32_t motor_current_setting[] = DIGIPOT_MOTOR_CURRENT;
         #else
-          uint32_t motor_current_setting[3];                    // M907 X Z E
+          uint32_t motor_current_setting[3];
         #endif
-        _FIELD_TEST(motor_current_setting);
+        DEBUG_ECHOLNPGM("DIGIPOTS Loading");
         EEPROM_READ(motor_current_setting);
+        DEBUG_ECHOLNPGM("DIGIPOTS Loaded");
         #if HAS_MOTOR_CURRENT_PWM || HAS_DIGIPOTSS
           if (!validating)
             COPY(stepper.motor_current_setting, motor_current_setting);
         #endif
-        SERIAL_ECHOLN("DIGIPOTS Loaded");
       }
 
       //
@@ -2810,13 +2810,14 @@ void MarlinSettings::reset() {
   //
   // DIGIPOTS
   //
-  SERIAL_ECHOLN("Writing Digipot");
   #if HAS_DIGIPOTSS
     static constexpr uint32_t tmp_motor_current_setting[] = DIGIPOT_MOTOR_CURRENT;
+    DEBUG_ECHOLNPGM("Writing Digipot");
     LOOP_L_N(q, COUNT(tmp_motor_current_setting))
       stepper.digipot_current(q, tmp_motor_current_setting[q]);
+    DEBUG_ECHOLNPGM("Digipot Written");
   #endif
-SERIAL_ECHOLN("Digipot Written");
+
   //
   // CNC Coordinate System
   //
@@ -3716,21 +3717,23 @@ SERIAL_ECHOLN("Digipot Written");
       #endif
     #endif
 
-    #if HAS_MOTOR_CURRENT_PWM
+    #if HAS_MOTOR_CURRENT_PWM || HAS_DIGIPOTSS
       CONFIG_ECHO_HEADING("Stepper motor currents:");
       CONFIG_ECHO_START();
-      SERIAL_ECHOLNPAIR_P(
-          PSTR("  M907 X"), stepper.motor_current_setting[0]
-        , SP_Z_STR, stepper.motor_current_setting[1]
-        , SP_E_STR, stepper.motor_current_setting[2]
-      );
-    #elif HASDIGIPOTSS
-      CONFIG_ECHO_HEADING("Stepper motor currents:");
-      CONFIG_ECHO_START();
-      LOOP_L_N(q, COUNT(stepper.motor_current_setting)) {
-        SERIAL_ECHOPAIR_P( "M907 ", axis_codes[q]);
-        SERIAL_ECHOLN_P(stepper.motor_current_setting[q]);
-      }
+      #if HAS_MOTOR_CURRENT_PWM
+        SERIAL_ECHOLNPAIR_P(
+            PSTR("  M907 X"), stepper.motor_current_setting[0]
+          , SP_Z_STR, stepper.motor_current_setting[1]
+          , SP_E_STR, stepper.motor_current_setting[2]
+        );
+      #elif HAS_DIGIPOTSS
+        SERIAL_ECHOPGM("  M907");
+        LOOP_L_N(q, COUNT(stepper.motor_current_setting)) {
+          SERIAL_CHAR(' ');
+          SERIAL_CHAR(axis_codes[q]);
+          SERIAL_ECHO(stepper.motor_current_setting[q]);
+        }
+      #endif
     #endif
 
     /**
