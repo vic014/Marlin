@@ -2643,7 +2643,7 @@ static_assert(hbm[Z_AXIS] >= 0, "HOMING_BUMP_MM.Z must be greater than or equal 
 /**
  * Digipot requirement
  */
-#if HAS_I2C_DIGIPOT
+#if HAS_MOTOR_CURRENT_I2C
   #if BOTH(DIGIPOT_MCP4018, DIGIPOT_MCP4451)
     #error "Enable only one of DIGIPOT_MCP4018 or DIGIPOT_MCP4451."
   #elif !MB(MKS_SBASE) \
@@ -2765,7 +2765,7 @@ static_assert(   _ARR_TEST(3,0) && _ARR_TEST(3,1) && _ARR_TEST(3,2)
 #endif
 
 #if ENABLED(MECHANICAL_GANTRY_CALIBRATION)
-  #if NONE(DAC_STEPPER_CURRENT, HAS_DIGIPOTSS, DAC_STEPPER_CURRENT, HAS_TRINAMIC_CONFIG, HAS_MOTOR_CURRENT_PWM)
+  #if NONE(HAS_MOTOR_CURRENT_DAC, HAS_MOTOR_CURRENT_SPI, HAS_MOTOR_CURRENT_DAC, HAS_TRINAMIC_CONFIG, HAS_MOTOR_CURRENT_PWM)
     #error "It is highly reccomended to have adjustable current drivers to prevent damage. Disable this line to continue anyway."
   #else
     #ifndef GANTRY_CALIBRATION_CURRENT
