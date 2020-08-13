@@ -161,7 +161,7 @@ void GcodeSuite::G34() {
 
     #if HAS_DISPLAY
       PGM_P const msg_iteration = GET_TEXT(MSG_ITERATION);
-      const iter_str_len = strlen_P(iter_str_len);
+      const uint8_t iter_str_len = strlen_P(iter_str_len);
     #endif
 
     // Final z and iteration values will be used after breaking the loop
@@ -172,7 +172,7 @@ void GcodeSuite::G34() {
       if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("> probing all positions.");
 
       const int iter = iteration + 1;
-      SERIAL_ECHOLNPAIR("\nIteration: ", iter);
+      SERIAL_ECHOLNPAIR("\nG34 Iteration: ", iter);
       #if HAS_DISPLAY
         char str[iter_str_len + 2 + 1];
         sprintf_P(str, msg_iteration, iter);
@@ -260,16 +260,17 @@ void GcodeSuite::G34() {
         #endif
       );
       #if HAS_DISPLAY
-        char msg[30], fstr[16];
+        char msg[30], fstr1[16], fstr2[16], fstr3[16];
         sprintf_P(
-          PSTR("DIFFERENCE Z1-Z2=%s"
+          PSTR("Diffs Z1-Z2=%s"
             #if NUM_Z_STEPPER_DRIVERS == 3
-              " Z2-Z3=%s Z3-Z1=%s"
+              " Z2-Z3=%s"
+              " Z3-Z1=%s"
             #endif
-          ), dtostrf(ABS(z_measured[0] - z_measured[1]), 1, 3, fstr)
+          ), dtostrf(ABS(z_measured[0] - z_measured[1]), 1, 3, fstr1)
           #if NUM_Z_STEPPER_DRIVERS == 3
-            , dtostrf(ABS(z_measured[1] - z_measured[2]), 1, 3, fstr)
-            , dtostrf(ABS(z_measured[2] - z_measured[0]), 1, 3, fstr)
+            , dtostrf(ABS(z_measured[1] - z_measured[2]), 1, 3, fstr2)
+            , dtostrf(ABS(z_measured[2] - z_measured[0]), 1, 3, fstr3)
           #endif
         );
         ui.set_status(msg);
