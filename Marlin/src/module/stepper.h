@@ -245,7 +245,7 @@ class Stepper {
       static bool separate_multi_axis;
     #endif
 
-    #if HAS_MOTOR_CURRENT_PWM || HAS_MOTOR_CURRENT_SPI
+    #if HAS_MOTOR_CURRENT_SPI || HAS_MOTOR_CURRENT_PWM
       #if HAS_MOTOR_CURRENT_PWM
         #ifndef PWM_MOTOR_CURRENT
           #define PWM_MOTOR_CURRENT DEFAULT_PWM_MOTOR_CURRENT
@@ -593,7 +593,7 @@ class Stepper {
       static int32_t _eval_bezier_curve(const uint32_t curr_step);
     #endif
 
-    #if HAS_MOTOR_CURRENT_PWM || HAS_MOTOR_CURRENT_SPI
+    #if HAS_MOTOR_CURRENT_SPI || HAS_MOTOR_CURRENT_PWM
       static void digipot_init();
     #endif
 
