@@ -20,25 +20,22 @@
  *
  */
 
-#include "../../inc/MarlinConfig.h"
+#include "../../inc/MarlinConfigPre.h"
+
+#if ENABLED(Z_STEPPER_AUTO_ALIGN)
+
+#include "../../feature/z_stepper_align.h"
 
 #include "../gcode.h"
 #include "../../module/planner.h"
 #include "../../module/stepper.h"
 #include "../../module/motion.h"
 #include "../../module/probe.h"
-#include "../../module/endstops.h"
+#include "../../lcd/ultralcd.h" // for LCD_MESSAGEPGM
 
 #if HAS_LEVELING
   #include "../../feature/bedlevel/bedlevel.h"
 #endif
-
-#define DEBUG_OUT ENABLED(DEBUG_LEVELING_FEATURE)
-#include "../../core/debug_out.h"
-
-#if ENABLED(Z_STEPPER_AUTO_ALIGN)
-
-#include "../../feature/z_stepper_align.h"
 
 #if HAS_MULTI_HOTEND
   #include "../../module/tool_change.h"
@@ -47,6 +44,9 @@
 #if ENABLED(Z_STEPPER_ALIGN_KNOWN_STEPPER_POSITIONS)
    #include "../../libs/least_squares_fit.h"
 #endif
+
+#define DEBUG_OUT ENABLED(DEBUG_LEVELING_FEATURE)
+#include "../../core/debug_out.h"
 
 /**
  * G34: Z-Stepper automatic alignment
@@ -503,6 +503,9 @@ void GcodeSuite::M422() {
 }
 
 #elif ENABLED(MECHANICAL_GANTRY_CALIBRATION)
+
+  #include "../../module/endstops.h"
+
   void GcodeSuite::G34() {
 
     if (axis_unhomed_error()) return;
@@ -513,35 +516,43 @@ void GcodeSuite::M422() {
 
     #ifdef GANTRY_CALIBRATION_COMMANDS_PRE
       gcode.process_subcommands_now_P(PSTR(GANTRY_CALIBRATION_COMMANDS_PRE));
+      if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Sub Commands Processed");
     #endif
 
-    if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Sub Commands Processed");
-
-    if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Parking XY");
-    // Move XY to safe position
     #ifdef GANTRY_CALIBRATION_SAFE_POSITION
-      xy_pos_t safe_pos = GANTRY_CALIBRATION_SAFE_POSITION;
-      current_position[X_AXIS] = safe_pos[X_AXIS];
-      current_position[Y_AXIS] = safe_pos[Y_AXIS];
-      do_blocking_move_to(current_position, MMM_TO_MMS(GANTRY_CALIBRATION_XY_PARK_FEEDRATE));
-      planner.synchronize();
+      // Move XY to safe position
+      if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Parking XY");
+      const xy_pos_t safe_pos = GANTRY_CALIBRATION_SAFE_POSITION;
+      do_blocking_move_to(safe_pos, MMM_TO_MMS(GANTRY_CALIBRATION_XY_PARK_FEEDRATE));
     #endif
 
-    if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Setting Z Pounce");
-    const uint16_t move_distance = parser.intval('Z', GANTRY_CALIBRATION_EXTRA_HEIGHT);
+    const uint16_t move_distance = parser.intval('Z', GANTRY_CALIBRATION_EXTRA_HEIGHT),
+                   zpounce = (
+                     #if GANTRY_CALIBRATION_DIRECTION == 1
+                       (Z_MAX_POS) - move_distance
+                     #else
+                       (Z_MIN_POS) + move_distance
+                     #endif
+                   ),
+                   zgrind = (
+                     #if GANTRY_CALIBRATION_DIRECTION == 1
+                       (Z_MAX_POS) + move_distance
+                     #else
+                       (Z_MIN_POS) - move_distance
+                     #endif
+                   );
 
     // Move Z to pounce position
-    #if GANTRY_CALIBRATION_DIRECTION == 1
-      current_position[Z_AXIS] = (Z_MAX_POS - move_distance);
-    #else
-      current_position[Z_AXIS] = (Z_MIN_POS + move_distance);
+    if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Setting Z Pounce");
+    do_blocking_move_to_z(zpounce, MMM_TO_MMS(HOMING_FEEDRATE_Z));
+
+    // Store current motor settings, then apply reduced value
+
+    #define _REDUCE_CURRENT ANY(HAS_MOTOR_CURRENT_SPI, HAS_MOTOR_CURRENT_PWM, HAS_MOTOR_CURRENT_DAC, HAS_MOTOR_CURRENT_I2C, HAS_TRINAMIC_CONFIG)
+    #if _REDUCE_CURRENT
+      if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Reducing Current");
     #endif
 
-    do_blocking_move_to(current_position, MMM_TO_MMS(HOMING_FEEDRATE_Z));
-    planner.synchronize();
-
-    if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Reducing Current");
-    // Store current motor settings, then apply reduced value
     #if HAS_MOTOR_CURRENT_SPI
       const uint16_t target_current = parser.intval('S', GANTRY_CALIBRATION_CURRENT);
       const uint32_t previous_current = stepper.motor_current_setting[Z_AXIS];
@@ -579,32 +590,20 @@ void GcodeSuite::M422() {
       #endif
     #endif
 
-    if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Final Z Move");
     // Do Final Z move to adjust
-    #if GANTRY_CALIBRATION_DIRECTION == 1
-      current_position[Z_AXIS] = (Z_MAX_POS + move_distance);
-    #else
-      current_position[Z_AXIS] = (Z_MIN_POS - move_distance);
-    #endif
+    if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Final Z Move");
+    do_blocking_move_to_z(zgrind, MMM_TO_MMS(GANTRY_CALIBRATION_FEEDRATE));
 
-    do_blocking_move_to(current_position, MMM_TO_MMS(GANTRY_CALIBRATION_FEEDRATE));
-    planner.synchronize();
-
-
-    if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Z Backoff");
     // Back off end plate, back to normal motion range
-    #if GANTRY_CALIBRATION_DIRECTION == 1
-      current_position[Z_AXIS] = (Z_MAX_POS - move_distance);
-    #else
-      current_position[Z_AXIS] = (Z_MIN_POS + move_distance);
+    if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Z Backoff");
+    do_blocking_move_to_z(zpounce, MMM_TO_MMS(GANTRY_CALIBRATION_FEEDRATE));
+
+    // Reset current to original values
+
+    #if _REDUCE_CURRENT
+      if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Restore Current");
     #endif
 
-    do_blocking_move_to(current_position, MMM_TO_MMS(GANTRY_CALIBRATION_FEEDRATE));
-    planner.synchronize();
-
-
-    if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Restore Current");
-    // Reset current to original values
     #if HAS_MOTOR_CURRENT_SPI
       stepper.set_digipot_current(Z_AXIS, previous_current);
     #elif HAS_MOTOR_CURRENT_PWM
@@ -628,9 +627,8 @@ void GcodeSuite::M422() {
       #endif
     #endif
 
-
-    if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Running Post Commands");
     #ifdef GANTRY_CALIBRATION_COMMANDS_POST
+      if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Running Post Commands");
       gcode.process_subcommands_now_P(PSTR(GANTRY_CALIBRATION_COMMANDS_POST));
     #endif
   }
