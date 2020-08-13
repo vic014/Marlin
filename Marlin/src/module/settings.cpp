@@ -1282,7 +1282,7 @@ void MarlinSettings::postprocess() {
     {
       _FIELD_TEST(motor_current_setting);
 
-      #if HAS_MOTOR_CURRENT_PWM || HAS_MOTOR_CURRENT_SPI
+      #if HAS_MOTOR_CURRENT_SPI || HAS_MOTOR_CURRENT_PWM
         EEPROM_WRITE(stepper.motor_current_setting);
       #else
         const uint32_t no_current[3] = { 0 };
@@ -2124,7 +2124,7 @@ void MarlinSettings::postprocess() {
         DEBUG_ECHOLNPGM("DIGIPOTS Loading");
         EEPROM_READ(motor_current_setting);
         DEBUG_ECHOLNPGM("DIGIPOTS Loaded");
-        #if HAS_MOTOR_CURRENT_PWM || HAS_MOTOR_CURRENT_SPI
+        #if HAS_MOTOR_CURRENT_SPI || HAS_MOTOR_CURRENT_PWM
           if (!validating)
             COPY(stepper.motor_current_setting, motor_current_setting);
         #endif
@@ -3717,7 +3717,7 @@ void MarlinSettings::reset() {
       #endif
     #endif
 
-    #if HAS_MOTOR_CURRENT_PWM || HAS_MOTOR_CURRENT_SPI
+    #if HAS_MOTOR_CURRENT_SPI || HAS_MOTOR_CURRENT_PWM
       CONFIG_ECHO_HEADING("Stepper motor currents:");
       CONFIG_ECHO_START();
       #if HAS_MOTOR_CURRENT_PWM
