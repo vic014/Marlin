@@ -260,7 +260,10 @@ void GcodeSuite::G34() {
         #endif
       );
       #if HAS_DISPLAY
-        char msg[30], fstr1[16], fstr2[16], fstr3[16];
+        char msg[30], fstr1[16];
+        #if NUM_Z_STEPPER_DRIVERS == 3
+          char fstr2[16], fstr3[16];
+        #endif
         sprintf_P(
           PSTR("Diffs Z1-Z2=%s"
             #if NUM_Z_STEPPER_DRIVERS == 3
@@ -294,7 +297,7 @@ void GcodeSuite::G34() {
         // If it's getting worse, stop and throw an error
         if (last_z_align_level_indicator < z_align_level_indicator * 0.7f) {
           SERIAL_ECHOLNPGM("Decreasing Accuracy Detected.");
-          LCD_MESSAGEPGM(MSG_DECREASING_ACCURACY));
+          LCD_MESSAGEPGM(MSG_DECREASING_ACCURACY);
           err_break = true;
           break;
         }
@@ -319,7 +322,7 @@ void GcodeSuite::G34() {
           // Check for less accuracy compared to last move
           if (last_z_align_move[zstepper] < z_align_abs * 0.7f) {
             SERIAL_ECHOLNPGM("Decreasing Accuracy Detected.");
-            LCD_MESSAGEPGM(MSG_DECREASING_ACCURACY));
+            LCD_MESSAGEPGM(MSG_DECREASING_ACCURACY);
             if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("> Z", int(zstepper + 1), " last_z_align_move = ", last_z_align_move[zstepper]);
             if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("> Z", int(zstepper + 1), " z_align_abs = ", z_align_abs);
             adjustment_reverse = !adjustment_reverse;
