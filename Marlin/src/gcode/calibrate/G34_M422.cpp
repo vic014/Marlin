@@ -260,11 +260,13 @@ void GcodeSuite::G34() {
         #endif
       );
       #if HAS_DISPLAY
-        char msg[30], fstr1[16];
-        #if NUM_Z_STEPPER_DRIVERS == 3
-          char fstr2[16], fstr3[16];
+        char fstr1[10];
+        #if NUM_Z_STEPPER_DRIVERS == 2
+          char msg[6 + (6 + 5) * 1 + 1];
+        #else
+          char msg[6 + (6 + 5) * 3 + 1], fstr2[10], fstr3[10];
         #endif
-        sprintf_P(
+        sprintf_P(msg,
           PSTR("Diffs Z1-Z2=%s"
             #if NUM_Z_STEPPER_DRIVERS == 3
               " Z2-Z3=%s"
