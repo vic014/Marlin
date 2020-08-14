@@ -161,7 +161,7 @@ void GcodeSuite::G34() {
 
     #if HAS_DISPLAY
       PGM_P const msg_iteration = GET_TEXT(MSG_ITERATION);
-      const uint8_t iter_str_len = strlen_P(iter_str_len);
+      const uint8_t iter_str_len = strlen_P(msg_iteration);
     #endif
 
     // Final z and iteration values will be used after breaking the loop
