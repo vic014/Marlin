@@ -2974,7 +2974,6 @@ void Stepper::report_positions() {
       if (!initialized) return;
 
       #if HAS_DIGIPOTSS
-        SERIAL_ECHOLNPAIR("Digipotss current ", current);
         const uint8_t digipot_ch[] = DIGIPOT_CHANNELS;
         digitalPotWrite(digipot_ch[driver], current);
 
