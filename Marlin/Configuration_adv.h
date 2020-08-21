@@ -3327,6 +3327,9 @@
 
   #define USER_DESC_3 "Standard"
   #define USER_GCODE_3 "M92E814\nM907E750\nM500"
+
+  #define USER_DESC_4 "Mosquito BMG-M"
+  #define USER_GCODE_4 "M92E814\nM206X5Y15\nM907E750\nM500"
 #endif
 
 /**
