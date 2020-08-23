@@ -3320,16 +3320,16 @@
   //#define USER_SCRIPT_RETURN  // Return to status screen after a script
 
   #define USER_DESC_1 "Aerostruder"
-  #define USER_GCODE_1 "M92E420\nM907E875\nM500"
+  #define USER_GCODE_1 "M92E420\nM206X0Y0\nM907E875\nM500"
 
   #define USER_DESC_2 "Moarstruder"
-  #define USER_GCODE_2 "M92E819\nM907E750\nM500"
+  #define USER_GCODE_2 "M92E819\nM206X0Y0\nM907E750\nM500"
 
   #define USER_DESC_3 "Standard"
-  #define USER_GCODE_3 "M92E814\nM907E750\nM500"
+  #define USER_GCODE_3 "M92E814\nM206X0Y0\nM907E750\nM500"
 
   #define USER_DESC_4 "Mosquito BMG-M"
-  #define USER_GCODE_4 "M92E814\nM206X5Y15\nM907E750\nM500"
+  #define USER_GCODE_4 "M92E814\nM206X-5Y-12\nM907E750\nM500"
 #endif
 
 /**
