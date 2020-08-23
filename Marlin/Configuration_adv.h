@@ -3312,24 +3312,52 @@
 /**
  * User-defined menu items that execute custom GCode
  */
-#define CUSTOM_USER_MENUS
+#if DISABLED(TazPro)
+  #define CUSTOM_USER_MENUS
+#endif
 #if ENABLED(CUSTOM_USER_MENUS)
   #define CUSTOM_USER_MENU_TITLE "Tool Heads"
-  #define USER_SCRIPT_DONE "Tool Changed"
+  #define USER_SCRIPT_DONE "M117 Tool Changed"
   #define USER_SCRIPT_AUDIBLE_FEEDBACK
   //#define USER_SCRIPT_RETURN  // Return to status screen after a script
 
+  #if ENABLED(Taz6, Mini)
+    #define DEFAULT_PID "P28.79I1.91D108.51"
+  #else
+    #define DEFAULT_PID "P21.0I1.78D61.93"
+  #endif
+
+  #if ANY(Taz6, Workhorse)
+    #define E_CURRENT_Aero 150
+    #define E_CURRENT_Std  135
+    #define E_CURRENT_Moar 135
+    #define E_CURRENT_BMG  150
+  #elif ENABLED(Mini)
+    #define E_CURRENT_Aero 1300
+    #define E_CURRENT_Std  1350
+    #define E_CURRENT_Moar 1250
+    #define E_CURRENT_BMG  1350
+  #else
+    #define E_CURRENT_Aero 1100
+    #define E_CURRENT_Std  960
+    #define E_CURRENT_Moar 960
+    #define E_CURRENT_BMG  1100
+  #endif
+
   #define USER_DESC_1 "Aerostruder"
-  #define USER_GCODE_1 "M92E420\nM206X0Y0\nM907E875\nM500"
+  #define USER_GCODE_1 "M92E420\nM206X0Y0\nM301"DEFAULT_PID"\nM907E"E_CURRENT_Aero"\nM500"
 
   #define USER_DESC_2 "Moarstruder"
-  #define USER_GCODE_2 "M92E819\nM206X0Y0\nM907E750\nM500"
+  #define USER_GCODE_2 "M92E819\nM206X0Y0\nM301"DEFAULT_PID"\nM907E"E_CURRENT_Moar"\nM500"
 
   #define USER_DESC_3 "Standard"
-  #define USER_GCODE_3 "M92E814\nM206X0Y0\nM907E750\nM500"
+  #define USER_GCODE_3 "M92E814\nM206X0Y0\nM301"DEFAULT_PID"\nM907E"E_CURRENT_Std"\nM500"
 
   #define USER_DESC_4 "Mosquito BMG-M"
-  #define USER_GCODE_4 "M92E814\nM206X-5Y-12\nM907E750\nM500"
+  #define USER_GCODE_4 "M92E814\nM206X-5Y-12\nM301P148.07I26.58D206.21\nM907E"E_CURRENT_BMG"\nM500"
+  #define DEFAULT_Kp 148.07
+  #define DEFAULT_Ki 26.58
+  #define DEFAULT_Kd 206.21
 #endif
 
 /**
