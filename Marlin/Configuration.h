@@ -815,7 +815,9 @@
 #endif
 
 // Check for stuck or disconnected endstops during homing moves.
-#define DETECT_BROKEN_ENDSTOP
+#if DISABLED(TazPro, MiniV2)
+  #define DETECT_BROKEN_ENDSTOP
+#endif
 
 //=============================================================================
 //============================== Movement Settings ============================
