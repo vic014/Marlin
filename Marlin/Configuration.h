@@ -815,7 +815,9 @@
 #endif
 
 // Check for stuck or disconnected endstops during homing moves.
-#define DETECT_BROKEN_ENDSTOP
+#if DISABLED(TazPro, MiniV2)
+  #define DETECT_BROKEN_ENDSTOP
+#endif
 
 //=============================================================================
 //============================== Movement Settings ============================
@@ -858,7 +860,18 @@
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 40 }
+
+#if ENABLED(Mini)
+  #define Z_FEEDRATE   5
+#elif ENABLED(MiniV2)
+  #define Z_FEEDRATE   300
+#elif ENABLED(Taz6)
+  #define Z_FEEDRATE   5
+#elif ANY(Workhorse, TazPro)
+  #define Z_FEEDRATE   30
+#endif
+
+#define DEFAULT_MAX_FEEDRATE          { 300, 300, Z_FEEDRATE, 40 }
 
 #define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -1444,7 +1457,7 @@
  * Turn on with the command 'M111 S32'.
  * NOTE: Requires a lot of PROGMEM!
  */
-//#define DEBUG_LEVELING_FEATURE
+#define DEBUG_LEVELING_FEATURE
 
 #if ANY(MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR, AUTO_BED_LEVELING_UBL)
   // Gradually reduce leveling correction until a set height is reached,

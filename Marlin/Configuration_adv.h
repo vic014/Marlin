@@ -182,8 +182,8 @@
    * and/or decrease WATCH_TEMP_INCREASE. WATCH_TEMP_INCREASE should not be set
    * below 2.
    */
-  #define WATCH_TEMP_PERIOD 40                // Seconds
-  #define WATCH_TEMP_INCREASE 10               // Degrees Celsius
+  #define WATCH_TEMP_PERIOD 50                // Seconds
+  #define WATCH_TEMP_INCREASE 5               // Degrees Celsius
 #endif
 
 /**
@@ -638,7 +638,7 @@
  */
 
 #if ANY(MiniV2, TazPro)
-  #define SENSORLESS_BACKOFF_MM  { 2, 2 }     // (mm) Backoff from endstops before sensorless homing
+  #define SENSORLESS_BACKOFF_MM  { 4, 4 }     // (mm) Backoff from endstops before sensorless homing
 #else
   #define HOMING_BACKOFF_POST_MM { 2, 2, 16 }  // (mm) Backoff from endstops after homing
   #define QUICK_HOME                          // If G28 contains XY do a diagonal move first
@@ -779,6 +779,37 @@
   // After G34, re-home Z (G28 Z) or just calculate it from the last probe heights?
   // Re-homing might be more precise in reproducing the actual 'G28 Z' homing height, especially on an uneven bed.
   #define HOME_AFTER_G34
+#endif
+
+/**
+ * Modern replacement for the Prusa TMC_Z_CALIBRATION
+ * Adds capability to work with any adjustable current drivers
+ * Implements as G34 as M915 is deprecated
+ */
+
+#define MECHANICAL_GANTRY_CALIBRATION
+#if ENABLED(MECHANICAL_GANTRY_CALIBRATION)
+
+  #if ENABLED(Mini)
+    #define GANTRY_CALIBRATION_CURRENT   900                   // Default calibration current in ma - PWM
+  #elif ANY(Taz6, Workhorse)
+    #define GANTRY_CALIBRATION_CURRENT   120                   // Default calibration current in ma - DIGIPOTSS
+  #elif ANY(MiniV2, TazPro)
+    #define GANTRY_CALIBRATION_CURRENT   600                   // Default calibration current in ma - TMC
+  #endif
+  #define GANTRY_CALIBRATION_EXTRA_HEIGHT      15                   // Extra distance in mm past Z_###_POS to move
+  #if ENABLED(MiniV2)
+    #define GANTRY_CALIBRATION_DIRECTION          0                   // Set to 1 for Max or 0 for min
+  #else
+    #define GANTRY_CALIBRATION_DIRECTION          1                   // Set to 1 for Max or 0 for min
+  #endif
+
+  #define GANTRY_CALIBRATION_FEEDRATE         500                   // Feedrate for correction move
+
+  #define GANTRY_CALIBRATION_SAFE_POSITION  {X_CENTER, Y_MIN}  // Safe position for nozzle
+  #define GANTRY_CALIBRATION_XY_PARK_FEEDRATE 3000                // XY Park Feedrate - MMM
+  //#define GANTRY_CALIBRATION_COMMANDS_PRE   ""
+  //#define GANTRY_CALIBRATION_COMMANDS_POST  "G28"
 #endif
 
 //
@@ -3286,21 +3317,51 @@
 /**
  * User-defined menu items that execute custom GCode
  */
-#define CUSTOM_USER_MENUS
+#if DISABLED(TazPro)
+  #define CUSTOM_USER_MENUS
+#endif
 #if ENABLED(CUSTOM_USER_MENUS)
   #define CUSTOM_USER_MENU_TITLE "Tool Heads"
-  #define USER_SCRIPT_DONE "Tool Changed"
+  #define USER_SCRIPT_DONE "M117 Tool Changed"
   #define USER_SCRIPT_AUDIBLE_FEEDBACK
   //#define USER_SCRIPT_RETURN  // Return to status screen after a script
 
+  #if ANY(Taz6, Mini)
+    #define DEFAULT_PID "P28.79I1.91D108.51"
+  #else
+    #define DEFAULT_PID "P21.0I1.78D61.93"
+  #endif
+
+  #if ANY(Taz6, Workhorse)
+    #define E_CURRENT_Aero "150"
+    #define E_CURRENT_Std  "135"
+    #define E_CURRENT_Moar "135"
+    #define E_CURRENT_BMG  "150"
+  #elif ENABLED(Mini)
+    #define E_CURRENT_Aero "1300"
+    #define E_CURRENT_Std  "1350"
+    #define E_CURRENT_Moar "1250"
+    #define E_CURRENT_BMG  "1350"
+  #else
+    #define E_CURRENT_Aero "1100"
+    #define E_CURRENT_Std  "960"
+    #define E_CURRENT_Moar "960"
+    #define E_CURRENT_BMG  "1100"
+  #endif
+
   #define USER_DESC_1 "Aerostruder"
-  #define USER_GCODE_1 "M92E420\nM907E875\nM500"
+  #define USER_GCODE_1 "M92E420\nM206X0Y0\nM301" DEFAULT_PID "\nM907E" E_CURRENT_Aero "\nM500"
 
   #define USER_DESC_2 "Moarstruder"
-  #define USER_GCODE_2 "M92E819\nM907E750\nM500"
+  #define USER_GCODE_2 "M92E819\nM206X0Y0\nM301" DEFAULT_PID "\nM907E" E_CURRENT_Moar "\nM500"
 
-  #define USER_DESC_3 "Standard"
-  #define USER_GCODE_3 "M92E814\nM907E750\nM500"
+  #if NONE(Workhorse, MiniV2)
+    #define USER_DESC_3 "Standard"
+    #define USER_GCODE_3 "M92E814\nM206X0Y0\nM301" DEFAULT_PID "\nM907E" E_CURRENT_Std "\nM500"
+  #endif
+
+  #define USER_DESC_4 "Mosquito BMG-M"
+  #define USER_GCODE_4 "M92E415\nM206X-5Y-12\nM301P148.07I26.58D206.21\nM907E" E_CURRENT_BMG "\nM500"
 #endif
 
 /**

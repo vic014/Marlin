@@ -83,7 +83,7 @@ Stepper stepper; // Singleton
 
 #define BABYSTEPPING_EXTRA_DIR_WAIT
 
-#if HAS_MOTOR_CURRENT_PWM
+#if HAS_MOTOR_CURRENT_PWM || HAS_DIGIPOTSS
   bool Stepper::initialized; // = false
 #endif
 
@@ -144,6 +144,9 @@ Stepper stepper; // Singleton
 
 #if HAS_MOTOR_CURRENT_PWM
   uint32_t Stepper::motor_current_setting[3]; // Initialized by settings.load()
+#elif HAS_DIGIPOTSS
+  constexpr uint32_t digipot_count[] = DIGIPOT_MOTOR_CURRENT;
+  uint32_t Stepper::motor_current_setting[COUNT(digipot_count)]; // Initialized by settings.load()
 #endif
 
 // private:
@@ -2591,7 +2594,7 @@ void Stepper::init() {
   set_directions();
 
   #if HAS_DIGIPOTSS || HAS_MOTOR_CURRENT_PWM
-    TERN_(HAS_MOTOR_CURRENT_PWM, initialized = true);
+    initialized = true;
     digipot_init();
   #endif
 }
@@ -2965,18 +2968,18 @@ void Stepper::report_positions() {
   #if HAS_DIGIPOTSS || HAS_MOTOR_CURRENT_PWM
 
     void Stepper::digipot_current(const uint8_t driver, const int16_t current) {
+      if (WITHIN(driver, 0, COUNT(motor_current_setting) - 1))
+        motor_current_setting[driver] = current; // update motor_current_setting
+
+      if (!initialized) return;
 
       #if HAS_DIGIPOTSS
-
         const uint8_t digipot_ch[] = DIGIPOT_CHANNELS;
         digitalPotWrite(digipot_ch[driver], current);
 
       #elif HAS_MOTOR_CURRENT_PWM
 
-        if (!initialized) return;
 
-        if (WITHIN(driver, 0, COUNT(motor_current_setting) - 1))
-          motor_current_setting[driver] = current; // update motor_current_setting
 
         #define _WRITE_CURRENT_PWM(P) analogWrite(pin_t(MOTOR_CURRENT_PWM_## P ##_PIN), 255L * current / (MOTOR_CURRENT_PWM_RANGE))
         switch (driver) {
@@ -3015,14 +3018,12 @@ void Stepper::report_positions() {
 
       #if HAS_DIGIPOTSS
 
-        static const uint8_t digipot_motor_current[] = DIGIPOT_MOTOR_CURRENT;
-
         SPI.begin();
         SET_OUTPUT(DIGIPOTSS_PIN);
 
-        LOOP_L_N(i, COUNT(digipot_motor_current)) {
+        LOOP_L_N(i, COUNT(motor_current_setting)) {
           //digitalPotWrite(digipot_ch[i], digipot_motor_current[i]);
-          digipot_current(i, digipot_motor_current[i]);
+          digipot_current(i, motor_current_setting[i]);
         }
 
       #elif HAS_MOTOR_CURRENT_PWM
