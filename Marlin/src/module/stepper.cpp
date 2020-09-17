@@ -83,10 +83,6 @@ Stepper stepper; // Singleton
 
 #define BABYSTEPPING_EXTRA_DIR_WAIT
 
-#if HAS_MOTOR_CURRENT_PWM || HAS_DIGIPOTSS
-  bool Stepper::initialized; // = false
-#endif
-
 #ifdef __AVR__
   #include "speed_lookuptable.h"
 #endif
@@ -110,7 +106,7 @@ Stepper stepper; // Singleton
   #include "../feature/dac/dac_dac084s085.h"
 #endif
 
-#if HAS_DIGIPOTSS
+#if HAS_MOTOR_CURRENT_SPI
   #include <SPI.h>
 #endif
 
@@ -142,11 +138,12 @@ Stepper stepper; // Singleton
   bool Stepper::separate_multi_axis = false;
 #endif
 
-#if HAS_MOTOR_CURRENT_PWM
-  uint32_t Stepper::motor_current_setting[3]; // Initialized by settings.load()
-#elif HAS_DIGIPOTSS
-  constexpr uint32_t digipot_count[] = DIGIPOT_MOTOR_CURRENT;
-  uint32_t Stepper::motor_current_setting[COUNT(digipot_count)]; // Initialized by settings.load()
+#if HAS_MOTOR_CURRENT_SPI || HAS_MOTOR_CURRENT_PWM
+  bool Stepper::initialized; // = false
+  uint32_t Stepper::motor_current_setting[MOTOR_CURRENT_COUNT]; // Initialized by settings.load()
+  #if HAS_MOTOR_CURRENT_SPI
+    constexpr uint32_t Stepper::digipot_count[];
+  #endif
 #endif
 
 // private:
@@ -1267,7 +1264,7 @@ void Stepper::set_directions() {
     }
 
     FORCE_INLINE int32_t Stepper::_eval_bezier_curve(const uint32_t curr_step) {
-      #if defined(__ARM__) || defined(__thumb__)
+      #if defined(__arm__) || defined(__thumb__)
 
         // For ARM Cortex M3/M4 CPUs, we have the optimized assembler version, that takes 43 cycles to execute
         uint32_t flo = 0;
@@ -1581,12 +1578,11 @@ void Stepper::pulse_phase_isr() {
 
         #if STEPPER_PAGE_FORMAT == SP_4x4D_128
 
-          #define PAGE_SEGMENT_UPDATE(AXIS, VALUE, MID) do{ \
-                 if ((VALUE) == MID) {}                     \
-            else if ((VALUE) <  MID) SBI(dm, _AXIS(AXIS));  \
-            else                     CBI(dm, _AXIS(AXIS));  \
-            page_step_state.sd[_AXIS(AXIS)] = VALUE;        \
-            page_step_state.bd[_AXIS(AXIS)] += VALUE;       \
+          #define PAGE_SEGMENT_UPDATE(AXIS, VALUE) do{   \
+                 if ((VALUE) <  7) SBI(dm, _AXIS(AXIS)); \
+            else if ((VALUE) >  7) CBI(dm, _AXIS(AXIS)); \
+            page_step_state.sd[_AXIS(AXIS)] = VALUE;     \
+            page_step_state.bd[_AXIS(AXIS)] += VALUE;    \
           }while(0)
 
           #define PAGE_PULSE_PREP(AXIS) do{ \
@@ -1595,7 +1591,7 @@ void Stepper::pulse_phase_isr() {
           }while(0)
 
           switch (page_step_state.segment_steps) {
-            case 8:
+            case DirectStepping::Config::SEGMENT_STEPS:
               page_step_state.segment_idx += 2;
               page_step_state.segment_steps = 0;
               // fallthru
@@ -1604,10 +1600,10 @@ void Stepper::pulse_phase_isr() {
                            high = page_step_state.page[page_step_state.segment_idx + 1];
               uint8_t dm = last_direction_bits;
 
-              PAGE_SEGMENT_UPDATE(X, low >> 4, 7);
-              PAGE_SEGMENT_UPDATE(Y, low & 0xF, 7);
-              PAGE_SEGMENT_UPDATE(Z, high >> 4, 7);
-              PAGE_SEGMENT_UPDATE(E, high & 0xF, 7);
+              PAGE_SEGMENT_UPDATE(X, low >> 4);
+              PAGE_SEGMENT_UPDATE(Y, low & 0xF);
+              PAGE_SEGMENT_UPDATE(Z, high >> 4);
+              PAGE_SEGMENT_UPDATE(E, high & 0xF);
 
               if (dm != last_direction_bits) {
                 last_direction_bits = dm;
@@ -1618,9 +1614,9 @@ void Stepper::pulse_phase_isr() {
             default: break;
           }
 
-          PAGE_PULSE_PREP(X),
-          PAGE_PULSE_PREP(Y),
-          PAGE_PULSE_PREP(Z),
+          PAGE_PULSE_PREP(X);
+          PAGE_PULSE_PREP(Y);
+          PAGE_PULSE_PREP(Z);
           PAGE_PULSE_PREP(E);
 
           page_step_state.segment_steps++;
@@ -1637,7 +1633,7 @@ void Stepper::pulse_phase_isr() {
           }while(0)
 
           switch (page_step_state.segment_steps) {
-            case 4:
+            case DirectStepping::Config::SEGMENT_STEPS:
               page_step_state.segment_idx++;
               page_step_state.segment_steps = 0;
               // fallthru
@@ -1667,7 +1663,6 @@ void Stepper::pulse_phase_isr() {
           }while(0)
 
           uint8_t steps = page_step_state.page[page_step_state.segment_idx >> 1];
-
           if (page_step_state.segment_idx & 0x1) steps >>= 4;
 
           PAGE_PULSE_PREP(X, 3);
@@ -2046,6 +2041,8 @@ uint32_t Stepper::block_phase_isr() {
           #define X_CMP(A,B) ((A)!=(B))
         #endif
         #define X_MOVE_TEST ( S_(1) != S_(2) || (S_(1) > 0 && X_CMP(D_(1),D_(2))) )
+      #elif ENABLED(MARKFORGED_XY)
+        #define X_MOVE_TEST (current_block->steps.a != current_block->steps.b)
       #else
         #define X_MOVE_TEST !!current_block->steps.a
       #endif
@@ -2593,7 +2590,7 @@ void Stepper::init() {
 
   set_directions();
 
-  #if HAS_DIGIPOTSS || HAS_MOTOR_CURRENT_PWM
+  #if HAS_MOTOR_CURRENT_SPI || HAS_MOTOR_CURRENT_PWM
     initialized = true;
     digipot_init();
   #endif
@@ -2619,6 +2616,8 @@ void Stepper::_set_position(const int32_t &a, const int32_t &b, const int32_t &c
   #elif CORE_IS_YZ
     // coreyz planning
     count_position.set(a, b + c, CORESIGN(b - c));
+  #elif ENABLED(MARKFORGED_XY)
+    count_position.set(a - b, b, c);
   #else
     // default non-h-bot planning
     count_position.set(a, b, c);
@@ -2685,6 +2684,10 @@ void Stepper::endstop_triggered(const AxisEnum axis) {
         ? CORESIGN(count_position[CORE_AXIS_1] - count_position[CORE_AXIS_2])
         : count_position[CORE_AXIS_1] + count_position[CORE_AXIS_2]
       ) * double(0.5)
+    #elif ENABLED(MARKFORGED_XY)
+      axis == CORE_AXIS_1
+        ? count_position[CORE_AXIS_1] - count_position[CORE_AXIS_2]
+        : count_position[CORE_AXIS_2]
     #else // !IS_CORE
       count_position[axis]
     #endif
@@ -2714,12 +2717,12 @@ int32_t Stepper::triggered_position(const AxisEnum axis) {
 }
 
 void Stepper::report_a_position(const xyz_long_t &pos) {
-  #if CORE_IS_XY || CORE_IS_XZ || ENABLED(DELTA) || IS_SCARA
+  #if ANY(CORE_IS_XY, CORE_IS_XZ, MARKFORGED_XY, DELTA, IS_SCARA)
     SERIAL_ECHOPAIR(STR_COUNT_A, pos.x, " B:", pos.y);
   #else
     SERIAL_ECHOPAIR_P(PSTR(STR_COUNT_X), pos.x, SP_Y_LBL, pos.y);
   #endif
-  #if CORE_IS_XZ || CORE_IS_YZ || ENABLED(DELTA)
+  #if ANY(CORE_IS_XZ, CORE_IS_YZ, DELTA)
     SERIAL_ECHOLNPAIR(" C:", pos.z);
   #else
     SERIAL_ECHOLNPAIR_P(SP_Z_LBL, pos.z);
@@ -2927,10 +2930,10 @@ void Stepper::report_positions() {
  * Software-controlled Stepper Motor Current
  */
 
-#if HAS_DIGIPOTSS
+#if HAS_MOTOR_CURRENT_SPI
 
   // From Arduino DigitalPotControl example
-  void Stepper::digitalPotWrite(const int16_t address, const int16_t value) {
+  void Stepper::set_digipot_value_spi(const int16_t address, const int16_t value) {
     WRITE(DIGIPOTSS_PIN, LOW);  // Take the SS pin low to select the chip
     SPI.transfer(address);      // Send the address and value via SPI
     SPI.transfer(value);
@@ -2938,7 +2941,7 @@ void Stepper::report_positions() {
     //delay(10);
   }
 
-#endif // HAS_DIGIPOTSS
+#endif // HAS_MOTOR_CURRENT_SPI
 
 #if HAS_MOTOR_CURRENT_PWM
 
@@ -2955,7 +2958,7 @@ void Stepper::report_positions() {
         #if ANY_PIN(MOTOR_CURRENT_PWM_E, MOTOR_CURRENT_PWM_E0, MOTOR_CURRENT_PWM_E1)
           case 2:
         #endif
-            digipot_current(i, motor_current_setting[i]);
+            set_digipot_current(i, motor_current_setting[i]);
         default: break;
       }
     }
@@ -2965,21 +2968,22 @@ void Stepper::report_positions() {
 
 #if !MB(PRINTRBOARD_G2)
 
-  #if HAS_DIGIPOTSS || HAS_MOTOR_CURRENT_PWM
+  #if HAS_MOTOR_CURRENT_SPI || HAS_MOTOR_CURRENT_PWM
 
-    void Stepper::digipot_current(const uint8_t driver, const int16_t current) {
+    void Stepper::set_digipot_current(const uint8_t driver, const int16_t current) {
       if (WITHIN(driver, 0, COUNT(motor_current_setting) - 1))
         motor_current_setting[driver] = current; // update motor_current_setting
 
       if (!initialized) return;
 
-      #if HAS_DIGIPOTSS
+      #if HAS_MOTOR_CURRENT_SPI
+
+        //SERIAL_ECHOLNPAIR("Digipotss current ", current);
+
         const uint8_t digipot_ch[] = DIGIPOT_CHANNELS;
-        digitalPotWrite(digipot_ch[driver], current);
+        set_digipot_value_spi(digipot_ch[driver], current);
 
       #elif HAS_MOTOR_CURRENT_PWM
-
-
 
         #define _WRITE_CURRENT_PWM(P) analogWrite(pin_t(MOTOR_CURRENT_PWM_## P ##_PIN), 255L * current / (MOTOR_CURRENT_PWM_RANGE))
         switch (driver) {
@@ -3016,15 +3020,13 @@ void Stepper::report_positions() {
 
     void Stepper::digipot_init() {
 
-      #if HAS_DIGIPOTSS
+      #if HAS_MOTOR_CURRENT_SPI
 
         SPI.begin();
         SET_OUTPUT(DIGIPOTSS_PIN);
 
-        LOOP_L_N(i, COUNT(motor_current_setting)) {
-          //digitalPotWrite(digipot_ch[i], digipot_motor_current[i]);
-          digipot_current(i, motor_current_setting[i]);
-        }
+        LOOP_L_N(i, COUNT(motor_current_setting))
+          set_digipot_current(i, motor_current_setting[i]);
 
       #elif HAS_MOTOR_CURRENT_PWM
 

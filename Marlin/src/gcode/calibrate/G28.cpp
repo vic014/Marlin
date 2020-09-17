@@ -47,7 +47,7 @@
 
 #include "../../lcd/ultralcd.h"
 #if ENABLED(DWIN_CREALITY_LCD)
-  #include "../../lcd/dwin/dwin.h"
+  #include "../../lcd/dwin/e3v2/dwin.h"
 #endif
 
 #if HAS_L64XX                         // set L6470 absolute position registers to counts
@@ -118,23 +118,21 @@
     DEBUG_SECTION(log_G28, "home_z_safely", DEBUGGING(LEVELING));
 
     // Disallow Z homing if X or Y homing is needed
-    if (axis_unhomed_error(_BV(X_AXIS) | _BV(Y_AXIS))) return;
+    if (homing_needed_error(_BV(X_AXIS) | _BV(Y_AXIS))) return;
+
     sync_plan_position();
 
     /**
      * Move the Z probe (or just the nozzle) to the safe homing point
      * (Z is already at the right height)
      */
-    //update_workspace_offset(X_AXIS);
-    //update_workspace_offset(Y_AXIS);
-    destination.set((xy_float_t){ Z_SAFE_HOMING_X_POINT - home_offset[X_AXIS], Z_SAFE_HOMING_Y_POINT - home_offset[Y_AXIS] }, current_position.z);
-    //destination.set((xy_float_t){ Z_SAFE_HOMING_X_POINT, Z_SAFE_HOMING_Y_POINT }, current_position.z);
+    destination.set(safe_homing_xy, current_position.z);
 
     TERN_(HOMING_Z_WITH_PROBE, destination -= probe.offset_xy);
 
-    if (DEBUGGING(LEVELING)) DEBUG_POS("home_z_safely", destination);
-
     if (position_is_reachable(destination)) {
+
+      if (DEBUGGING(LEVELING)) DEBUG_POS("home_z_safely", destination);
 
       // This causes the carriage on Dual X to unpark
       TERN_(DUAL_X_CARRIAGE, active_extruder_parked = false);
@@ -301,8 +299,8 @@ void GcodeSuite::G28() {
   #else // NOT DELTA
 
     const bool homeZ = parser.seen('Z'),
-               needX = homeZ && TERN0(Z_SAFE_HOMING, axes_need_homing(_BV(X_AXIS))),
-               needY = homeZ && TERN0(Z_SAFE_HOMING, axes_need_homing(_BV(Y_AXIS))),
+               needX = homeZ && TERN0(Z_SAFE_HOMING, axes_should_home(_BV(X_AXIS))),
+               needY = homeZ && TERN0(Z_SAFE_HOMING, axes_should_home(_BV(Y_AXIS))),
                homeX = needX || parser.seen('X'), homeY = needY || parser.seen('Y'),
                home_all = homeX == homeY && homeX == homeZ, // All or None
                doX = home_all || homeX, doY = home_all || homeY, doZ = home_all || homeZ;

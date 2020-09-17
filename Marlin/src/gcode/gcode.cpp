@@ -790,7 +790,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 666: M666(); break;                                  // M666: Set delta or multiple endstop adjustment
       #endif
 
-      #if ENABLED(SMART_EFFECTOR) && PIN_EXISTS(SMART_EFFECTOR_MOD)
+      #if ENABLED(DUET_SMART_EFFECTOR) && PIN_EXISTS(SMART_EFFECTOR_MOD)
         case 672: M672(); break;                                  // M672: Set/clear Duet Smart Effector sensitivity
       #endif
 
@@ -818,6 +818,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       #endif
 
       #if ENABLED(PROBE_TEMP_COMPENSATION)
+        case 192: M192(); break;                                  // M192: Wait for probe temp
         case 871: M871(); break;                                  // M871: Print/reset/clear first layer temperature offset values
       #endif
 
@@ -825,11 +826,11 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 900: M900(); break;                                  // M900: Set advance K factor.
       #endif
 
-      #if ANY(HAS_DIGIPOTSS, HAS_MOTOR_CURRENT_PWM, HAS_I2C_DIGIPOT, DAC_STEPPER_CURRENT)
+      #if ANY(HAS_MOTOR_CURRENT_SPI, HAS_MOTOR_CURRENT_PWM, HAS_MOTOR_CURRENT_I2C, HAS_MOTOR_CURRENT_DAC)
         case 907: M907(); break;                                  // M907: Set digital trimpot motor current using axis codes.
-        #if EITHER(HAS_DIGIPOTSS, DAC_STEPPER_CURRENT)
+        #if EITHER(HAS_MOTOR_CURRENT_SPI, HAS_MOTOR_CURRENT_DAC)
           case 908: M908(); break;                                // M908: Control digital trimpot directly.
-          #if ENABLED(DAC_STEPPER_CURRENT)
+          #if ENABLED(HAS_MOTOR_CURRENT_DAC)
             case 909: M909(); break;                              // M909: Print digipot/DAC current value
             case 910: M910(); break;                              // M910: Commit digipot/DAC value to external EEPROM
           #endif
@@ -896,7 +897,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 422: M422(); break;                                  // M422: Set Z Stepper automatic alignment position using probe
       #endif
 
-      #if BOTH(HAS_SPI_FLASH, SDSUPPORT)
+      #if ALL(HAS_SPI_FLASH, SDSUPPORT, MARLIN_DEV_MODE)
         case 993: M993(); break;                                  // M993: Backup SPI Flash to SD
         case 994: M994(); break;                                  // M994: Load a Backup from SD to SPI Flash
       #endif

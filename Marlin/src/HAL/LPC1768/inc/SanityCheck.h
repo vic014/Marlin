@@ -24,7 +24,7 @@
 #if PIO_PLATFORM_VERSION < 1001
   #error "nxplpc-arduino-lpc176x package is out of date, Please update the PlatformIO platforms, frameworks and libraries. You may need to remove the platform and let it reinstall automatically."
 #endif
-#if PIO_FRAMEWORK_VERSION < 2002
+#if PIO_FRAMEWORK_VERSION < 2005
   #error "framework-arduino-lpc176x package is out of date, Please update the PlatformIO platforms, frameworks and libraries."
 #endif
 
@@ -178,7 +178,7 @@ static_assert(DISABLED(BAUD_RATE_GCODE), "BAUD_RATE_GCODE is not yet supported o
 //
 // Flag any i2c pin conflicts
 //
-#if ANY(HAS_I2C_DIGIPOT, DAC_STEPPER_CURRENT, EXPERIMENTAL_I2CBUS, I2C_POSITION_ENCODERS, PCA9632, I2C_EEPROM)
+#if ANY(HAS_MOTOR_CURRENT_I2C, HAS_MOTOR_CURRENT_DAC, EXPERIMENTAL_I2CBUS, I2C_POSITION_ENCODERS, PCA9632, I2C_EEPROM)
   #define USEDI2CDEV_M 1  // <Arduino>/Wire.cpp
 
   #if USEDI2CDEV_M == 0         // P0_27 [D57] (AUX-1) .......... P0_28 [D58] (AUX-1)

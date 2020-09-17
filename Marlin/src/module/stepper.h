@@ -245,16 +245,18 @@ class Stepper {
       static bool separate_multi_axis;
     #endif
 
-    #if HAS_MOTOR_CURRENT_PWM
-      #ifndef PWM_MOTOR_CURRENT
-        #define PWM_MOTOR_CURRENT DEFAULT_PWM_MOTOR_CURRENT
+    #if HAS_MOTOR_CURRENT_SPI || HAS_MOTOR_CURRENT_PWM
+      #if HAS_MOTOR_CURRENT_PWM
+        #ifndef PWM_MOTOR_CURRENT
+          #define PWM_MOTOR_CURRENT DEFAULT_PWM_MOTOR_CURRENT
+        #endif
+        #define MOTOR_CURRENT_COUNT 3
+      #elif HAS_MOTOR_CURRENT_SPI
+        static constexpr uint32_t digipot_count[] = DIGIPOT_MOTOR_CURRENT;
+        #define MOTOR_CURRENT_COUNT COUNT(Stepper::digipot_count)
       #endif
       static bool initialized;
-      static uint32_t motor_current_setting[3];
-    #elif HAS_DIGIPOTSS
-      static bool initialized;
-      static constexpr uint32_t digipot_count[] = DIGIPOT_MOTOR_CURRENT;
-      static uint32_t motor_current_setting[COUNT(digipot_count)]; // Initialized by settings.load()
+      static uint32_t motor_current_setting[MOTOR_CURRENT_COUNT]; // Initialized by settings.load()
     #endif
 
   private:
@@ -466,9 +468,9 @@ class Stepper {
     // Triggered position of an axis in steps
     static int32_t triggered_position(const AxisEnum axis);
 
-    #if HAS_DIGIPOTSS || HAS_MOTOR_CURRENT_PWM
-      static void digitalPotWrite(const int16_t address, const int16_t value);
-      static void digipot_current(const uint8_t driver, const int16_t current);
+    #if HAS_MOTOR_CURRENT_SPI || HAS_MOTOR_CURRENT_PWM
+      static void set_digipot_value_spi(const int16_t address, const int16_t value);
+      static void set_digipot_current(const uint8_t driver, const int16_t current);
     #endif
 
     #if HAS_MICROSTEPS
@@ -591,7 +593,7 @@ class Stepper {
       static int32_t _eval_bezier_curve(const uint32_t curr_step);
     #endif
 
-    #if HAS_MOTOR_CURRENT_PWM || HAS_DIGIPOTSS
+    #if HAS_MOTOR_CURRENT_SPI || HAS_MOTOR_CURRENT_PWM
       static void digipot_init();
     #endif
 
