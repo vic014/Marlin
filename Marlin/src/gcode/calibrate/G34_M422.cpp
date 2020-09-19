@@ -534,7 +534,7 @@ void GcodeSuite::M422() {
       do_blocking_move_to(safe_pos, MMM_TO_MMS(GANTRY_CALIBRATION_XY_PARK_FEEDRATE));
     #endif
 
-    const uint16_t move_distance = parser.intval('Z', GANTRY_CALIBRATION_EXTRA_HEIGHT),
+    const float move_distance = parser.intval('Z', GANTRY_CALIBRATION_EXTRA_HEIGHT),
                    zpounce = (
                      #if GANTRY_CALIBRATION_DIRECTION == 1
                        (Z_MAX_POS) - move_distance
