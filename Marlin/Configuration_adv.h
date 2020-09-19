@@ -3360,7 +3360,7 @@
   //#define GANTRY_CALIBRATION_SAFE_POSITION  {X_CENTER, Y_CENTER}  // Safe position for nozzle
   //#define GANTRY_CALIBRATION_XY_PARK_FEEDRATE 3000                // XY Park Feedrate - MMM
   //#define GANTRY_CALIBRATION_COMMANDS_PRE   ""
-  //#define GANTRY_CALIBRATION_COMMANDS_POST  "G28"
+  //#define GANTRY_CALIBRATION_COMMANDS_POST  "G28"                 // G28 is highly recommended here as position is likely no longer accurate.
 #endif
 
 /**
