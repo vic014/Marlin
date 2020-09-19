@@ -29,8 +29,9 @@
  * Some of these settings can damage your printer if improperly set!
  *
  * Basic settings can be found in Configuration.h
+ *
  */
-#define CONFIGURATION_ADV_H_VERSION 020007
+#define CONFIGURATION_ADV_H_VERSION 020006
 
 // @section temperature
 
@@ -737,6 +738,7 @@
    *               | 4   3 | 1   4 | 2   1 | 3   2 |
    *               |       |       |       |       |
    *               | 1   2 | 2   3 | 3   4 | 4   1 |
+   *
    */
   #ifndef Z_STEPPER_ALIGN_XY
     //#define Z_STEPPERS_ORIENTATION 0
@@ -771,6 +773,7 @@
 //
 //#define ASSISTED_TRAMMING
 #if ENABLED(ASSISTED_TRAMMING)
+
   // Define positions for probing points, use the hotend as reference not the sensor.
   #define TRAMMING_POINT_XY { {  20, 20 }, { 200,  20 }, { 200, 200 }, { 20, 200 } }
 
@@ -783,9 +786,6 @@
   // Enable to restore leveling setup after operation
   #define RESTORE_LEVELING_AFTER_G35
 
-  // Add a menu item for Assisted Tramming
-  //#define ASSISTED_TRAMMING_MENU_ITEM
-
   /**
    * Screw thread:
    *   M3: 30 = Clockwise, 31 = Counter-Clockwise
@@ -793,6 +793,7 @@
    *   M5: 50 = Clockwise, 51 = Counter-Clockwise
    */
   #define TRAMMING_SCREW_THREAD 30
+
 #endif
 
 // @section motion
@@ -1104,18 +1105,18 @@
   #define BOOTSCREEN_TIMEOUT 4000        // (ms) Total Duration to display the boot screen(s)
 #endif
 
-#if EITHER(SDSUPPORT, LCD_SET_PROGRESS_MANUALLY) && ANY(HAS_MARLINUI_U8GLIB, HAS_MARLINUI_HD44780, IS_TFTGLCD_PANEL)
+#if EITHER(SDSUPPORT, LCD_SET_PROGRESS_MANUALLY) && (HAS_GRAPHICAL_LCD || HAS_CHARACTER_LCD)
   //#define SHOW_REMAINING_TIME       // Display estimated time to completion
   #if ENABLED(SHOW_REMAINING_TIME)
     //#define USE_M73_REMAINING_TIME  // Use remaining time from M73 command instead of estimation
     //#define ROTATE_PROGRESS_DISPLAY // Display (P)rogress, (E)lapsed, and (R)emaining time
   #endif
 
-  #if HAS_MARLINUI_U8GLIB
+  #if HAS_GRAPHICAL_LCD
     //#define PRINT_PROGRESS_SHOW_DECIMALS // Show progress with decimal digits
   #endif
 
-  #if EITHER(HAS_MARLINUI_HD44780, IS_TFTGLCD_PANEL)
+  #if HAS_CHARACTER_LCD
     //#define LCD_PROGRESS_BAR            // Show a progress bar on HD44780 LCDs for SD printing
     #if ENABLED(LCD_PROGRESS_BAR)
       #define PROGRESS_BAR_BAR_TIME 2000  // (ms) Amount of time to show the bar
@@ -1166,7 +1167,6 @@
   #if ENABLED(POWER_LOSS_RECOVERY)
     #define PLR_ENABLED_DEFAULT   false // Power Loss Recovery enabled by default. (Set with 'M413 Sn' & M500)
     //#define BACKUP_POWER_SUPPLY       // Backup power / UPS to move the steppers on power loss
-    //#define POWER_LOSS_RECOVER_ZHOME  // Z homing is needed for proper recovery. 99.9% of the time this should be disabled!
     //#define POWER_LOSS_ZRAISE       2 // (mm) Z axis raise on resume (on power loss with UPS)
     //#define POWER_LOSS_PIN         44 // Pin to detect power loss. Set to -1 to disable default pin on boards without module.
     //#define POWER_LOSS_STATE     HIGH // State of pin indicating power loss
@@ -1327,7 +1327,7 @@
  * controller events, as there is a trade-off between reliable
  * printing performance versus fast display updates.
  */
-#if HAS_MARLINUI_U8GLIB
+#if HAS_GRAPHICAL_LCD
   // Show SD percentage next to the progress bar
   //#define DOGM_SD_PERCENT
 
@@ -1397,18 +1397,18 @@
   //#define MARLIN_SNAKE
   //#define GAMES_EASTER_EGG          // Add extra blank lines above the "Games" sub-menu
 
-#endif // HAS_MARLINUI_U8GLIB
+#endif // HAS_GRAPHICAL_LCD
 
 //
 // Additional options for DGUS / DWIN displays
 //
 #if HAS_DGUS_LCD
-  #define LCD_SERIAL_PORT 3
-  #define LCD_BAUDRATE 115200
+  #define DGUS_SERIAL_PORT 3
+  #define DGUS_BAUDRATE 115200
 
   #define DGUS_RX_BUFFER_SIZE 128
   #define DGUS_TX_BUFFER_SIZE 48
-  //#define SERIAL_STATS_RX_BUFFER_OVERRUNS  // Fix Rx overrun situation (Currently only for AVR)
+  //#define DGUS_SERIAL_STATS_RX_BUFFER_OVERRUNS  // Fix Rx overrun situation (Currently only for AVR)
 
   #define DGUS_UPDATE_INTERVAL_MS  500    // (ms) Interval between automatic screen updates
 
@@ -1953,6 +1953,7 @@
  * Be sure to turn off auto-retract during filament change.
  *
  * Note that M207 / M208 / M209 settings are saved to EEPROM.
+ *
  */
 //#define FWRETRACT
 #if ENABLED(FWRETRACT)
@@ -1978,7 +1979,7 @@
  * Universal tool change settings.
  * Applies to all types of extruders except where explicitly noted.
  */
-#if HAS_MULTI_EXTRUDER
+#if EXTRUDERS > 1
   // Z raise distance for tool-change, as needed for some extruders
   #define TOOLCHANGE_ZRAISE                 2 // (mm)
   //#define TOOLCHANGE_ZRAISE_BEFORE_RETRACT  // Apply raise before swap retraction (if enabled)
@@ -2042,7 +2043,7 @@
     //#define TOOLCHANGE_PARK_X_ONLY          // X axis only move
     //#define TOOLCHANGE_PARK_Y_ONLY          // Y axis only move
   #endif
-#endif // HAS_MULTI_EXTRUDER
+#endif // EXTRUDERS > 1
 
 /**
  * Advanced Pause
@@ -3231,7 +3232,6 @@
 //#define HOST_ACTION_COMMANDS
 #if ENABLED(HOST_ACTION_COMMANDS)
   //#define HOST_PROMPT_SUPPORT
-  //#define HOST_START_MENU_ITEM  // Add a menu item that tells the host to start
 #endif
 
 /**
@@ -3358,26 +3358,7 @@
   //#define GANTRY_CALIBRATION_SAFE_POSITION  {X_CENTER, Y_CENTER}  // Safe position for nozzle
   //#define GANTRY_CALIBRATION_XY_PARK_FEEDRATE 3000                // XY Park Feedrate - MMM
   //#define GANTRY_CALIBRATION_COMMANDS_PRE   ""
-  #define GANTRY_CALIBRATION_COMMANDS_POST  "G28"                 // G28 is highly recommended here as position is likely no longer accurate.
-#endif
-
-/**
- * Modern replacement for the Prusa TMC_Z_CALIBRATION
- * Adds capability to work with any adjustable current drivers
- * Implements as G34 as M915 is deprecated
- */
-
-//#define MECHANICAL_GANTRY_CALIBRATION
-#if ENABLED(MECHANICAL_GANTRY_CALIBRATION)
-  #define GANTRY_CALIBRATION_CURRENT          600                   // Default calibration current in ma
-  #define GANTRY_CALIBRATION_EXTRA_HEIGHT      15                   // Extra distance in mm past Z_###_POS to move
-  #define GANTRY_CALIBRATION_DIRECTION          1                   // Set to 1 for Max or 0 for min
-  #define GANTRY_CALIBRATION_FEEDRATE         500                   // Feedrate for correction move
-
-  //#define GANTRY_CALIBRATION_SAFE_POSITION  {X_CENTER, Y_CENTER}  // Safe position for nozzle
-  //#define GANTRY_CALIBRATION_XY_PARK_FEEDRATE 3000                // XY Park Feedrate - MMM
-  //#define GANTRY_CALIBRATION_COMMANDS_PRE   ""
-  //#define GANTRY_CALIBRATION_COMMANDS_POST  "G28"
+  //#define GANTRY_CALIBRATION_COMMANDS_POST  "G28"                 // G28 is highly recommended here as position is likely no longer accurate.
 #endif
 
 /**
@@ -3455,10 +3436,10 @@
 #if ENABLED(PRUSA_MMU2)
 
   // Serial port used for communication with MMU2.
-  // For AVR enable the UART port used for the MMU. (e.g., mmuSerial)
+  // For AVR enable the UART port used for the MMU. (e.g., internalSerial)
   // For 32-bit boards check your HAL for available serial ports. (e.g., Serial2)
-  #define MMU2_SERIAL_PORT 2
-  #define MMU2_SERIAL mmuSerial
+  #define INTERNAL_SERIAL_PORT 2
+  #define MMU2_SERIAL internalSerial
 
   // Use hardware reset for MMU if a pin is defined for it
   //#define MMU2_RST_PIN 23
@@ -3509,7 +3490,7 @@
    */
   //#define MMU_EXTRUDER_SENSOR
   #if ENABLED(MMU_EXTRUDER_SENSOR)
-    #define MMU_LOADING_ATTEMPTS_NR 5 // max. number of attempts to load filament if first load fail
+    #define MMU_LOADING_ATTEMPTS_NR 5 //max. number of attempts to load filament if first load fail
   #endif
 
   /**
