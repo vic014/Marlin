@@ -46,7 +46,7 @@
  */
 #define BED_AC
 
-#define HotendAllMetal
+//#define HotendAllMetal
 //#define HotendMosquito
 //#define ExtruderBMG
 
@@ -1062,7 +1062,7 @@
  *
  * See https://github.com/synthetos/TinyG/wiki/Jerk-Controlled-Motion-Explained
  */
-#define S_CURVE_ACCELERATION
+//#define S_CURVE_ACCELERATION
 
 //===========================================================================
 //============================= Z Probe Options =============================
@@ -1351,7 +1351,7 @@
 // @section extruder
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
-#if (ANY(E_2208, E_2209_Uart) && NONE(HotendMosquito, ExtruderBMG)) || (ANY(HotendMosquito, ExtruderBMG) && NONE(E_2208, E_2209_Uart))
+#if (ANY(E_2208, E_2209_Uart) && DISABLED(ExtruderBMG)) || (ENABLED(ExtruderBMG) && NONE(E_2208, E_2209_Uart))
   #define INVERT_E0_DIR false
   #define INVERT_E1_DIR true
 #else
@@ -1554,7 +1554,7 @@
   /**
    * Enable the G26 Mesh Validation Pattern tool.
    */
-  #define G26_MESH_VALIDATION
+  //#define G26_MESH_VALIDATION
   #if ENABLED(G26_MESH_VALIDATION)
     #define MESH_TEST_NOZZLE_SIZE    0.4  // (mm) Diameter of primary nozzle.
     #define MESH_TEST_LAYER_HEIGHT   0.2  // (mm) Default layer height for the G26 Mesh Validation Tool.
