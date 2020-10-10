@@ -366,11 +366,10 @@ typedef struct SettingsDataStruct {
   //
   // HAS_MOTOR_CURRENT_PWM
   //
-  #if HAS_MOTOR_CURRENT_SPI
-    uint32_t motor_current_setting[COUNT(stepper.motor_current_setting)];
-  #else
-    uint32_t motor_current_setting[3];                  // M907 X Z E
+  #ifndef MOTOR_CURRENT_COUNT
+    #define MOTOR_CURRENT_COUNT 3
   #endif
+  uint32_t motor_current_setting[MOTOR_CURRENT_COUNT];  // M907 X Z E
 
   //
   // CNC_COORDINATE_SYSTEMS
@@ -1285,7 +1284,7 @@ void MarlinSettings::postprocess() {
       #if HAS_MOTOR_CURRENT_SPI || HAS_MOTOR_CURRENT_PWM
         EEPROM_WRITE(stepper.motor_current_setting);
       #else
-        const uint32_t no_current[3] = { 0 };
+        const uint32_t no_current[MOTOR_CURRENT_COUNT] = { 0 };
         EEPROM_WRITE(no_current);
       #endif
     }
@@ -2116,11 +2115,11 @@ void MarlinSettings::postprocess() {
       //
       {
         _FIELD_TEST(motor_current_setting);
-        #if HAS_MOTOR_CURRENT_SPI
-          uint32_t motor_current_setting[] = DIGIPOT_MOTOR_CURRENT;
-        #else
-          uint32_t motor_current_setting[3];
-        #endif
+        uint32_t motor_current_setting[MOTOR_CURRENT_COUNT]
+          #if HAS_MOTOR_CURRENT_SPI
+             = DIGIPOT_MOTOR_CURRENT
+          #endif
+        ;
         DEBUG_ECHOLNPGM("DIGIPOTS Loading");
         EEPROM_READ(motor_current_setting);
         DEBUG_ECHOLNPGM("DIGIPOTS Loaded");
@@ -2802,8 +2801,8 @@ void MarlinSettings::reset() {
   //
 
   #if HAS_MOTOR_CURRENT_PWM
-    constexpr uint32_t tmp_motor_current_setting[3] = PWM_MOTOR_CURRENT;
-    LOOP_L_N(q, 3)
+    constexpr uint32_t tmp_motor_current_setting[MOTOR_CURRENT_COUNT] = PWM_MOTOR_CURRENT;
+    LOOP_L_N(q, MOTOR_CURRENT_COUNT)
       stepper.set_digipot_current(q, (stepper.motor_current_setting[q] = tmp_motor_current_setting[q]));
   #endif
 
@@ -3728,7 +3727,7 @@ void MarlinSettings::reset() {
         );
       #elif HAS_MOTOR_CURRENT_SPI
         SERIAL_ECHOPGM("  M907");
-        LOOP_L_N(q, COUNT(stepper.motor_current_setting)) {
+        LOOP_L_N(q, MOTOR_CURRENT_COUNT) {
           SERIAL_CHAR(' ');
           SERIAL_CHAR(axis_codes[q]);
           SERIAL_ECHO(stepper.motor_current_setting[q]);
