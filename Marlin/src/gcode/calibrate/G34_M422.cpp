@@ -24,9 +24,9 @@
 
 #if ENABLED(Z_STEPPER_AUTO_ALIGN)
 
-#include "../gcode.h"
 #include "../../feature/z_stepper_align.h"
 
+#include "../gcode.h"
 #include "../../module/planner.h"
 #include "../../module/stepper.h"
 #include "../../module/motion.h"
