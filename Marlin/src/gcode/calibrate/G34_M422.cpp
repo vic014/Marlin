@@ -25,6 +25,8 @@
 #if ENABLED(Z_STEPPER_AUTO_ALIGN)
 
 #include "../gcode.h"
+#include "../../feature/z_stepper_align.h"
+
 #include "../../module/planner.h"
 #include "../../module/stepper.h"
 #include "../../module/motion.h"
@@ -35,18 +37,12 @@
   #include "../../feature/bedlevel/bedlevel.h"
 #endif
 
-#if HAS_MULTI_HOTEND
-  #include "../../module/tool_change.h"
+#if ENABLED(Z_STEPPER_ALIGN_KNOWN_STEPPER_POSITIONS)
+   #include "../../libs/least_squares_fit.h"
 #endif
 
 #define DEBUG_OUT ENABLED(DEBUG_LEVELING_FEATURE)
 #include "../../core/debug_out.h"
-
-#include "../../feature/z_stepper_align.h"
-
-#if ENABLED(Z_STEPPER_ALIGN_KNOWN_STEPPER_POSITIONS)
-   #include "../../libs/least_squares_fit.h"
-#endif
 
 /**
  * G34: Z-Stepper automatic alignment
