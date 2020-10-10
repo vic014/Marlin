@@ -2735,7 +2735,7 @@ static_assert(   _ARR_TEST(3,0) && _ARR_TEST(3,1) && _ARR_TEST(3,2)
 
 #if ENABLED(MECHANICAL_GANTRY_CALIBRATION)
   #if NONE(HAS_MOTOR_CURRENT_DAC, HAS_MOTOR_CURRENT_SPI, HAS_MOTOR_CURRENT_DAC, HAS_TRINAMIC_CONFIG, HAS_MOTOR_CURRENT_PWM)
-    #error "It is highly reccomended to have adjustable current drivers to prevent damage. Disable this line to continue anyway."
+    #error "It is highly recommended to have adjustable current drivers to prevent damage. Disable this line to continue anyway."
   #else
     #ifndef GANTRY_CALIBRATION_CURRENT
       #error "MECHANICAL_GANTRY_CALIBRATION Requires GANTRY_CALIBRATION_CURRENT to be set."
