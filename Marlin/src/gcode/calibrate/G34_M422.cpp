@@ -534,21 +534,10 @@ void GcodeSuite::M422() {
       do_blocking_move_to(safe_pos, MMM_TO_MMS(GANTRY_CALIBRATION_XY_PARK_FEEDRATE));
     #endif
 
+    constexpr float dir = (GANTRY_CALIBRATION_DIRECTION == 1) ? -1 : 1;
     const float move_distance = parser.intval('Z', GANTRY_CALIBRATION_EXTRA_HEIGHT),
-                   zpounce = (
-                     #if GANTRY_CALIBRATION_DIRECTION == 1
-                       (Z_MAX_POS) - move_distance
-                     #else
-                       (Z_MIN_POS) + move_distance
-                     #endif
-                   ),
-                   zgrind = (
-                     #if GANTRY_CALIBRATION_DIRECTION == 1
-                       (Z_MAX_POS) + move_distance
-                     #else
-                       (Z_MIN_POS) - move_distance
-                     #endif
-                   );
+                zpounce = (Z_MIN_POS) + (dir * move_distance),
+                zgrind = (Z_MAX_POS) - (dir * move_distance);
 
     // Move Z to pounce position
     if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Setting Z Pounce");
