@@ -289,7 +289,6 @@
  * "T" Codes
  *
  * T0-T3 - Select an extruder (tool) by index: "T<n> F<units/min>"
- *
  */
 
 #include "../inc/MarlinConfig.h"
@@ -662,9 +661,7 @@ private:
 
   static void M211();
 
-  #if EXTRUDERS > 1
-    static void M217();
-  #endif
+  TERN_(HAS_MULTI_EXTRUDER, static void M217());
 
   TERN_(HAS_HOTEND_OFFSET, static void M218());
 

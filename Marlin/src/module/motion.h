@@ -94,7 +94,7 @@ extern feedRate_t feedrate_mm_s;
 extern int16_t feedrate_percentage;
 
 // The active extruder (tool). Set with T<extruder> command.
-#if EXTRUDERS > 1
+#if HAS_MULTI_EXTRUDER
   extern uint8_t active_extruder;
 #else
   constexpr uint8_t active_extruder = 0;
