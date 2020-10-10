@@ -22,6 +22,8 @@
 
 #include "../../inc/MarlinConfigPre.h"
 
+#if ENABLED(Z_STEPPER_AUTO_ALIGN)
+
 #include "../gcode.h"
 #include "../../module/planner.h"
 #include "../../module/stepper.h"
@@ -37,13 +39,8 @@
   #include "../../module/tool_change.h"
 #endif
 
-
-
 #define DEBUG_OUT ENABLED(DEBUG_LEVELING_FEATURE)
 #include "../../core/debug_out.h"
-
-#if ENABLED(Z_STEPPER_AUTO_ALIGN)
-
 
 #include "../../feature/z_stepper_align.h"
 
